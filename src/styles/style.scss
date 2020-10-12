@@ -1,0 +1,12 @@
+$primary: #8D1F40;
+$text: white;
+$secondary: lightgreen;
+
+$thirdly: lightblue;
+
+@mixin flexCenter {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
