@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <Navbar/>
+
     <img class='splashLogo' alt="Vue logo" src="../assets/newLogo.png">
 
     <div class='one'>ONE</div>
@@ -10,7 +10,6 @@
 </template>
 
 <script>
-// @ is an alias to /src
 
 
 export default {

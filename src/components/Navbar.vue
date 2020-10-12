@@ -3,23 +3,24 @@
 <div class="wholeNavbarWrapper">
   <div class="topNavbarWrapper">
 
-      <div class="navbarLeft">
-          Left
+      <div id="navbarLeft">
+          <router-link to="/">Home</router-link> 
       </div>
 
-      <div class="navbarMiddle">
-          middle
+      <div id="navbarMiddle">
+           <router-link to="/about">About</router-link>
       </div>
 
-      <div class="navbarRight">
-          right
+      <div id="navbarRight">
+          <router-link to="/login">Login / Sign Up</router-link>
       </div>
 
 
   </div>
     <div class="bottomNavbarWrapper">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
+      List View | Map View
+     
+     
     </div>
 
 </div>
@@ -48,10 +49,20 @@ export default {
   justify-content: center;
    align-items: center;
   height: 40px;
-  // position: sticky;
-  // position: -webkit-sticky; /* for Safari */
-  // align-self: flex-start; /* <-- this is the fix */
-  // top: 0;
+}
+
+#navbarLeft,  #navbarMiddle, #navbarRight {
+    font-weight: bold;
+  flex: .333;
+
+  a {
+    font-weight: bold;
+    color: #e3acac;
+
+    &.router-link-exact-active {
+      color: white;
+    }
+  }
 }
 
 .navbarLeft {
@@ -75,6 +86,18 @@ export default {
 .bottomNavbarWrapper {
   background-color: lightgreen;
 
+}
+
+.navbarLeft {
+
+  a {
+    font-weight: bold;
+    color: #2c3e50;
+
+    &.router-link-exact-active {
+      color: #42b983;
+    }
+  }
 }
 
 </style>
