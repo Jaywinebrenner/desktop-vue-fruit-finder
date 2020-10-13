@@ -1,7 +1,12 @@
 <template>
   <div id="app">
-    <Navbar/>
-    <router-view/>
+      <Navbar/>
+
+    <div class="appPage">
+      <router-view/>
+    </div>
+
+
   </div>
 </template>
 
@@ -17,11 +22,22 @@ export default {
 <style lang="scss">
 @import './styles/style.scss';
 
+html, body {
+  height: 100%;
+  background-color:blue;
+}
 
 #app {
   display: flex;
   flex-direction: column;
-  height: 80vh;
+  height: 100%;
+   background-color:$primary;
+}
+
+
+#appPage {
+  // display: flex;
+  // height: 100%;
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

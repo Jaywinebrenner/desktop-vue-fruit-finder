@@ -11,9 +11,8 @@
     </div>
 
     <div class="mapWrapper">
-      <h6 style="color: white;">Your Coordinates: </h6>
-      <p style="color: white;">Latitdude: {{ coordinates.lat }} | Longitude: {{ coordinates.lng}}</p>
-
+      <!-- <h6 style="color: white;">Your Coordinates: </h6>
+      <p style="color: white;">Latitdude: {{ coordinates.lat }} | Longitude: {{ coordinates.lng}}</p> -->
       <GmapMap
       class="mapObject"
         :center="{lat:10, lng:10}"
@@ -55,16 +54,24 @@ export default {
 <style lang='scss'>
 @import '../styles/style.scss';
 
+html, body {
+  height: 100%
+}
+
+
 .home {
   background-color: $primary;
   display: flex;
+  flex-flow: column;
+  height: 100%;
   justify-content: center;
   align-items: center;
   flex-direction: column;
+
 }
 
 .homeSubheader {
-  display:flex;
+  // flex: .2;
 }
 
 .homeText {
@@ -85,9 +92,14 @@ export default {
 }
 
 .mapObject {
-width:80vh; 
+width:90vh; 
 height:60vh;
 margin-bottom: 4vh;
+}
+
+
+.mapWrapper {
+  overflow: hidden;
 }
 
 

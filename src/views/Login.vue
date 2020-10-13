@@ -11,7 +11,7 @@
     <div class="password">
       <input type="password" v-model="password" placeholder="password">
     </div>
-    <button class="signUpButton" type="submit">Sign Up</button>
+    <button class="signUpButton" type="submit">Login</button>
   </form>
   </div>
 

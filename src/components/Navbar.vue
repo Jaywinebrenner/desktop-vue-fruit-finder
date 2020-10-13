@@ -7,8 +7,8 @@
           <router-link class="routerLinksLeft" to="/">Home</router-link> 
            <router-link class="routerLinksLeft" to="/about">About</router-link>
       </div>
-      <p style="color: white;" v-if="isLoggedIn">You are Logged In</p>
-      <p style="color: white;" v-else>You are NOT logged in</p>
+      <!-- <p style="color: white;" v-if="isLoggedIn">You are Logged In</p>
+      <p style="color: white;" v-else>You are NOT logged in</p> -->
 
       <div  id="navbarRight">
           <router-link v-if="!isLoggedIn" class="routerLinkRight" to="/signUp">Sign Up</router-link>
@@ -74,28 +74,31 @@ export default {
   position: -webkit-sticky; /* for Safari */
   top: 0;
   padding-bottom: 5px;
-  border-bottom: 1px black solid;
+  // border-bottom: 1px black solid;
 }
 
 .topNavbarWrapper {
    display: flex;
-   flex-direction: row;
+
    background-color: #8D1F40;
    justify-content: space-between;
-    align-items: center;
+   align-items: center;
    height: 40px;
 }
 
 .routerLinksLeft {
-  margin-left: 20px;
+  margin-left: 5px;
+  font-size: 19px;
 }
 
 .routerLinkRight {
   margin-right: 40px;
+  font-size: 14px;
 }
 
 #navbarLeft,  #navbarMiddle, #navbarRight {
-    margin-left: 30px;
+  display: flex;
+    margin-left: 10px;
     font-weight: bold;
   // flex: .333;
 
@@ -144,6 +147,7 @@ export default {
   }
 }
     .logoWrapper {
+      background-color: white;
       position: sticky;
       position: -webkit-sticky; /* for Safari */
       align-self: flex-start; /* <-- this is the fix */
@@ -151,7 +155,7 @@ export default {
     }
   
     .splashLogo {
-    width: 200px;
+    width: 150px;
   }
 
 </style>
