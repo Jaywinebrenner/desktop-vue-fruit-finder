@@ -15,9 +15,10 @@
       <p style="color: white;">Latitdude: {{ coordinates.lat }} | Longitude: {{ coordinates.lng}}</p>
 
       <GmapMap
+      class="mapObject"
         :center="{lat:10, lng:10}"
         :zoom="7"
-        style="width:80vh; height:60vh;"
+    
       ></GmapMap>
     </div>
 
@@ -71,7 +72,7 @@ export default {
 }
 
 .mapListButtonWrapper {
-  padding: 20px;
+  padding: 10px;
 }
 
 .mapListButton {
@@ -81,6 +82,12 @@ export default {
   width: 90px;
   height: 30px;
   border-radius: 5%;
+}
+
+.mapObject {
+width:80vh; 
+height:60vh;
+margin-bottom: 4vh;
 }
 
 

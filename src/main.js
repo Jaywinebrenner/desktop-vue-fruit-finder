@@ -9,10 +9,12 @@ import "firebase/analytics";
 import "firebase/auth";
 import VueGeolocation from "vue-browser-geolocation";
 import * as VueGoogleMaps from 'vue2-google-maps';
+import { firebaseConfig } from "./firebase";
+import { API_KEY } from "./geocoder"
 
 Vue.use(VueGoogleMaps, {
   load: {
-    key: "YOUR_API_TOKEN",
+    key: API_KEY,
   },
 });
 Vue.use(VueGeolocation);
@@ -25,16 +27,6 @@ Vue.use(IconsPlugin)
 
 Vue.config.productionTip = false
 
-const firebaseConfig = {
-  apiKey: "AIzaSyD-XN5YMLorHKmbdEpT6DH1M9SJCIa8iUM",
-  authDomain: "desktop-fruit-finder.firebaseapp.com",
-  databaseURL: "https://desktop-fruit-finder.firebaseio.com",
-  projectId: "desktop-fruit-finder",
-  storageBucket: "desktop-fruit-finder.appspot.com",
-  messagingSenderId: "100321669862",
-  appId: "1:100321669862:web:dd9d655abb9efc0735c127",
-  measurementId: "G-X3KBWZ4ZKV",
-};
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 firebase.analytics();

@@ -1,6 +1,8 @@
 .DS_Store
 node_modules
 /dist
+firebase.js
+geocoder.js
 
 
 # local env files
