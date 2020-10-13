@@ -1,11 +1,15 @@
 <template>
   <div class="home">
 
-    <img class='splashLogo' alt="Vue logo" src="../assets/newLogo.png">
+    <div class="homeSubheader">
+      <h5 class="homeText">Browse the Map for Fruit Trees near you.</h5>
+    </div>
 
-    <div class='one'>ONE</div>
+    <div class="mapListButtonWrapper">
+      <button class="mapListButton">Map View</button>
+       <button class="mapListButton">ListView</button>
+    </div>
 
- 
   </div>
 </template>
 
@@ -23,24 +27,36 @@ export default {
 <style lang='scss'>
 @import '../styles/style.scss';
 
-.one {
+.home {
   background-color: $primary;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  // @include flexCenter();
+}
+
+.homeSubheader {
+  display:flex;
+}
+
+.homeText {
+  color: white;
+}
+
+.mapListButtonWrapper {
+  padding: 20px;
+}
+
+.mapListButton {
+  background-color: white;
   color: $primary;
-  @include flexCenter();
+  margin-right: 10px;
+  width: 90px;
+  height: 30px;
+  border-radius: 5%;
 }
 
-.two {
-  background-color: $secondary;
-  @include flexCenter();
-}
 
-.three {
-  background-color: $thirdly;
-  @include flexCenter();
-}
-
-.splashLogo {
-  width: 260px;
-}
 
 </style>

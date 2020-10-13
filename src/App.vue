@@ -19,6 +19,9 @@ export default {
 
 
 #app {
+  display: flex;
+  flex-direction: column;
+  height: 80vh;
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
