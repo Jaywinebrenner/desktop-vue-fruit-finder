@@ -1,20 +1,21 @@
 <template>
 <div class="loginWrapper">
-  <div class="loginCard">
+
+    <div class="loginCard">
   <div v-if="error" class="error">{{error.message}}</div>
-  <form @submit.prevent="pressed">
-    <h3>Sign Up</h3>
+  <form @submit.prevent="pressedLogin">
+    <h3>Login</h3>
     <div class="email">
       <input type="email" v-model="email" placeholder="email">
     </div>
     <div class="password">
       <input type="password" v-model="password" placeholder="password">
     </div>
-    <button type="submit">Sign Up</button>
+    <button class="signUpButton" type="submit">Sign Up</button>
   </form>
-
-
   </div>
+
+
 </div>
   
 </template>
@@ -26,16 +27,16 @@ import "firebase/auth";
 
 export default {
   methods: {
-    async pressed() {
+    async pressedLogin() {
       try {
-        const user = await firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
+        const value = await firebase.auth().signInWithEmailAndPassword(this.email, this.password);
         this.$router.replace({name: '/'})
-        console.log("user", user);
+        console.log("value after pressing login", value);
 
       } catch (err) {
         console.log(err);
       }
-    }
+    },
   },
   data() {
     return {
@@ -78,7 +79,7 @@ div > input {
 
 }
 
-button {
+.signUpButton {
   background-color: $primary;
   width: 35vh;
   height: 75px;

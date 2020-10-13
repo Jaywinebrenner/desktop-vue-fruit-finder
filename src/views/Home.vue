@@ -10,6 +10,17 @@
        <button class="mapListButton">ListView</button>
     </div>
 
+    <div class="mapWrapper">
+      <h6 style="color: white;">Your Coordinates: </h6>
+      <p style="color: white;">Latitdude: {{ coordinates.lat }} | Longitude: {{ coordinates.lng}}</p>
+
+      <GmapMap
+        :center="{lat:10, lng:10}"
+        :zoom="7"
+        style="width:80vh; height:60vh;"
+      ></GmapMap>
+    </div>
+
   </div>
 </template>
 
@@ -20,7 +31,23 @@ export default {
   name: 'Home',
   components: {
 
-  }
+  },
+  data() {
+    return {
+      coordinates: {
+        lat: 0,
+        lng: 0
+      }
+    }
+  },
+  created() {
+      this.$getLocation({})
+        .then(coordinates => {
+          console.log(coordinates);
+          this.coordinates = coordinates;
+      })
+      .catch(error => alert(error))
+  },
 }
 </script>
 
@@ -33,7 +60,6 @@ export default {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  // @include flexCenter();
 }
 
 .homeSubheader {

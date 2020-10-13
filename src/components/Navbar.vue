@@ -7,9 +7,13 @@
           <router-link class="routerLinksLeft" to="/">Home</router-link> 
            <router-link class="routerLinksLeft" to="/about">About</router-link>
       </div>
+      <p style="color: white;" v-if="isLoggedIn">You are Logged In</p>
+      <p style="color: white;" v-else>You are NOT logged in</p>
 
-      <div id="navbarRight">
-          <router-link class="routerLinkRight" to="/login">Login / Sign Up</router-link>
+      <div  id="navbarRight">
+          <router-link v-if="!isLoggedIn" class="routerLinkRight" to="/signUp">Sign Up</router-link>
+          <router-link v-if="!isLoggedIn" class="routerLinkRight" to="/login">Login </router-link>
+          <h5 v-else @click="logout" class="logoutText">Logout</h5>
       </div>
 
   </div>
@@ -22,10 +26,34 @@
 </template>
 
 <script>
+import * as firebase from "firebase/app"
+import "firebase/auth";
+
 export default {
+  created() {
+    firebase.auth().onAuthStateChanged(user => {
+        if(user) {
+          this.isLoggedIn = true;
+        } else {
+          this.isLoggedIn = false;
+        }
+    })
+  },
   data() {
     return {
-      isLogginIn: false
+      isLoggedIn: true
+    }
+  },
+  methods: {
+    async logout() {
+      try {
+        const data = await firebase.auth().signOut();
+        console.log("logout data", data);
+        this.$router.replace({name: '/'})
+      } catch (err) {
+        console.log(err);
+      }
+
     }
   }
   
@@ -34,6 +62,12 @@ export default {
 
 <style lang="scss">
 @import '../styles/style.scss';
+
+.logoutText {
+  color: white;
+  cursor: pointer;
+  margin-right: 20px;
+}
 
 .wholeNavbarWrapper {
   position: sticky;

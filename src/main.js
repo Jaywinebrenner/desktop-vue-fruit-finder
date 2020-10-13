@@ -7,7 +7,15 @@ import axios from 'axios';
 import firebase from 'firebase/app';
 import "firebase/analytics";
 import "firebase/auth";
+import VueGeolocation from "vue-browser-geolocation";
+import * as VueGoogleMaps from 'vue2-google-maps';
 
+Vue.use(VueGoogleMaps, {
+  load: {
+    key: "YOUR_API_TOKEN",
+  },
+});
+Vue.use(VueGeolocation);
 
 // Allows global use of Axios
 Vue.prototype.$axios = axios;
