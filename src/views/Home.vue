@@ -11,8 +11,19 @@
     </div>
 
     <div class="mapWrapper">
-      <!-- <h6 style="color: white;">Your Coordinates: </h6>
-      <p style="color: white;">Latitdude: {{ coordinates.lat }} | Longitude: {{ coordinates.lng}}</p> -->
+
+<div>
+      <h6 style="color: white;">Your Coordinates: </h6>
+      <p style="color: white;">Latitdude: {{ myCoordinates.lat }} | Longitude: {{ myCoordinates.lng}}</p>
+</div>
+
+<div>
+      <h6 style="color: white;">Map Coordinates: </h6>
+      <p style="color: white;">Latitdude: {{ mapCoordinates.lat }} | Longitude: {{ mapCoordinates.lng}}</p>
+
+</div>
+
+
       <GmapMap
       class="mapObject"
         :center="{lat:10, lng:10}"
@@ -34,17 +45,21 @@ export default {
   },
   data() {
     return {
-      coordinates: {
+      mapCoordinates: {
         lat: 0,
         lng: 0
-      }
+      },
+      myCoordinates: {
+        lat: 0,
+        lng: 0
+      },
     }
   },
   created() {
       this.$getLocation({})
         .then(coordinates => {
           console.log(coordinates);
-          this.coordinates = coordinates;
+          this.myCoordinates = coordinates;
       })
       .catch(error => alert(error))
   },
