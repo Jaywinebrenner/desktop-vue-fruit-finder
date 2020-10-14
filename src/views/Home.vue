@@ -26,9 +26,9 @@
 
       <GmapMap
       class="mapObject"
-        :center="{lat:10, lng:10}"
+        :center="myCoordinates"
         :zoom="7"
-    
+        ref="mapRef"
       ></GmapMap>
     </div>
 
@@ -45,10 +45,11 @@ export default {
   },
   data() {
     return {
-      mapCoordinates: {
-        lat: 0,
-        lng: 0
-      },
+      map: null,
+      // mapCoordinates: {
+      //   lat: 0,
+      //   lng: 0
+      // },
       myCoordinates: {
         lat: 0,
         lng: 0
@@ -59,10 +60,29 @@ export default {
       this.$getLocation({})
         .then(coordinates => {
           console.log(coordinates);
+          
           this.myCoordinates = coordinates;
       })
       .catch(error => alert(error))
   },
+  mounted() {
+    this.$refs.mapRef.$mapPromise.then(map => this.map = map);
+    // this.map ? console.log("map object", this.map) : ''
+  },
+  computed: {
+    mapCoordinates() {
+      if(!this.map) {
+        return {
+          lat: 0,
+          lng: 0
+        };
+      }
+      return {
+        lat: this.map.getCenter().lat().toFixed(4),
+        lng: this.map.getCenter().lng().toFixed(4)
+      }
+    }
+  }
 }
 </script>
 

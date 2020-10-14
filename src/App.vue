@@ -24,7 +24,7 @@ export default {
 
 html, body {
   height: 100%;
-  background-color:blue;
+  background-color:$primary;
 }
 
 #app {
