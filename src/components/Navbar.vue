@@ -20,7 +20,14 @@
 
     <div class="logoWrapper">
       <img class='splashLogo' alt="Vue logo" src="../assets/newLogo.png">
+      <div v-if="isLoggedIn" class="addTreeButtonWrapper">
+        <button @click="show" class="addTreeButton">Add Tree</button>
+      </div>
     </div>
+
+    <modal class="modalWrapper" name="my-first-modal">
+        This is my first modal
+    </modal>
 
 </div>
 </template>
@@ -39,6 +46,9 @@ export default {
         }
     })
   },
+  mount() {
+    this.show()
+  },
   data() {
     return {
       isLoggedIn: true
@@ -53,7 +63,12 @@ export default {
       } catch (err) {
         console.log(err);
       }
-
+    },
+    show () {
+        this.$modal.show('my-first-modal');
+        },
+    hide () {
+        this.$modal.hide('my-first-modal');
     }
   }
   
@@ -148,14 +163,35 @@ export default {
 }
     .logoWrapper {
       background-color: white;
+      display: flex;
       position: sticky;
       position: -webkit-sticky; /* for Safari */
       align-self: flex-start; /* <-- this is the fix */
       top: 0;
+      // justify-content: center;
+      align-items: center;
     }
   
     .splashLogo {
     width: 150px;
+  }
+
+  .addTreeButtonWrapper {
+    margin-left: auto;
+    padding: 0;
+  
+  }
+
+  .addTreeButton {
+  background-color: $primary;
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  margin-right: 20px;
+  }
+
+  .modalWrapper {
+    
   }
 
 </style>
