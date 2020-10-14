@@ -6,6 +6,7 @@
       <div id="navbarLeft">
           <router-link class="routerLinksLeft" to="/">Home</router-link> 
            <router-link class="routerLinksLeft" to="/about">About</router-link>
+       
       </div>
       <!-- <p style="color: white;" v-if="isLoggedIn">You are Logged In</p>
       <p style="color: white;" v-else>You are NOT logged in</p> -->
@@ -25,9 +26,9 @@
       </div>
     </div>
 
-    <modal class="modalWrapper" name="my-first-modal">
+     <!-- <modal class="modalWrapper" name="addTreeModal">
         This is my first modal
-    </modal>
+    </modal> -->
 
 </div>
 </template>
@@ -37,6 +38,7 @@ import * as firebase from "firebase/app"
 import "firebase/auth";
 
 export default {
+  props: ['show', 'hide'],
   created() {
     firebase.auth().onAuthStateChanged(user => {
         if(user) {
@@ -46,15 +48,21 @@ export default {
         }
     })
   },
-  mount() {
-    this.show()
-  },
+  // mount () {
+  //     this.show()
+  //   },
   data() {
     return {
-      isLoggedIn: true
+      isLoggedIn: true,
     }
   },
   methods: {
+    // show() {
+    //       this.$modal.show('addTreeModal');
+    //     },
+    //   hide() {
+    //       this.$modal.hide('addTreeModal');
+    //   },
     async logout() {
       try {
         const data = await firebase.auth().signOut();
@@ -64,12 +72,7 @@ export default {
         console.log(err);
       }
     },
-    show () {
-        this.$modal.show('my-first-modal');
-        },
-    hide () {
-        this.$modal.hide('my-first-modal');
-    }
+    
   }
   
 }

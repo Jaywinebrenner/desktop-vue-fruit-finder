@@ -261,5 +261,5 @@ export const mapStyle = [
         color: "#92998d",
       },
     ],
-  },
+  }
 ];
