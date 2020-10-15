@@ -8,9 +8,16 @@ $secondary: lightgreen;
 $thirdly: lightblue;
 
 @mixin flexCenter {
-
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+@mixin maroonButton {
+  background-color: $primary;
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  margin-right: 20px;
 }
 

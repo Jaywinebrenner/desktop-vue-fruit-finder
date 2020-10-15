@@ -45,13 +45,17 @@
         ref="mapRef"
         @dragend="handleDrag"
         scaleControl: false
+  
       >
+      <!-- <div v-if="allTrees.length > 0"> -->
       <GmapMarker
+        :key="index"
         :position="myCoordinates"
         :clickable="true"
-        :draggable="true"
-      
-  />
+        :draggable="true"   
+        @click="center-m.position"
+      />
+      <!-- </div> -->
       
       </GmapMap>
     </div>
@@ -61,15 +65,12 @@
 </template>
 
 <script>
-
-  import { mapStyle } from '../constants/mapStyle.js'
+import { mapStyle } from "../constants/mapStyle.js";
 
 export default {
+  name: "Home",
 
-  name: 'Home',
-
-  components: {
-  },
+  components: {},
 
   data() {
     return {
@@ -82,16 +83,11 @@ export default {
       myCoordinates: {
         lat: 0,
         lng: 0
-      },
-    }
+      }
+    };
   },
 
   methods: {
-    // async fetchMapStyle() {
-    //   const res = await fetch("mapStyle.js");
-    //   const val = await res;
-    //   console.log("mapStyle??", val);
-    // },
     handleDrag() {
       // get center and zoom level, and store it
       let center = {
@@ -100,59 +96,63 @@ export default {
       };
       let zoom = this.map.getZoom();
 
-      localStorage.center = JSON.stringify(center)
+      localStorage.center = JSON.stringify(center);
       localStorage.zoom = zoom;
-    },
-    
+    }
   },
   created() {
     // does the user have a saved center? use it instead of the default
-    if(localStorage.center) {
-        this.myCoordinates = JSON.parse(localStorage.center);
+    if (localStorage.center) {
+      this.myCoordinates = JSON.parse(localStorage.center);
     } else {
-        // get user's coordinates from browser request
-        this.$getLocation({})
-            .then(coordinates => {
-                this.myCoordinates = coordinates;
-            })
-            .catch(error => alert(error));
+      // get user's coordinates from browser request
+      this.$getLocation({})
+        .then(coordinates => {
+          this.myCoordinates = coordinates;
+        })
+        .catch(error => alert(error));
     }
     // does the user have a saved zoom? use it instead of the default
-    if(localStorage.zoom) {
-        this.zoom = parseInt(localStorage.zoom);
+    if (localStorage.zoom) {
+      this.zoom = parseInt(localStorage.zoom);
     }
-},
+  },
 
   mounted() {
-    this.$refs.mapRef.$mapPromise.then(map => this.map = map);
+    this.$refs.mapRef.$mapPromise.then(map => (this.map = map));
     // this.fetchMapStyle();
   },
 
   computed: {
-      mapCoordinates() {
-        if(!this.map) {
-          return {
-            lat: 0,
-            lng: 0
-          };
-        }
+    mapCoordinates() {
+      if (!this.map) {
         return {
-          lat: this.map.getCenter().lat().toFixed(4),
-          lng: this.map.getCenter().lng().toFixed(4)
-        }
+          lat: 0,
+          lng: 0
+        };
       }
+      return {
+        lat: this.map
+          .getCenter()
+          .lat()
+          .toFixed(4),
+        lng: this.map
+          .getCenter()
+          .lng()
+          .toFixed(4)
+      };
     }
   }
-
+};
 </script>
 
 <style lang='scss'>
-@import '../styles/style.scss';
+@import "../styles/style.scss";
 
-html, body {
-  height: 100%
+html,
+body {
+  height: 100%;
 }
-
 
 .home {
   background-color: $primary;
@@ -162,7 +162,6 @@ html, body {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-
 }
 
 .homeSubheader {
@@ -188,11 +187,10 @@ html, body {
 }
 
 .mapObject {
-width:90vw; 
-height:60vh;
-margin-bottom: 4vh;
+  width: 95vw;
+  height: 60vh;
+  margin-bottom: 4vh;
 }
-
 
 .mapWrapper {
   overflow: hidden;
@@ -201,7 +199,4 @@ margin-bottom: 4vh;
 .temporaryCoordDiv {
   display: flex;
 }
-
-
-
 </style>

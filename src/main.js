@@ -13,6 +13,9 @@ import { firebaseConfig } from "./firebase";
 import { API_KEY } from "./geocoder"
 import VModal from "vue-js-modal/dist/index.nocss.js";
 import "vue-js-modal/dist/styles.css";
+import TextareaAutosize from "vue-textarea-autosize";
+
+Vue.use(TextareaAutosize);
 
 Vue.use(VModal);
 
