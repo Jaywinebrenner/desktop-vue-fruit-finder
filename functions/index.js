@@ -12,7 +12,7 @@ const db = Firestore();
 const axios = require("axios");
 const cors = require("cors")({ origin: true });
 
-const googleMapsApiKey = 'AIzaSyAsJp_mD3329h8NBcuBfSJxaSCIoXm44zU';
+const googleMapsApiKey = 'API_KEY';
 
 // // Create and Deploy Your First Cloud Functions
 // // https://firebase.google.com/docs/functions/write-firebase-functions

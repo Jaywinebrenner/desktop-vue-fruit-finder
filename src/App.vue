@@ -1,140 +1,171 @@
 <template>
   <div id="app">
-      <Navbar
-        :showAddTreeModal="showAddTreeModal"
-        :hideAddTreeModal="hideAddTreeModal"
-      />
+    <Navbar
+      :showAddTreeModal="showAddTreeModal"
+      :hideAddTreeModal="hideAddTreeModal"
+    />
 
     <div class="appPage">
-      <router-view/>
-      
+      <router-view :handleFormSubmit="handleFormSubmit" />
     </div>
 
-   <modal 
-   class="modalWrapper" 
-   name="addTreeModal"
-   :width='"80%"'
-   :height='"70%"'
-   >
+    <modal
+      class="modalWrapper"
+      name="addTreeModal"
+      :width="'80%'"
+      :height="'70%'"
+    >
       <h5 class="modalHeader">Enter Tree Information</h5>
 
       <div class="formWrapper container mt-6">
         <b-form class="formWrapper" @submit.prevent="handleFormSubmit">
-            <b-row> 
-                  <b-form-group>
-                    <b-form-input  placeholder="Type of Tree" class="input" v-model="treeType"></b-form-input>
-                  </b-form-group>
-              </b-row>
+          <b-row>
+            <b-form-group>
+              <b-form-input
+                placeholder="Type of Tree"
+                class="input"
+                v-model="treeType"
+              ></b-form-input>
+            </b-form-group>
+          </b-row>
 
-               <b-row md="1">
-                <b-form-group>
-                    <b-form-input placeholder="Description" class="input" v-model="description"></b-form-input>
-                  </b-form-group>
-              </b-row>
+          <b-row md="1">
+            <b-form-group>
+              <b-form-input
+                placeholder="Description"
+                class="input"
+                v-model="description"
+              ></b-form-input>
+            </b-form-group>
+          </b-row>
 
-                <b-row md="1">
-                <b-form-group >
-                    <b-form-input placeholder="Street" class="input" v-model="street"></b-form-input>
-                  </b-form-group>
-              </b-row>
+          <b-row md="1">
+            <b-form-group>
+              <b-form-input
+                placeholder="Street"
+                class="input"
+                v-model="street"
+              ></b-form-input>
+            </b-form-group>
+          </b-row>
 
-              <b-row md="1">
-                <b-form-group>
-                    <b-form-input placeholder="City" class="input" v-model="city"></b-form-input>
-                  </b-form-group>
-              </b-row>
+          <b-row md="1">
+            <b-form-group>
+              <b-form-input
+                placeholder="City"
+                class="input"
+                v-model="city"
+              ></b-form-input>
+            </b-form-group>
+          </b-row>
 
-              <b-row md="1">
-                <b-form-group>
-                    <b-form-input placeholder="State" class="input" v-model="state"></b-form-input>
-                  </b-form-group>
-              </b-row>
+          <b-row md="1">
+            <b-form-group>
+              <b-form-input
+                placeholder="State"
+                class="input"
+                v-model="state"
+              ></b-form-input>
+            </b-form-group>
+          </b-row>
 
-              <b-row md="1">
-                <b-form-group>
-                   <b-form-input placeholder="Zip Code" class="input" v-model="zip"></b-form-input>
-                  </b-form-group>
-              </b-row>
-              <b-row class="buttonRow" md="1">
-              <button type="submit" id="submitTreeButton">Submit Tree</button>
-                </b-row>
-          </b-form>
-
-
+          <b-row md="1">
+            <b-form-group>
+              <b-form-input
+                placeholder="Zip Code"
+                class="input"
+                v-model="zip"
+              ></b-form-input>
+            </b-form-group>
+          </b-row>
+          <b-row class="buttonRow" md="1">
+            <button type="submit" id="submitTreeButton">Submit Tree</button>
+          </b-row>
+        </b-form>
       </div>
-     
-
-  
     </modal>
-
   </div>
 </template>
 
 <script>
-import Navbar from './components/Navbar'
-import { db } from './main.js'
+import Navbar from "./components/Navbar";
+import { db } from "./main.js";
 export default {
   async beforeMount() {
-    const snap = await db.collection('locations').get();
+    const snap = await db.collection("locations").get();
 
     snap.docs.forEach(doc => {
-      this.savedLocations.push(doc.data)
-    })
+      this.savedLocations.push(doc.data);
+    });
   },
-  mount () {
-      this.showAddTreeModal()
-    },
+  mount() {
+    this.showAddTreeModal();
+  },
   methods: {
-     showAddTreeModal() {
-          this.$modal.show('addTreeModal');
-        },
-      hideAddTreeModal() {
-          this.$modal.hide('addTreeModal');
-          this.treeType= ''
-          this.description= ''
-          this.street= ''
-          this.city= ''
-          this.state= ''
-          this.zip= ''
-      },
-      async handleFormSubmit() {
-          console.log("user input", this.formData);
-      },
+    showAddTreeModal() {
+      this.$modal.show("addTreeModal");
+    },
+    hideAddTreeModal() {
+      this.$modal.hide("addTreeModal");
+      this.treeType = "";
+      this.description = "";
+      this.street = "";
+      this.city = "";
+      this.state = "";
+      this.zip = "";
+    },
+    async handleFormSubmit() {
+      if (
+        !this.formData.treeType ||
+        !this.formData.description ||
+        !this.formData.street ||
+        !this.formData.city ||
+        !this.formData.state ||
+        !this.formData.zip
+      ) {
+        alert("You didn't fill out the form properly. Give it another shot!");
+        return;
+      }
+      
+      const address = `${!this.formData.street}, ${!this.formData.city}, ${!this.formData.state}, ${!this.formData.zip}`
+      await console.log("user input", this.formData);
+    }
   },
   components: {
     Navbar
   },
   data() {
     return {
+      fart: "BIg ole fart",
       savedLocations: [],
       formData: {
-        treeType: '',
-        description: '',
-        street: '',
-        city: '',
-        state: '',
-        zip: ''
+        treeType: "",
+        description: "",
+        street: "",
+        city: "",
+        state: "",
+        zip: ""
       }
-    }
+    };
   }
-}
+};
 </script>
 
 <style lang="scss">
-@import './styles/style.scss';
+@import "./styles/style.scss";
 
-html, body {
+html,
+body {
   height: 100%;
-  background-color:$primary;
+  background-color: $primary;
 }
 
 #app {
   display: flex;
   flex-direction: column;
   height: 100%;
-   background-color:$primary;
+  background-color: $primary;
 }
-
 
 #appPage {
   // display: flex;
@@ -159,7 +190,7 @@ html, body {
   }
 }
 
-.modalHeader{
+.modalHeader {
   margin: 20px 0;
   color: $primary;
 }
@@ -170,7 +201,6 @@ html, body {
   align-items: center;
   flex-direction: column;
 }
-
 
 .formWrapper > input {
   background-color: rgb(244, 240, 240);
@@ -200,8 +230,8 @@ html, body {
 }
 
 .input {
-   margin: 0;
-   max-height: 27px;
+  margin: 0;
+  max-height: 27px;
 }
 
 .col-form-label {
@@ -212,5 +242,4 @@ html, body {
 .buttonRow {
   margin: 0;
 }
-
 </style>

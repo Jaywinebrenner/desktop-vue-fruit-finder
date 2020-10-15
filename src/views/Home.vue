@@ -66,7 +66,7 @@ import { mapStyle } from "../constants/mapStyle.js";
 
 export default {
   name: "Home",
-
+  props: ['handleFormSubmit'],
   components: {},
 
   data() {
