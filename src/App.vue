@@ -3,6 +3,9 @@
     <Navbar
       :showAddTreeModal="showAddTreeModal"
       :hideAddTreeModal="hideAddTreeModal"
+      :formData="formData"
+ 
+
     />
 
     <div class="appPage">
@@ -24,7 +27,7 @@
               <b-form-input
                 placeholder="Type of Tree"
                 class="input"
-                v-model="treeType"
+                v-model="formData.treeType"
               ></b-form-input>
             </b-form-group>
           </b-row>
@@ -34,7 +37,7 @@
               <b-form-input
                 placeholder="Description"
                 class="input"
-                v-model="description"
+                v-model="formData.description"
               ></b-form-input>
             </b-form-group>
           </b-row>
@@ -44,7 +47,7 @@
               <b-form-input
                 placeholder="Street"
                 class="input"
-                v-model="street"
+                v-model="formData.street"
               ></b-form-input>
             </b-form-group>
           </b-row>
@@ -54,7 +57,7 @@
               <b-form-input
                 placeholder="City"
                 class="input"
-                v-model="city"
+                v-model="formData.city"
               ></b-form-input>
             </b-form-group>
           </b-row>
@@ -64,7 +67,7 @@
               <b-form-input
                 placeholder="State"
                 class="input"
-                v-model="state"
+                v-model="formData.state"
               ></b-form-input>
             </b-form-group>
           </b-row>
@@ -74,7 +77,7 @@
               <b-form-input
                 placeholder="Zip Code"
                 class="input"
-                v-model="zip"
+                v-model="formData.zip"
               ></b-form-input>
             </b-form-group>
           </b-row>
@@ -89,17 +92,28 @@
 
 <script>
 import Navbar from "./components/Navbar";
-import { db } from "./main.js";
-export default {
-  async beforeMount() {
-    const snap = await db.collection("locations").get();
+import db from "./main.js";
 
-    snap.docs.forEach(doc => {
-      this.savedLocations.push(doc.data);
-    });
+export default {
+
+  data() {
+    return {
+      fart: "BIg ole fart",
+      savedLocations: [],
+      formData: {
+        treeType: '',
+        description: '',
+        street: '',
+        city: '',
+        state: '',
+        zip: '',
+        coordinates: ''
+      }
+    };
   },
   mount() {
     this.showAddTreeModal();
+    console.log("DB", db);
   },
   methods: {
     showAddTreeModal() {
@@ -107,47 +121,54 @@ export default {
     },
     hideAddTreeModal() {
       this.$modal.hide("addTreeModal");
-      this.treeType = "";
-      this.description = "";
-      this.street = "";
-      this.city = "";
-      this.state = "";
-      this.zip = "";
+      this.treeType = '';
+      this.description = '';
+      this.street = '';
+      this.city = '';
+      this.state = '';
+      this.zip = '';
     },
     async handleFormSubmit() {
-      if (
-        !this.formData.treeType ||
-        !this.formData.description ||
-        !this.formData.street ||
-        !this.formData.city ||
-        !this.formData.state ||
-        !this.formData.zip
-      ) {
-        alert("You didn't fill out the form properly. Give it another shot!");
-        return;
-      }
-      
-      const address = `${!this.formData.street}, ${!this.formData.city}, ${!this.formData.state}, ${!this.formData.zip}`
-      await console.log("user input", this.formData);
+      // if (
+      //   !this.formData.treeType ||
+      //   !this.formData.description ||
+      //   !this.formData.street ||
+      //   !this.formData.city ||
+      //   !this.formData.state ||
+      //   !this.formData.zip
+      // ) {
+      //   alert("You didn't fill out the form properly. Give it another shot!");
+      //   return;
+      // }
+    
+      let address = {
+        street: this.formData.street,
+        city: this.formData.city,
+        state: this.formData.state,
+        zip: this.formData.zip
+        }
+
+        await db.collection('locations').add(address)
+          .then(() => {
+            console.log("added????");
+          })
+
+
+
+      await console.log("address", address)
+        this.formData.treeType = ''
+        this.formData.description = ''
+        this.formData.street = ''
+        this.formData.city = ''
+        this.formData.state = ''
+        this.formData.zip = ''
+        this.hideAddTreeModal()
     }
   },
   components: {
     Navbar
-  },
-  data() {
-    return {
-      fart: "BIg ole fart",
-      savedLocations: [],
-      formData: {
-        treeType: "",
-        description: "",
-        street: "",
-        city: "",
-        state: "",
-        zip: ""
-      }
-    };
   }
+  
 };
 </script>
 

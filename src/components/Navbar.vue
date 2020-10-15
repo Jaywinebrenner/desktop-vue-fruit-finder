@@ -18,6 +18,7 @@
 
       <div class="logoWrapper">
           <img class='splashLogo' alt="Vue logo" src="../assets/newLogo.png">
+          <button @click="loggy" >Loggy</button>
           <div v-if="isLoggedIn" class="addTreeButtonWrapper">
             <button @click="showAddTreeModal" class="addTreeButton">Add Tree</button>
           </div>
@@ -31,7 +32,7 @@ import * as firebase from "firebase/app"
 import "firebase/auth";
 
 export default {
-  props: ['hideAddTreeModal', 'showAddTreeModal'],
+  props: ['hideAddTreeModal', 'showAddTreeModal', 'formData', 'treeType', 'description', 'street', 'city', 'zip'],
   created() {
     firebase.auth().onAuthStateChanged(user => {
         if(user) {
@@ -47,11 +48,13 @@ export default {
     }
   },
   methods: {
+    loggy() {
+      console.log("formData on NAV", this.formData)
+    },
     async logout() {
       try {
         const data = await firebase.auth().signOut();
         console.log("logout data", data);
-        // this.$router.replace({name: '/'})
         this.$router.push('/')
       } catch (err) {
         console.log(err);

@@ -46,7 +46,7 @@
       >
       <div v-if="fakeData.length > 0">
       <GmapMarker
-        :key="index"
+   
         :position="myCoordinates"
         :clickable="true"
         :draggable="true"   

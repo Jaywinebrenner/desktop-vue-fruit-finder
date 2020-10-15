@@ -4,8 +4,9 @@ import router from './router'
 import { BootstrapVue, IconsPlugin } from "bootstrap-vue";
 import "./styles/style.scss";
 import axios from 'axios';
-import firebase from 'firebase/app';
-import "firebase/analytics";
+// import firebase from 'firebase/app';
+import firebase from "firebase";
+import 'firebase/firestore'
 import "firebase/auth";
 import VueGeolocation from "vue-browser-geolocation";
 import * as VueGoogleMaps from 'vue2-google-maps';
@@ -39,8 +40,9 @@ Vue.config.productionTip = false
 firebase.initializeApp(firebaseConfig);
 firebase.analytics();
 
-// const Firestore = firebase.firestore;
-// export const db = Firestore();
+const db = firebase.firestore();
+
+export default db;
 
 new Vue({
   router,
