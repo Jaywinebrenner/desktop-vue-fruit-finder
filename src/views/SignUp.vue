@@ -29,7 +29,8 @@ export default {
     async pressedSignUp() {
       try {
         const user = await firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
-        this.$router.replace({name: '/'})
+        // this.$router.replace({name: '/'})
+        this.$router.push('/')
         console.log("user", user);
 
       } catch (err) {

@@ -39,6 +39,9 @@ Vue.config.productionTip = false
 firebase.initializeApp(firebaseConfig);
 firebase.analytics();
 
+// const Firestore = firebase.firestore;
+// export const db = Firestore();
+
 new Vue({
   router,
   render: h => h(App)

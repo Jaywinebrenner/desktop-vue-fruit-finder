@@ -30,7 +30,8 @@ export default {
     async pressedLogin() {
       try {
         const value = await firebase.auth().signInWithEmailAndPassword(this.email, this.password);
-        this.$router.replace({name: '/'})
+        // this.$router.replace({name: '/'})
+        this.$router.push('/')
         console.log("value after pressing login", value);
 
       } catch (err) {

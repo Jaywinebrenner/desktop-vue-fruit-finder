@@ -55,7 +55,7 @@
                    <b-form-input placeholder="Zip Code" class="input" v-model="zip"></b-form-input>
                   </b-form-group>
               </b-row>
-              <b-row md="1">
+              <b-row class="buttonRow" md="1">
               <button type="submit" id="submitTreeButton">Submit Tree</button>
                 </b-row>
           </b-form>
@@ -63,24 +63,7 @@
 
       </div>
      
-      <!-- <form
-      class="formWrapper"
-          @submit="handleFormSubmit"
-          method="post"
-        >
-        <input type="text" v-model="treeType" placeholder="Type of Tree">
-        <textarea class="textArea" v-model="description" placeholder="Tree Description"></textarea>
 
-        <input type="text" v-model="street" placeholder="Street">
-        <input type="text" v-model="city" placeholder="City">
-          <input type="text" v-model="state" placeholder="State">
-        <input type="text" v-model="zip" placeholder="Zip Code">
-      <button class="submitTreeButton">Submit Tree</button>
-
-      <h1>DESC: {{description}}</h1>
-      <h1>DESC: {{treeType}}</h1>
-
-      </form> -->
   
     </modal>
 
@@ -89,7 +72,15 @@
 
 <script>
 import Navbar from './components/Navbar'
+import { db } from './main.js'
 export default {
+  async beforeMount() {
+    const snap = await db.collection('locations').get();
+
+    snap.docs.forEach(doc => {
+      this.savedLocations.push(doc.data)
+    })
+  },
   mount () {
       this.showAddTreeModal()
     },
@@ -107,7 +98,7 @@ export default {
           this.zip= ''
       },
       async handleFormSubmit() {
-
+          console.log("user input", this.formData);
       },
   },
   components: {
@@ -180,6 +171,7 @@ html, body {
   flex-direction: column;
 }
 
+
 .formWrapper > input {
   background-color: rgb(244, 240, 240);
   border-radius: 5px;
@@ -187,6 +179,7 @@ html, body {
 }
 
 #submitTreeButton {
+  margin-left: 20px;
   width: 200px;
   @include maroonButton;
 }
@@ -214,6 +207,10 @@ html, body {
 .col-form-label {
   margin: 0;
   padding: 0;
+}
+
+.buttonRow {
+  margin: 0;
 }
 
 </style>

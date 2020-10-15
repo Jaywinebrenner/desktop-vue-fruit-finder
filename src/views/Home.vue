@@ -12,27 +12,24 @@
 
     <div class="mapWrapper">
 
-<div class="temporaryCoordDiv">
-
-<!-- <div>
+<!-- <div class="temporaryCoordDiv">
+<div>
       <h6 style="color: white;">Your Coordinates: </h6>
       <p style="color: white;">Latitdude: {{ myCoordinates.lat }} | Longitude: {{ myCoordinates.lng}}</p>
-</div> -->
-<!-- 
+</div> 
 <div>
       <h6 style="color: white;">Map Coordinates: </h6>
       <p style="color: white;">Latitdude: {{ mapCoordinates.lat }} | Longitude: {{ mapCoordinates.lng}}</p>
 
-</div> -->
-
 </div>
+</div> -->
 
 
       <GmapMap
       class="mapObject"
        :options="{
           zoomControl: true,
-          mapTypeControl: true,
+          mapTypeControl: false,
           scaleControl: false,
           streetViewControl: false,
           rotateControl: false,
@@ -47,7 +44,7 @@
         scaleControl: false
   
       >
-      <!-- <div v-if="allTrees.length > 0"> -->
+      <div v-if="fakeData.length > 0">
       <GmapMarker
         :key="index"
         :position="myCoordinates"
@@ -55,7 +52,7 @@
         :draggable="true"   
         @click="center-m.position"
       />
-      <!-- </div> -->
+      </div>
       
       </GmapMap>
     </div>
@@ -74,6 +71,16 @@ export default {
 
   data() {
     return {
+      fakeData: [
+        {
+          lat: 45.5055,
+          lng: -122.5956
+        },
+        {
+          lat: 45.5328,
+          lng: -122.5758
+        }
+      ],
       styles: mapStyle,
       map: null,
       // mapCoordinates: {
