@@ -2,7 +2,7 @@
   <div class="home">
 
     <div class="homeSubheader">
-      <h5 class="homeText">Browse the Map for Fruit Trees near you.</h5>
+      <h5 class="homeText">Browse the Map for Fruit Trees near you</h5>
     </div>
 
     <div class="mapListButtonWrapper">
@@ -170,6 +170,7 @@ html, body {
 }
 
 .homeText {
+  font-size: 5vw;
   color: white;
 }
 
@@ -187,7 +188,7 @@ html, body {
 }
 
 .mapObject {
-width:90vh; 
+width:90vw; 
 height:60vh;
 margin-bottom: 4vh;
 }

@@ -1,8 +1,8 @@
 <template>
   <div id="app">
       <Navbar
-        :show="show"
-        :hide="hide"
+        :showAddTreeModal="showAddTreeModal"
+        :hideAddTreeModal="hideAddTreeModal"
       />
 
     <div class="appPage">
@@ -10,7 +10,7 @@
     </div>
 
    <modal class="modalWrapper" name="addTreeModal">
-        This is my first modal
+        <h5 class="modalHeader">Enter Tree Location</h5>
     </modal>
 
   </div>
@@ -20,14 +20,17 @@
 import Navbar from './components/Navbar'
 export default {
   mount () {
-      this.show()
+      this.showAddTreeModal()
     },
   methods: {
-     show() {
+     showAddTreeModal() {
           this.$modal.show('addTreeModal');
         },
-      hide() {
+      hideAddTreeModal() {
           this.$modal.hide('addTreeModal');
+      },
+      async handleFormSubmit() {
+
       },
   },
   components: {
@@ -35,9 +38,13 @@ export default {
   },
   data() {
     return {
-      fart() {
-        alert("FARRRRRT!")
-      },
+      savedLocations: [],
+      formData: {
+        street: '',
+        city: '',
+        state: '',
+        zip: ''
+      }
     }
   }
 }
@@ -80,5 +87,11 @@ html, body {
       color: #42b983;
     }
   }
+}
+
+.modalHeader{
+  margin-top: 10px;
+  color: $primary;
+
 }
 </style>

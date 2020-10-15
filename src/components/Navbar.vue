@@ -1,36 +1,29 @@
 <template>
 
 <div class="wholeNavbarWrapper">
-  <div class="topNavbarWrapper">
+    <div class="topNavbarWrapper">
 
-      <div id="navbarLeft">
-          <router-link class="routerLinksLeft" to="/">Home</router-link> 
-           <router-link class="routerLinksLeft" to="/about">About</router-link>
-       
-      </div>
-      <!-- <p style="color: white;" v-if="isLoggedIn">You are Logged In</p>
-      <p style="color: white;" v-else>You are NOT logged in</p> -->
+        <div id="navbarLeft">
+            <router-link class="routerLinksLeft" to="/">Home</router-link> 
+            <router-link class="routerLinksLeft" to="/about">About</router-link>
+        </div>
 
-      <div  id="navbarRight">
-          <router-link v-if="!isLoggedIn" class="routerLinkRight" to="/signUp">Sign Up</router-link>
-          <router-link v-if="!isLoggedIn" class="routerLinkRight" to="/login">Login </router-link>
-          <h5 v-else @click="logout" class="logoutText">Logout</h5>
-      </div>
+        <div  id="navbarRight">
+            <router-link v-if="!isLoggedIn" class="routerLinkRight" to="/signUp">Sign Up</router-link>
+            <router-link v-if="!isLoggedIn" class="routerLinkRight" to="/login">Login </router-link>
+            <h5 v-else @click="logout" class="logoutText">Logout</h5>
+        </div>
 
-  </div>
-
-    <div class="logoWrapper">
-      <img class='splashLogo' alt="Vue logo" src="../assets/newLogo.png">
-      <div v-if="isLoggedIn" class="addTreeButtonWrapper">
-        <button @click="show" class="addTreeButton">Add Tree</button>
-      </div>
     </div>
 
-     <!-- <modal class="modalWrapper" name="addTreeModal">
-        This is my first modal
-    </modal> -->
+      <div class="logoWrapper">
+          <img class='splashLogo' alt="Vue logo" src="../assets/newLogo.png">
+          <div v-if="isLoggedIn" class="addTreeButtonWrapper">
+            <button @click="showAddTreeModal" class="addTreeButton">Add Tree</button>
+          </div>
+      </div>
 
-</div>
+    </div>
 </template>
 
 <script>
@@ -38,7 +31,7 @@ import * as firebase from "firebase/app"
 import "firebase/auth";
 
 export default {
-  props: ['show', 'hide'],
+  props: ['hideAddTreeModal', 'showAddTreeModal'],
   created() {
     firebase.auth().onAuthStateChanged(user => {
         if(user) {
@@ -48,21 +41,12 @@ export default {
         }
     })
   },
-  // mount () {
-  //     this.show()
-  //   },
   data() {
     return {
       isLoggedIn: true,
     }
   },
   methods: {
-    // show() {
-    //       this.$modal.show('addTreeModal');
-    //     },
-    //   hide() {
-    //       this.$modal.hide('addTreeModal');
-    //   },
     async logout() {
       try {
         const data = await firebase.auth().signOut();
@@ -148,11 +132,6 @@ export default {
   flex: .333;
 }
 
-// .bottomNavbarWrapper {
-//   background-color: #75b34e;
-//   padding: 20px 0;
-
-// }
 
 .navbarLeft {
 
