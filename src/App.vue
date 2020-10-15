@@ -106,6 +106,8 @@
         </b-form>
       </div>
     </modal>
+
+  
   </div>
 </template>
 
@@ -137,6 +139,14 @@ export default {
     console.log("DB", db);
   },
   methods: {
+    makeToast(append = false) {
+        this.$bvToast.toast("You have successfully uploaded your tree!", {
+          title: 'Congrats and Thanks!',
+          autoHideDelay: 3000,
+          appendToast: append
+        })
+      },
+   
     showAddTreeModal() {
       this.$modal.show("addTreeModal");
     },
@@ -192,6 +202,7 @@ export default {
       this.formData.zip = "";
       this.hideAddTreeModal();
       this.spinLoading = false;
+      this.makeToast();
     }
   },
   components: {
