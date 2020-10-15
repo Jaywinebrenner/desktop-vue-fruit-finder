@@ -82,7 +82,8 @@
             </b-form-group>
           </b-row>
           <b-row class="buttonRow" md="1">
-            <button type="submit" id="submitTreeButton">Submit Tree</button>
+            <button type="submit" id="submitTreeButton"><b-spinner small v-if="spinLoading" label="Spinning"></b-spinner><span v-if="!spinLoading">Submit Tree</span></button>
+            
           </b-row>
         </b-form>
       </div>
@@ -98,15 +99,18 @@ export default {
 
   data() {
     return {
+      spinLoading: false,
       fart: "BIg ole fart",
       savedLocations: [],
       formData: {
         treeType: '',
         description: '',
-        street: '',
-        city: '',
-        state: '',
-        zip: '',
+        address: {
+          street: '',
+          city: '',
+          state: '',
+          zip: '',
+        },
         coordinates: ''
       }
     };
@@ -129,33 +133,40 @@ export default {
       this.zip = '';
     },
     async handleFormSubmit() {
-      // if (
-      //   !this.formData.treeType ||
-      //   !this.formData.description ||
-      //   !this.formData.street ||
-      //   !this.formData.city ||
-      //   !this.formData.state ||
-      //   !this.formData.zip
-      // ) {
-      //   alert("You didn't fill out the form properly. Give it another shot!");
-      //   return;
-      // }
+      this.spinLoading = true;
+      if (
+        !this.formData.treeType ||
+        !this.formData.description ||
+        !this.formData.street ||
+        !this.formData.city ||
+        !this.formData.state ||
+        !this.formData.zip
+      ) {
+        alert("You didn't fill out the form properly. Give it another shot!");
+        return;
+      }
     
-      let address = {
-        street: this.formData.street,
-        city: this.formData.city,
-        state: this.formData.state,
-        zip: this.formData.zip
-        }
+      let submittedTreeData = {
+        treeType: this.formData.treeType,
+        description: this.formData.description,
+        address: {
+          street: this.formData.street,
+          city: this.formData.city,
+          state: this.formData.state,
+          zip: this.formData.zip
+        },
+        coordinates: ''
+      }
 
-        await db.collection('locations').add(address)
-          .then(() => {
-            console.log("added????");
-          })
+      await db.collection('locations').add(submittedTreeData)
+        .then(() => {
+          console.log("added????");
+        })
 
 
 
-      await console.log("address", address)
+      await console.log("address", submittedTreeData)
+      // Clean up after function
         this.formData.treeType = ''
         this.formData.description = ''
         this.formData.street = ''
@@ -163,6 +174,7 @@ export default {
         this.formData.state = ''
         this.formData.zip = ''
         this.hideAddTreeModal()
+        this.spinLoading = false;
     }
   },
   components: {
