@@ -4,20 +4,13 @@
       :showAddTreeModal="showAddTreeModal"
       :hideAddTreeModal="hideAddTreeModal"
       :formData="formData"
- 
-
     />
 
     <div class="appPage">
       <router-view :handleFormSubmit="handleFormSubmit" />
     </div>
 
-    <modal
-      class="modalWrapper"
-      name="addTreeModal"
-      :width="'80%'"
-      :height="'70%'"
-    >
+    <modal name="addTreeModal" :width="'90%'" :height="'75%'">
       <h5 class="modalHeader">Enter Tree Information</h5>
 
       <div class="formWrapper container mt-6">
@@ -25,14 +18,29 @@
           <b-row>
             <b-form-group>
               <b-form-input
+                id="treeTypeInput"
                 placeholder="Type of Tree"
                 class="input"
                 v-model="formData.treeType"
+                size="sm"
               ></b-form-input>
             </b-form-group>
           </b-row>
 
           <b-row md="1">
+            <b-form-group>
+              <b-form-textarea
+                id="textArea"
+                size="sm"
+                v-model="formData.description"
+                placeholder="Description"
+                rows="5"
+                max-rows="4"
+              ></b-form-textarea>
+            </b-form-group>
+          </b-row>
+
+          <!-- <b-row md="1">
             <b-form-group>
               <b-form-input
                 placeholder="Description"
@@ -40,11 +48,13 @@
                 v-model="formData.description"
               ></b-form-input>
             </b-form-group>
-          </b-row>
+          </b-row> -->
 
           <b-row md="1">
             <b-form-group>
               <b-form-input
+                size="sm"
+                id="streetInput"
                 placeholder="Street"
                 class="input"
                 v-model="formData.street"
@@ -55,6 +65,8 @@
           <b-row md="1">
             <b-form-group>
               <b-form-input
+                size="sm"
+                id="cityInput"
                 placeholder="City"
                 class="input"
                 v-model="formData.city"
@@ -65,6 +77,8 @@
           <b-row md="1">
             <b-form-group>
               <b-form-input
+                size="sm"
+                id="stateInput"
                 placeholder="State"
                 class="input"
                 v-model="formData.state"
@@ -75,6 +89,8 @@
           <b-row md="1">
             <b-form-group>
               <b-form-input
+                size="sm"
+                id="zipInput"
                 placeholder="Zip Code"
                 class="input"
                 v-model="formData.zip"
@@ -82,8 +98,10 @@
             </b-form-group>
           </b-row>
           <b-row class="buttonRow" md="1">
-            <button type="submit" id="submitTreeButton"><b-spinner small v-if="spinLoading" label="Spinning"></b-spinner><span v-if="!spinLoading">Submit Tree</span></button>
-            
+            <button type="submit" id="submitTreeButton">
+              <b-spinner small v-if="spinLoading" label="Spinning"></b-spinner
+              ><span v-if="!spinLoading">Submit Tree</span>
+            </button>
           </b-row>
         </b-form>
       </div>
@@ -96,22 +114,21 @@ import Navbar from "./components/Navbar";
 import db from "./main.js";
 
 export default {
-
   data() {
     return {
       spinLoading: false,
       fart: "BIg ole fart",
       savedLocations: [],
       formData: {
-        treeType: '',
-        description: '',
+        treeType: "",
+        description: "",
         address: {
-          street: '',
-          city: '',
-          state: '',
-          zip: '',
+          street: "",
+          city: "",
+          state: "",
+          zip: ""
         },
-        coordinates: ''
+        coordinates: ""
       }
     };
   },
@@ -125,12 +142,12 @@ export default {
     },
     hideAddTreeModal() {
       this.$modal.hide("addTreeModal");
-      this.treeType = '';
-      this.description = '';
-      this.street = '';
-      this.city = '';
-      this.state = '';
-      this.zip = '';
+      this.treeType = "";
+      this.description = "";
+      this.street = "";
+      this.city = "";
+      this.state = "";
+      this.zip = "";
     },
     async handleFormSubmit() {
       this.spinLoading = true;
@@ -145,7 +162,7 @@ export default {
         alert("You didn't fill out the form properly. Give it another shot!");
         return;
       }
-    
+
       let submittedTreeData = {
         treeType: this.formData.treeType,
         description: this.formData.description,
@@ -155,32 +172,31 @@ export default {
           state: this.formData.state,
           zip: this.formData.zip
         },
-        coordinates: ''
-      }
+        coordinates: ""
+      };
 
-      await db.collection('locations').add(submittedTreeData)
+      await db
+        .collection("locations")
+        .add(submittedTreeData)
         .then(() => {
           console.log("added????");
-        })
+        });
 
-
-
-      await console.log("address", submittedTreeData)
+      await console.log("address", submittedTreeData);
       // Clean up after function
-        this.formData.treeType = ''
-        this.formData.description = ''
-        this.formData.street = ''
-        this.formData.city = ''
-        this.formData.state = ''
-        this.formData.zip = ''
-        this.hideAddTreeModal()
-        this.spinLoading = false;
+      this.formData.treeType = "";
+      this.formData.description = "";
+      this.formData.street = "";
+      this.formData.city = "";
+      this.formData.state = "";
+      this.formData.zip = "";
+      this.hideAddTreeModal();
+      this.spinLoading = false;
     }
   },
   components: {
     Navbar
   }
-  
 };
 </script>
 
@@ -247,14 +263,8 @@ body {
   @include maroonButton;
 }
 
-.textArea {
-  background-color: rgb(244, 240, 240);
+#textArea {
   width: 290px;
-  height: 90px;
-  max-height: 100px;
-  margin: 4px 0;
-  border: 2px black solid;
-  border-radius: 5px;
 }
 
 .row {
@@ -265,6 +275,15 @@ body {
 .input {
   margin: 0;
   max-height: 27px;
+  background-color: red;
+}
+
+#treeTypeInput,
+#streetInput,
+#cityInput,
+#stateInput,
+#zipInput {
+  width: 290px;
 }
 
 .col-form-label {
@@ -274,5 +293,15 @@ body {
 
 .buttonRow {
   margin: 0;
+}
+
+.textAreaInput {
+  background-color: rgb(244, 240, 240);
+  width: 290px;
+  height: 90px;
+  max-height: 100px;
+  margin: 4px 0;
+  border: 2px black solid;
+  border-radius: 5px;
 }
 </style>
