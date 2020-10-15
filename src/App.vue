@@ -19,7 +19,7 @@
       <h5 class="modalHeader">Enter Tree Information</h5>
 
       <div class="formWrapper container mt-6">
-        <b-form @submit.prevent="handleFormSubmit">
+        <b-form class="formWrapper" @submit.prevent="handleFormSubmit">
             <b-row> 
                   <b-form-group>
                     <b-form-input  placeholder="Type of Tree" class="input" v-model="treeType"></b-form-input>
@@ -57,7 +57,6 @@
               </b-row>
               <b-row md="1">
               <button type="submit" id="submitTreeButton">Submit Tree</button>
-
                 </b-row>
           </b-form>
 
@@ -116,7 +115,7 @@ export default {
   },
   data() {
     return {
-      allTrees: [],
+      savedLocations: [],
       formData: {
         treeType: '',
         description: '',
@@ -170,7 +169,7 @@ html, body {
 }
 
 .modalHeader{
-  margin-top: 10px;
+  margin: 20px 0;
   color: $primary;
 }
 
