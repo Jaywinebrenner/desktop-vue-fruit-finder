@@ -40,16 +40,6 @@
             </b-form-group>
           </b-row>
 
-          <!-- <b-row md="1">
-            <b-form-group>
-              <b-form-input
-                placeholder="Description"
-                class="input"
-                v-model="formData.description"
-              ></b-form-input>
-            </b-form-group>
-          </b-row> -->
-
           <b-row md="1">
             <b-form-group>
               <b-form-input
@@ -114,6 +104,8 @@
 <script>
 import Navbar from "./components/Navbar";
 import db from "./main.js";
+import axios from 'axios';
+// import API_KEY from '@/geocoder.js'
 
 export default {
   data() {
@@ -130,18 +122,20 @@ export default {
           state: "",
           zip: ""
         },
-        coordinates: ""
+        coordinates: {
+          lat: "",
+          lng: ""
+        }
       }
     };
   },
-  mount() {
-    this.showAddTreeModal();
-    console.log("DB", db);
+  mounted() {
+
   },
   methods: {
     makeToast(append = false) {
-        this.$bvToast.toast("You have successfully uploaded your tree!", {
-          title: 'Congrats and Thanks!',
+        this.$bvToast.toast("You have successfully uploaded your tree.", {
+          title: 'Yeeeeessss!!',
           autoHideDelay: 3000,
           appendToast: append
         })
@@ -173,27 +167,44 @@ export default {
         return;
       }
 
-      let submittedTreeData = {
-        treeType: this.formData.treeType,
-        description: this.formData.description,
-        address: {
+      const addressObject = {
           street: this.formData.street,
           city: this.formData.city,
           state: this.formData.state,
           zip: this.formData.zip
-        },
-        coordinates: ""
+        };
+      let coords = '';
+      axios.get('https://maps.googleapis.com/maps/api/geocode/json', {
+        params:{
+          address: addressObject,
+          key: '',
+          // key: API_KEY 
+        }
+      })
+      .then((response)=> {
+        coords = response.data.results[0].geometry.location
+        console.log("coords", coords);
+      })
+      .catch((error)=> {
+        alert(error)
+      });
+      
+      let submittedTreeData = {
+        treeType: this.formData.treeType,
+        description: this.formData.description,
+        address: addressObject,
+        coordinates: coords
       };
 
       await db
         .collection("locations")
         .add(submittedTreeData)
         .then(() => {
-          console.log("added????");
+          console.log("upload successful!");
         });
 
-      await console.log("address", submittedTreeData);
-      // Clean up after function
+
+      // Clean up 
       this.formData.treeType = "";
       this.formData.description = "";
       this.formData.street = "";
@@ -203,7 +214,44 @@ export default {
       this.hideAddTreeModal();
       this.spinLoading = false;
       this.makeToast();
-    }
+    },
+
+    // async geocode(address) {
+    //   let location = address;
+    //   axios.get('https://maps.googleapis.com/maps/api/geocode/json', {
+    //     params:{
+    //       address: location,
+    //       key: 'AIzaSyDtW6-qLuwkhUjmDiYTVwg_dF-tcg0jjuQ'
+    //     }
+    //   })
+    //   .then((response)=> {
+    //     console.log("location response", response.data.results[0].geometry.location);
+    //     submittedTreeData
+
+    //   })
+    //   .catch((error)=> {
+    //     alert(error)
+    //   });
+    // },
+
+
+  //   async convertLocation(addressObject) {
+  //   let treeCoordinates = await Geocoder.from(addressObject)
+  //     .then((json) => {
+  //       console.log("Geocoder JSON object", json);
+  //       const { lat, lng } = json.results[0].geometry.location;
+  //       this.coordinates = [lat, lng];
+  //       return this.coordinates;
+  //     })
+  //     .catch((error) => {
+  //       alert("We couldn't find your location, likely because the developer is using a simulator.")
+  //       console.log(error.toString());
+  //       return;
+  //     });
+  //   return treeCoordinates;
+  // },
+
+
   },
   components: {
     Navbar

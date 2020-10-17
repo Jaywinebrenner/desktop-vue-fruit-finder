@@ -5,6 +5,7 @@ import About from "../views/About.vue";
 import Login from "../views/Login.vue";
 import SignUp from "../views/SignUp.vue";
 import Secret from "../views/Secret.vue";
+import ListView from "../views/ListView.vue";
 
 Vue.use(VueRouter)
 
@@ -13,7 +14,7 @@ const routes = [
     path: "/",
     name: "Home",
     component: Home,
-    props: true
+    props: true,
   },
   {
     path: "/about",
@@ -34,6 +35,11 @@ const routes = [
     path: "/secret",
     name: "Secret",
     component: Secret,
+  },
+  {
+    path: "/listview",
+    name: "List",
+    component: ListView,
   },
 ];
 

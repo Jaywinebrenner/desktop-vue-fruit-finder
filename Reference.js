@@ -1,21 +1,32 @@
-      
-      // Non-Bootstrap form
-      
-     <form
-      class="formWrapper"
-          @submit="handleFormSubmit"
-          method="post"
-        >
-        <input type="text" v-model="treeType" placeholder="Type of Tree">
-        <textarea class="textArea" v-model="description" placeholder="Tree Description"></textarea>
+  // Original method to get user coords with local storage zoom thing that is unclear to me
+  
+  
+  created() {
+    navigator.geolocation.getCurrentPosition(
+      position => {
+        //  console.log("lat", position.coords.latitude);
+        //  console.log("long", position.coords.longitude);
+      },
 
-        <input type="text" v-model="street" placeholder="Street">
-        <input type="text" v-model="city" placeholder="City">
-          <input type="text" v-model="state" placeholder="State">
-        <input type="text" v-model="zip" placeholder="Zip Code">
-      <button class="submitTreeButton">Submit Tree</button>
+   )
+    // does the user have a saved center? use it instead of the default
+    if (localStorage.center) {
+      this.myCoordinates = JSON.parse(localStorage.center);
+    } else {
+      // get user's coordinates from browser request
+      this.$getLocation({})
+        .then(coordinates => {
+          this.myCoordinates = coordinates;
+        })
+        .catch(error => alert(error));
+    }
+    // does the user have a saved zoom? use it instead of the default
+    if (localStorage.zoom) {
+      this.zoom = parseInt(localStorage.zoom);
+    }
+  },
 
-      <h1>DESC: {{description}}</h1>
-      <h1>DESC: {{treeType}}</h1>
-
-      </form> 
+  mounted() {
+    this.$refs.mapRef.$mapPromise.then(map => (this.map = map));
+    // this.fetchMapStyle();
+  },

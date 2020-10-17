@@ -6,8 +6,10 @@
     </div>
 
     <div class="mapListButtonWrapper">
-      <button class="mapListButton">Map View</button>
-       <button class="mapListButton">ListView</button>
+       <router-link v-if="!isLoggedIn" class="viewButton" to="/"><button class="mapListButton">Map View</button></router-link>
+       <router-link v-if="!isLoggedIn" class="viewButton" to="/listview"><button class="mapListButton">List View</button> </router-link>
+      <!-- <button class="mapListButton">Map View</button>
+       <button class="mapListButton">List View</button> -->
     </div>
 
     <div class="mapWrapper">
@@ -108,21 +110,15 @@ export default {
     }
   },
   created() {
-    // does the user have a saved center? use it instead of the default
-    if (localStorage.center) {
-      this.myCoordinates = JSON.parse(localStorage.center);
-    } else {
-      // get user's coordinates from browser request
-      this.$getLocation({})
-        .then(coordinates => {
-          this.myCoordinates = coordinates;
-        })
-        .catch(error => alert(error));
-    }
-    // does the user have a saved zoom? use it instead of the default
-    if (localStorage.zoom) {
-      this.zoom = parseInt(localStorage.zoom);
-    }
+    navigator.geolocation.getCurrentPosition(
+      position => {
+        this.myCoordinates.lat = position.coords.latitude
+        this.myCoordinates.lng = position.coords.longitude
+      },
+      // error => {
+      //   alert("Shit, there's an error.")
+      // }
+   )
   },
 
   mounted() {
@@ -169,10 +165,6 @@ body {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-}
-
-.homeSubheader {
-  // flex: .2;
 }
 
 .homeText {
