@@ -8,8 +8,6 @@
     <div class="mapListButtonWrapper">
        <router-link v-if="!isLoggedIn" class="viewButton" to="/"><button class="mapListButton">Map View</button></router-link>
        <router-link v-if="!isLoggedIn" class="viewButton" to="/listview"><button class="mapListButton">List View</button> </router-link>
-      <!-- <button class="mapListButton">Map View</button>
-       <button class="mapListButton">List View</button> -->
     </div>
 
     <div class="mapWrapper">
@@ -48,7 +46,6 @@
       >
       <div v-if="fakeData.length > 0">
       <GmapMarker
-   
         :position="myCoordinates"
         :clickable="true"
         :draggable="true"   
@@ -73,6 +70,7 @@ export default {
 
   data() {
     return {
+      isLoggedIn: false,
       fakeData: [
         {
           lat: 45.5055,
@@ -174,6 +172,7 @@ body {
 
 .mapListButtonWrapper {
   padding: 10px;
+
 }
 
 .mapListButton {
@@ -182,7 +181,7 @@ body {
   margin-right: 10px;
   width: 90px;
   height: 30px;
-  border-radius: 5%;
+  border-radius: 5px;
 }
 
 .mapObject {

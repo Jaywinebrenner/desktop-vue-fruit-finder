@@ -19,7 +19,7 @@ export default {
 
 @import '../styles/style.scss';
 
-.aboutWrapper > h3, h5 {
+.aboutWrapper > h3, h5, h6, p {
   color: white;
   text-align: center;
   line-height: 1.4rem;

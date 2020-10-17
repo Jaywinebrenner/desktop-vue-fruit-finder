@@ -105,7 +105,7 @@
 import Navbar from "./components/Navbar";
 import db from "./main.js";
 import axios from 'axios';
-// import API_KEY from '@/geocoder.js'
+import API_KEY from '@/geocoder.js'
 
 export default {
   data() {
@@ -130,6 +130,7 @@ export default {
     };
   },
   mounted() {
+    console.log("API", API_KEY);
 
   },
   methods: {
@@ -177,8 +178,8 @@ export default {
       axios.get('https://maps.googleapis.com/maps/api/geocode/json', {
         params:{
           address: addressObject,
-          key: '',
-          // key: API_KEY 
+      
+          key: API_KEY 
         }
       })
       .then((response)=> {
