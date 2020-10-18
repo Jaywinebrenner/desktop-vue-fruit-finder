@@ -15,6 +15,9 @@ import { API_KEY } from "./geocoder"
 import VModal from "vue-js-modal/dist/index.nocss.js";
 import "vue-js-modal/dist/styles.css";
 import TextareaAutosize from "vue-textarea-autosize";
+import VueUid from "vue-uid";
+
+Vue.use(VueUid);
 
 Vue.use(TextareaAutosize);
 
@@ -41,6 +44,11 @@ firebase.initializeApp(firebaseConfig);
 firebase.analytics();
 
 const db = firebase.firestore();
+
+// const currentUserId = firebase.auth().currentUser.uid;
+
+
+
 
 export default db;
 

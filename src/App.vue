@@ -105,11 +105,15 @@
 import Navbar from "./components/Navbar";
 import db from "./main.js";
 import axios from 'axios';
-import API_KEY from '@/geocoder.js'
+// import currentUserID from './currentUser.js'
+import firebase from 'firebase';
+// import "firebase/auth";
+// import API_KEY from '@/geocoder.js'
 
 export default {
   data() {
     return {
+      currentUserID: '',
       spinLoading: false,
       fart: "BIg ole fart",
       savedLocations: [],
@@ -130,7 +134,12 @@ export default {
     };
   },
   mounted() {
-    console.log("API", API_KEY);
+    // console.log("current user from file", currentUserID);
+    if (firebase.auth().currentUser !== null) 
+
+        this.currentUserId = firebase.auth().currentUser.uid
+        console.log("user id: " + firebase.auth().currentUser.uid);
+        console.log("this currentUserID", this.currentUserID);
 
   },
   methods: {
@@ -159,13 +168,18 @@ export default {
       if (
         !this.formData.treeType ||
         !this.formData.description ||
-        !this.formData.street ||
-        !this.formData.city ||
-        !this.formData.state ||
-        !this.formData.zip
+        !this.formData.street 
+        // !this.formData.city ||
+        // !this.formData.state ||
+        // !this.formData.zip
       ) {
         alert("You didn't fill out the form properly. Give it another shot!");
         return;
+      }
+
+      let coordObject = {
+        lat: '',
+        lng: ''
       }
 
       const addressObject = {
@@ -174,28 +188,30 @@ export default {
           state: this.formData.state,
           zip: this.formData.zip
         };
-      let coords = '';
-      axios.get('https://maps.googleapis.com/maps/api/geocode/json', {
+
+      await axios.get('https://maps.googleapis.com/maps/api/geocode/json', {
         params:{
           address: addressObject,
-      
-          key: API_KEY 
+   
+          // key: API_KEY 
         }
       })
       .then((response)=> {
-        coords = response.data.results[0].geometry.location
-        console.log("coords", coords);
+        coordObject = response.data.results[0].geometry.location
+        console.log("coord object", coordObject);
       })
       .catch((error)=> {
         alert(error)
       });
       
+  
       let submittedTreeData = {
+        userID: firebase.auth().currentUser.uid,
         treeType: this.formData.treeType,
         description: this.formData.description,
         address: addressObject,
-        coordinates: coords
-      };
+        coordinates: coordObject
+      }
 
       await db
         .collection("locations")
@@ -216,42 +232,6 @@ export default {
       this.spinLoading = false;
       this.makeToast();
     },
-
-    // async geocode(address) {
-    //   let location = address;
-    //   axios.get('https://maps.googleapis.com/maps/api/geocode/json', {
-    //     params:{
-    //       address: location,
-    //       key: 'AIzaSyDtW6-qLuwkhUjmDiYTVwg_dF-tcg0jjuQ'
-    //     }
-    //   })
-    //   .then((response)=> {
-    //     console.log("location response", response.data.results[0].geometry.location);
-    //     submittedTreeData
-
-    //   })
-    //   .catch((error)=> {
-    //     alert(error)
-    //   });
-    // },
-
-
-  //   async convertLocation(addressObject) {
-  //   let treeCoordinates = await Geocoder.from(addressObject)
-  //     .then((json) => {
-  //       console.log("Geocoder JSON object", json);
-  //       const { lat, lng } = json.results[0].geometry.location;
-  //       this.coordinates = [lat, lng];
-  //       return this.coordinates;
-  //     })
-  //     .catch((error) => {
-  //       alert("We couldn't find your location, likely because the developer is using a simulator.")
-  //       console.log(error.toString());
-  //       return;
-  //     });
-  //   return treeCoordinates;
-  // },
-
 
   },
   components: {

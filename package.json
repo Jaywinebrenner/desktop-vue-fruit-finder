@@ -20,6 +20,7 @@
     "vue-material": "^1.0.0-beta-15",
     "vue-router": "^3.2.0",
     "vue-textarea-autosize": "^1.1.1",
+    "vue-uid": "^0.4.5",
     "vue2-google-maps": "^0.10.7"
   },
   "devDependencies": {

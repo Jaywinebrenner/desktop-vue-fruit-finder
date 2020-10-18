@@ -18,13 +18,13 @@
 
       <div class="logoWrapper">
           <img class='splashLogo' alt="Vue logo" src="../assets/newLogo.png">
-          <button @click="loggy" >Loggy</button>
           <div v-if="isLoggedIn" class="addTreeButtonWrapper">
             <button @click="showAddTreeModal" class="addTreeButton">Add Tree</button>
           </div>
       </div>
 
     </div>
+    
 </template>
 
 <script>
@@ -48,9 +48,7 @@ export default {
     }
   },
   methods: {
-    loggy() {
-      console.log("formData on NAV", this.formData)
-    },
+
     async logout() {
       try {
         const data = await firebase.auth().signOut();

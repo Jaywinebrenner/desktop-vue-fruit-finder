@@ -121,7 +121,6 @@ export default {
 
   mounted() {
     this.$refs.mapRef.$mapPromise.then(map => (this.map = map));
-    // this.fetchMapStyle();
   },
 
   computed: {

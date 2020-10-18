@@ -1,50 +1,91 @@
 <template>
-<div class="listViewWrapper">
-  <div class="homeSubheader">
+  <div class="listViewWrapper">
+    <div class="homeSubheader">
       <h5 class="homeText">Browse the Map for Fruit Trees near you</h5>
     </div>
-      <div class="mapListButtonWrapper">
-       <router-link class="viewButton" to="/"><button class="mapListButton">Map View</button></router-link>
-       <router-link class="viewButton" to="/listview"><button class="mapListButton">List View</button></router-link>
+    <div class="mapListButtonWrapper">
+      <router-link class="viewButton" to="/"
+        ><button class="mapListButton">Map View</button></router-link
+      >
+      <router-link class="viewButton" to="/listview"
+        ><button class="mapListButton">List View</button></router-link
+      >
     </div>
 
-    <div class="treeCardWrapper" v-for="tree in trees" :key="tree.id">
-        <div class="treeCardTop__wrapper">
+    <div class="treeCardWrapper" v-for="tree in allTrees" :key="tree.id">
+      <div class="treeCardTop__wrapper">
+        <div class="treeCardTop__logoWrapper">
+          <img
+            class="treeCardTop__logo"
+            alt="Vue logo"
+            src="../assets/newLogoWhite.png"
+          />
+        </div>
 
-          <div class="treeCardTop__logoWrapper">
-            <img class='treeCardTop__logo' alt="Vue logo" src="../assets/newLogoWhite.png">
-          </div>
+        <div class="treeCardTop__typeTextWrapper">
+          <h6 class="treeCardTop__typeText">{{ tree.treeType }}</h6>
+          <h6 class="treeCardTop__distanceText">30 yards away</h6>
+          <h6>{{  tree.id }}</h6>
+        </div>
 
-          <div class="treeCardTop__typeTextWrapper">
-            <h6 class="treeCardTop__typeText">{{ tree.type}}</h6>
-            <h6 class="treeCardTop__distanceText">30 yards away</h6>
-          </div>
+        <div class="treeCardTop__buttonWrapper">
+          <div @click="tree.visible = !tree.visible" class="treeCardTop__button">Details</div>
+        </div>
+      </div>
 
-          <div class="treeCardTop__buttonWrapper">
-            <div class="treeCardTop__button">Details</div>
-          </div>
-          
-       </div>
-     </div>
+      <div v-show="!tree.visible" class="treeCardBottom__Wrapper">
+        <div>
+          <h6 class="treeCardBottom__typeText">N Albina and Killingsworth</h6>
+          <h6 class="treeCardBottom__distanceText">
+            {{ tree.description}}
+          </h6>
+        </div>
+      </div>
+    </div>
 
-</div>
+  </div>
 </template>
 
 <script>
-import {TREES} from '@/constants/FakeMarkers.js'
+import db from '@/main.js'
 export default {
   data() {
     return {
-      trees: TREES.markers
-    }
+
+      allTrees: [],
+      isBottomOpen: false,
+      currentUserID: null
+    };
   },
   mounted() {
-    console.log("markers", TREES.markers)
-    this.trees = TREES.markers
-    console.log("this trees", this.trees);
-  }
+    // this.allTrees && console.log("db on List View", this.allTrees);
+ 
 
-}
+  },
+
+  created() {
+    // Listens for changes in DB
+    db.collection("locations").onSnapshot(res => {
+      const changes = res.docChanges();
+      console.log("changes", changes);
+
+      changes.forEach(change => {
+        // if (change.type === "added" || change.type == "") {
+          this.allTrees.push({
+            ...change.doc.data(),
+            id: change.doc.id,
+            visible: true
+          });
+        // }
+      });
+    });
+  },
+  methods: {
+    openBottom() {
+      this.isBottomOpen = !this.isBottomOpen;
+    }
+  }
+};
 </script>
 
 <style lang='scss'>
@@ -72,6 +113,7 @@ export default {
 
 .treeCardTop__wrapper {
   display: flex;
+  border: 1px solid white;
   // justify-content: flex-start;
   align-items: center;
 }
@@ -83,18 +125,16 @@ export default {
 
 .treeCardTop__typeTextWrapper {
   margin-left: 1rem;
- 
 }
 
 .treeCardTop__typeText {
- text-align: left;
+  text-align: left;
 }
 .treeCardTop__distanceText {
   font-weight: 130;
   text-align: left;
   line-height: 8px;
 }
-
 
 .treeCardTop__logo {
   width: 80px;
@@ -110,7 +150,20 @@ export default {
 
 .treeCardTop__button {
   padding: 5px;
-
 }
 
+.treeCardBottom__Wrapper {
+  background-color: white;
+  padding: 10px;
+}
+
+.treeCardBottom__typeText {
+  color: $primary;
+  text-align: left;
+  font-weight: 230;
+}
+.treeCardBottom__distanceText {
+  color: $primary;
+  text-align: left;
+}
 </style>
