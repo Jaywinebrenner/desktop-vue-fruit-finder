@@ -44,15 +44,28 @@
         scaleControl: false
   
       >
-      <div v-if="fakeData.length > 0">
+      <div v-if="allTrees.length > 0">
       <GmapMarker
         :position="myCoordinates"
         :clickable="true"
         :draggable="true"   
-        @click="center-m.position"
+        @click="center-myCoordinates"
       />
       </div>
-      
+
+   
+     <div v-if="allTrees.length > 0">
+        <GmapMarker
+        :icon="markerOptions" 
+        :key="index"
+        v-for="(tree, index) in allTrees"
+        :position="tree.coordinates"
+        :clickable="true"
+        :draggable="true"
+        @click="center=tree.coordinates"
+      />
+      </div>
+
       </GmapMap>
     </div>
     
@@ -62,6 +75,9 @@
 
 <script>
 import { mapStyle } from "../constants/mapStyle.js";
+import db from '@/main.js'
+
+const mapMarker = require('../assets/customTree.png');
 
 export default {
   name: "Home",
@@ -70,6 +86,12 @@ export default {
 
   data() {
     return {
+      markerOptions: {
+      url: mapMarker,
+      size: {width: 60, height: 90, f: 'px', b: 'px',},
+      scaledSize: {width: 30, height: 45, f: 'px', b: 'px',},
+    },
+      allTrees: [],
       isLoggedIn: false,
       fakeData: [
         {
@@ -83,10 +105,6 @@ export default {
       ],
       styles: mapStyle,
       map: null,
-      // mapCoordinates: {
-      //   lat: 0,
-      //   lng: 0
-      // },
       myCoordinates: {
         lat: 0,
         lng: 0
@@ -105,7 +123,7 @@ export default {
 
       localStorage.center = JSON.stringify(center);
       localStorage.zoom = zoom;
-    }
+    },
   },
   created() {
     navigator.geolocation.getCurrentPosition(
@@ -113,10 +131,18 @@ export default {
         this.myCoordinates.lat = position.coords.latitude
         this.myCoordinates.lng = position.coords.longitude
       },
-      // error => {
-      //   alert("Shit, there's an error.")
-      // }
-   )
+   ),
+   db.collection("locations").onSnapshot(res => {
+      const changes = res.docChanges();
+      console.log("changes", changes);
+      changes.forEach(change => {
+          this.allTrees.push({
+            ...change.doc.data(),
+            id: change.doc.id,
+            visible: true
+          });
+      });
+    });
   },
 
   mounted() {

@@ -1,6 +1,6 @@
 <template>
-  <div class="listViewWrapper">
-    <div class="homeSubheader">
+  <div class="listViewWrapper" >
+    <div class="homeSubheader" >
       <h5 class="homeText">Browse the Map for Fruit Trees near you</h5>
     </div>
     <div class="mapListButtonWrapper">
@@ -35,7 +35,7 @@
 
       <div v-show="!tree.visible" class="treeCardBottom__Wrapper">
         <div>
-          <h6 class="treeCardBottom__typeText">N Albina and Killingsworth</h6>
+          <h6 class="treeCardBottom__typeText">{{ tree.formattedAddress }}</h6>
           <h6 class="treeCardBottom__distanceText">
             {{ tree.description}}
           </h6>
@@ -51,7 +51,6 @@ import db from '@/main.js'
 export default {
   data() {
     return {
-
       allTrees: [],
       isBottomOpen: false,
       currentUserID: null
@@ -81,9 +80,6 @@ export default {
     });
   },
   methods: {
-    openBottom() {
-      this.isBottomOpen = !this.isBottomOpen;
-    }
   }
 };
 </script>
@@ -166,4 +162,6 @@ export default {
   color: $primary;
   text-align: left;
 }
+
+// :style="{backgroundImage:'url(~@/assets/maroonGradient.png)'}"
 </style>

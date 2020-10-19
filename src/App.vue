@@ -189,6 +189,8 @@ export default {
           zip: this.formData.zip
         };
 
+    let formattedAddress = ''
+
       await axios.get('https://maps.googleapis.com/maps/api/geocode/json', {
         params:{
           address: addressObject,
@@ -197,8 +199,9 @@ export default {
         }
       })
       .then((response)=> {
-        coordObject = response.data.results[0].geometry.location
-        console.log("coord object", coordObject);
+        console.log("GEOLOCATION OBJECT", response.data.results[0]);
+        coordObject = response.data.results[0].geometry.location;
+        formattedAddress = response.data.results[0].formatted_address;
       })
       .catch((error)=> {
         alert(error)
@@ -210,6 +213,7 @@ export default {
         treeType: this.formData.treeType,
         description: this.formData.description,
         address: addressObject,
+        formattedAddress: formattedAddress,
         coordinates: coordObject
       }
 
