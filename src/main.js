@@ -10,21 +10,19 @@ import 'firebase/firestore'
 import "firebase/auth";
 import VueGeolocation from "vue-browser-geolocation";
 import * as VueGoogleMaps from 'vue2-google-maps';
-import { API_KEY } from "./geocoder"
+// import { API_KEY } from "./geocoder"
 import VModal from "vue-js-modal/dist/index.nocss.js";
 import "vue-js-modal/dist/styles.css";
 import VueUid from "vue-uid";
 
 Vue.use(VueUid);
 
-
-
 Vue.use(VModal);
 
 Vue.use(VueGoogleMaps, {
   load: {
-    key: API_KEY,
-    libraries: "places" // necessary for places input
+    key: process.env.VUE_APP_GEOCODE_KEY,
+    libraries: "places", // necessary for places input
   },
 });
 Vue.use(VueGeolocation);
