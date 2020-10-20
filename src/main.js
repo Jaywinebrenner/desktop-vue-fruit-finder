@@ -4,22 +4,20 @@ import router from './router'
 import { BootstrapVue, IconsPlugin } from "bootstrap-vue";
 import "./styles/style.scss";
 import axios from 'axios';
-// import firebase from 'firebase/app';
+import './firebaseApp'
 import firebase from "firebase";
 import 'firebase/firestore'
 import "firebase/auth";
 import VueGeolocation from "vue-browser-geolocation";
 import * as VueGoogleMaps from 'vue2-google-maps';
-import { firebaseConfig } from "./firebase";
 import { API_KEY } from "./geocoder"
 import VModal from "vue-js-modal/dist/index.nocss.js";
 import "vue-js-modal/dist/styles.css";
-import TextareaAutosize from "vue-textarea-autosize";
 import VueUid from "vue-uid";
 
 Vue.use(VueUid);
 
-Vue.use(TextareaAutosize);
+
 
 Vue.use(VModal);
 
@@ -38,10 +36,6 @@ Vue.use(BootstrapVue)
 Vue.use(IconsPlugin)
 
 Vue.config.productionTip = false
-
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
-firebase.analytics();
 
 const db = firebase.firestore();
 
