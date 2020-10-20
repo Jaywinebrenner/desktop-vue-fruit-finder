@@ -37,8 +37,10 @@ export default {
     firebase.auth().onAuthStateChanged(user => {
         if(user) {
           this.isLoggedIn = true;
+          console.log("You just logged in");
         } else {
           this.isLoggedIn = false;
+          console.log("You just logged out");
         }
     })
   },
@@ -75,10 +77,10 @@ export default {
 
 .wholeNavbarWrapper {
   position: sticky;
-  position: -webkit-sticky; /* for Safari */
+  position: -webkit-sticky; 
   top: 0;
   padding-bottom: 5px;
-  // border-bottom: 1px black solid;
+
 }
 
 .topNavbarWrapper {
@@ -104,7 +106,6 @@ export default {
   display: flex;
     margin-left: 10px;
     font-weight: bold;
-  // flex: .333;
 
   a {
     font-weight: bold;
@@ -119,11 +120,9 @@ export default {
 .navbarLeft {
   color: white;
   font-weight: bold;
-  // flex: .333;
 }
 
 .navbarMiddle {
-  // flex: .333;
   color: white;
   font-weight: bold;
 }
@@ -149,10 +148,9 @@ export default {
       background-color: white;
       display: flex;
       position: sticky;
-      position: -webkit-sticky; /* for Safari */
-      align-self: flex-start; /* <-- this is the fix */
+      position: -webkit-sticky; 
+      align-self: flex-start; 
       top: 0;
-      // justify-content: center;
       align-items: center;
     }
   

@@ -21,6 +21,7 @@
     "vue-router": "^3.2.0",
     "vue-textarea-autosize": "^1.1.1",
     "vue-uid": "^0.4.5",
+    "vue-uuid": "^2.0.2",
     "vue2-gmap-custom-marker": "^5.6.1",
     "vue2-google-maps": "^0.10.7"
   },

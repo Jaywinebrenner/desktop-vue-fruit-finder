@@ -5,7 +5,6 @@
       :hideAddTreeModal="hideAddTreeModal"
       :formData="formData"
     />
-
     <div class="appPage">
       <router-view 
       :handleFormSubmit="handleFormSubmit"
@@ -47,14 +46,14 @@
               <b-form-input
                 size="sm"
                 id="streetInput"
-                placeholder="Street"
+                placeholder="Address or Cross Street"
                 class="input"
                 v-model="formData.street"
               ></b-form-input>
             </b-form-group>
           </b-row>
 
-          <b-row md="1">
+          <!-- <b-row md="1">
             <b-form-group>
               <b-form-input
                 size="sm"
@@ -88,7 +87,7 @@
                 v-model="formData.zip"
               ></b-form-input>
             </b-form-group>
-          </b-row>
+          </b-row> -->
           <b-row class="buttonRow" md="1">
             <button type="submit" id="submitTreeButton">
               <b-spinner small v-if="spinLoading" label="Spinning"></b-spinner
@@ -106,7 +105,7 @@
 import Navbar from "./components/Navbar";
 import db from "./main.js";
 import axios from 'axios';
-import firebase from 'firebase';
+import firebase from 'firebase/app';
 import "firebase/auth";
 // import API_KEY from '@/geocoder.js'
 
@@ -139,6 +138,7 @@ export default {
   //       console.log("user id: " + firebase.auth().currentUser.uid);
   //       console.log("APP this.currentUserID", this.currentUserID);
   //   }  
+  console.log("UID on APP", this.currentUserID);
   },
 
   computed: {
@@ -203,8 +203,7 @@ export default {
       await axios.get('https://maps.googleapis.com/maps/api/geocode/json', {
         params:{
           address: addressObject,
-
-          // key: API_KEY 
+          key: process.env.VUE_APP_GEOCODE_KEY
         }
       })
       .then((response)=> {
@@ -319,6 +318,7 @@ body {
 
 #textArea {
   width: 290px;
+  max-height: 200px;
 }
 
 .row {
@@ -338,6 +338,10 @@ body {
 #stateInput,
 #zipInput {
   width: 290px;
+}
+
+#streetInput{
+  margin-bottom: 4vh;
 }
 
 .col-form-label {

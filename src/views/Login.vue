@@ -33,7 +33,6 @@ export default {
         // this.$router.replace({name: '/'})
         this.$router.push('/')
         console.log("value after pressing login", value);
-
       } catch (err) {
         console.log(err);
       }

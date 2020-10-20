@@ -3,6 +3,7 @@
 
     <div class="homeSubheader">
       <h5 class="homeText">Browse the Map for Fruit Trees near you</h5>
+      <!-- <p>{{allTrees[0].userID}}</p> -->
     </div>
 
     <div class="mapListButtonWrapper">
@@ -17,7 +18,7 @@
         :options="{
           zoomControl: true,
           mapTypeControl: false,
-          scaleControl: false,
+          scaleControl: false, 
           streetViewControl: false,
           rotateControl: false,
           fullscreenControl: true,
@@ -41,11 +42,9 @@
       />
     </div>
 
-     <div v-for="(tree, index) in allTrees" :key="index">
+    <div v-for="tree in allTrees" :key="tree.coords">
         <GmapMarker
         :icon="{ url: require('../assets/customTreeSmall.png')}" 
-        
-        
         :v-if="tree.userID !== currentUserID" 
         :position= tree.coordinates
         :clickable="true"
@@ -55,7 +54,7 @@
       </div>
 
       <!-- Light Tree Icon -->
-      <div v-for="(tree, index) in allTrees" :key="index">
+   <div v-for="tree in allTrees" :key="tree.coords">
         <GmapMarker
         :icon="{ url: require('../assets/customTreeMyTreeSmall.png')}" 
         v-if="tree.userID === currentUserID"
@@ -76,9 +75,6 @@
 <script>
 import { mapStyle } from "../constants/mapStyle.js";
 import db from '@/main.js'
-// import firebase from 'firebase';
-
-
 
 const allTreesMarker = require('../assets/customTreeSmall.png');
 const myTreesMarker = require('../assets/customTreeMyTreeSmall.png');
@@ -91,7 +87,6 @@ export default {
   mounted() {
     this.$refs.mapRef.$mapPromise.then(map => (this.map = map));
     console.log('HOME current user', this.currentUserID);
-
   },
 
   data() {

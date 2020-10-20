@@ -1,21 +1,21 @@
-import firebase from 'firebase'
+import firebase from 'firebase/app'
+
 
 export const firebaseConfig = {
-         apiKey: process.env.VUE_APP_FIREBASE_KEY,
-         authDomain: "desktop-fruit-finder.firebaseapp.com",
-         databaseURL: "https://desktop-fruit-finder.firebaseio.com",
-         projectId: "desktop-fruit-finder",
-         storageBucket: "desktop-fruit-finder.appspot.com",
-         messagingSenderId: "100321669862",
-         appId: "1:100321669862:web:dd9d655abb9efc0735c127",
-         measurementId: "G-X3KBWZ4ZKV",
+    apiKey: process.env.VUE_APP_FIREBASE_KEY,
+    authDomain: "desktop-vue-fruit-finder-ca2d4.firebaseapp.com",
+    databaseURL: "https://desktop-vue-fruit-finder-ca2d4.firebaseio.com",
+    projectId: "desktop-vue-fruit-finder-ca2d4",
+    storageBucket: "desktop-vue-fruit-finder-ca2d4.appspot.com",
+    messagingSenderId: "225501907734",
+    appId: "1:225501907734:web:fbdda5452334541239de37",
+    measurementId: "G-6DBDRELPKM"
        };
 
 const FirebaseApp = firebase.initializeApp(firebaseConfig)
 
-console.log("Firebase init with config", FirebaseApp.options);
+// console.log("Firebase init with config", FirebaseApp.options);
 
 export default {
   FirebaseApp: FirebaseApp
 }
-
