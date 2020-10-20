@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="appWrapper">
     <Navbar
       :showAddTreeModal="showAddTreeModal"
       :hideAddTreeModal="hideAddTreeModal"
@@ -7,7 +7,9 @@
     />
 
     <div class="appPage">
-      <router-view :handleFormSubmit="handleFormSubmit" />
+      <router-view 
+      :handleFormSubmit="handleFormSubmit"
+      :currentUserID="currentUserID" />
     </div>
 
     <modal name="addTreeModal" :width="'90%'" :height="'75%'">
@@ -96,8 +98,8 @@
         </b-form>
       </div>
     </modal>
-
   
+    <!-- <p class="hackFireFuntion">{{getCurrentUserID()}}</p> -->
   </div>
 </template>
 
@@ -105,17 +107,16 @@
 import Navbar from "./components/Navbar";
 import db from "./main.js";
 import axios from 'axios';
-// import currentUserID from './currentUser.js'
 import firebase from 'firebase';
-// import "firebase/auth";
+import "firebase/auth";
 // import API_KEY from '@/geocoder.js'
 
 export default {
+
   data() {
     return {
-      currentUserID: '',
+      API_KEY: process.env.API_KEY_GEOCODE,
       spinLoading: false,
-      fart: "BIg ole fart",
       savedLocations: [],
       formData: {
         treeType: "",
@@ -134,18 +135,27 @@ export default {
     };
   },
   mounted() {
-    // console.log("current user from file", currentUserID);
-    if (firebase.auth().currentUser !== null) 
-
-        this.currentUserId = firebase.auth().currentUser.uid
-        console.log("user id: " + firebase.auth().currentUser.uid);
-        console.log("this currentUserID", this.currentUserID);
-
+  //   if (firebase.auth().currentUser) {
+  //     this.currentUserID = firebase.auth().currentUser.uid
+  //       console.log("user id: " + firebase.auth().currentUser.uid);
+  //       console.log("APP this.currentUserID", this.currentUserID);
+  //   }  
   },
+
+  computed: {
+    currentUserID() {
+      if (firebase.auth().currentUser) {
+        return firebase.auth().currentUser.uid
+      } else {
+        return null
+      }
+    }
+  },
+
   methods: {
     makeToast(append = false) {
         this.$bvToast.toast("You have successfully uploaded your tree.", {
-          title: 'Yeeeeessss!!',
+          title: 'Well done, friend!',
           autoHideDelay: 3000,
           appendToast: append
         })
@@ -184,9 +194,9 @@ export default {
 
       const addressObject = {
           street: this.formData.street,
-          city: this.formData.city,
-          state: this.formData.state,
-          zip: this.formData.zip
+          // city: this.formData.city,
+          // state: this.formData.state,
+          // zip: this.formData.zip
         };
 
     let formattedAddress = ''
@@ -194,11 +204,12 @@ export default {
       await axios.get('https://maps.googleapis.com/maps/api/geocode/json', {
         params:{
           address: addressObject,
-   
+
           // key: API_KEY 
         }
       })
       .then((response)=> {
+        console.log("Response", response);
         console.log("GEOLOCATION OBJECT", response.data.results[0]);
         coordObject = response.data.results[0].geometry.location;
         formattedAddress = response.data.results[0].formatted_address;
@@ -229,9 +240,9 @@ export default {
       this.formData.treeType = "";
       this.formData.description = "";
       this.formData.street = "";
-      this.formData.city = "";
-      this.formData.state = "";
-      this.formData.zip = "";
+      // this.formData.city = "";
+      // this.formData.state = "";
+      // this.formData.zip = "";
       this.hideAddTreeModal();
       this.spinLoading = false;
       this.makeToast();
@@ -253,7 +264,7 @@ body {
   background-color: $primary;
 }
 
-#app {
+#appWrapper {
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -347,5 +358,9 @@ body {
   margin: 4px 0;
   border: 2px black solid;
   border-radius: 5px;
+}
+
+.hackFireFuntion {
+  color: $primary;
 }
 </style>

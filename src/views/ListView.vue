@@ -58,8 +58,6 @@ export default {
   },
   mounted() {
     // this.allTrees && console.log("db on List View", this.allTrees);
- 
-
   },
 
   created() {

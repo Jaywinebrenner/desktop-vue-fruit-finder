@@ -32,6 +32,22 @@
   },
 
 
+
+  // cooods
+  <!-- <div class="temporaryCoordDiv">
+<div>
+      <h6 style="color: white;">Your Coordinates: </h6>
+      <p style="color: white;">Latitdude: {{ myCoordinates.lat }} | Longitude: {{ myCoordinates.lng}}</p>
+</div> 
+<div>
+      <h6 style="color: white;">Map Coordinates: </h6>
+      <p style="color: white;">Latitdude: {{ mapCoordinates.lat }} | Longitude: {{ mapCoordinates.lng}}</p>
+
+</div>
+</div> -->
+
+
+
   // BEFORE ATTEMPTING TOOPEN DataTransfer
   <template>
   <div class="listViewWrapper">

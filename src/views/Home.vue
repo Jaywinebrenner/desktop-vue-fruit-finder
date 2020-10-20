@@ -12,22 +12,9 @@
 
     <div class="mapWrapper">
 
-<!-- <div class="temporaryCoordDiv">
-<div>
-      <h6 style="color: white;">Your Coordinates: </h6>
-      <p style="color: white;">Latitdude: {{ myCoordinates.lat }} | Longitude: {{ myCoordinates.lng}}</p>
-</div> 
-<div>
-      <h6 style="color: white;">Map Coordinates: </h6>
-      <p style="color: white;">Latitdude: {{ mapCoordinates.lat }} | Longitude: {{ mapCoordinates.lng}}</p>
-
-</div>
-</div> -->
-
-
       <GmapMap
-      class="mapObject"
-       :options="{
+        class="mapObject"
+        :options="{
           zoomControl: true,
           mapTypeControl: false,
           scaleControl: false,
@@ -42,24 +29,37 @@
         ref="mapRef"
         @dragend="handleDrag"
         scaleControl: false
-  
       >
-      <div v-if="allTrees.length > 0">
+
+    <div v-if="allTrees.length > 0">
       <GmapMarker
-        :position="myCoordinates"
+        :position= myCoordinates 
         :clickable="true"
-        :draggable="true"   
+        :draggable="false"   
         @click="center-myCoordinates"
+
+      />
+    </div>
+
+     <div v-for="(tree, index) in allTrees" :key="index">
+        <GmapMarker
+        :icon="{ url: require('../assets/customTreeSmall.png')}" 
+        
+        
+        :v-if="tree.userID !== currentUserID" 
+        :position= tree.coordinates
+        :clickable="true"
+        :draggable="true"
+        @click="center=tree.coordinates"
       />
       </div>
 
-   
-     <div v-if="allTrees.length > 0">
+      <!-- Light Tree Icon -->
+      <div v-for="(tree, index) in allTrees" :key="index">
         <GmapMarker
-        :icon="markerOptions" 
-        :key="index"
-        v-for="(tree, index) in allTrees"
-        :position="tree.coordinates"
+        :icon="{ url: require('../assets/customTreeMyTreeSmall.png')}" 
+        v-if="tree.userID === currentUserID"
+        :position= tree.coordinates
         :clickable="true"
         :draggable="true"
         @click="center=tree.coordinates"
@@ -76,33 +76,35 @@
 <script>
 import { mapStyle } from "../constants/mapStyle.js";
 import db from '@/main.js'
+// import firebase from 'firebase';
 
-const mapMarker = require('../assets/customTree.png');
+
+
+const allTreesMarker = require('../assets/customTreeSmall.png');
+const myTreesMarker = require('../assets/customTreeMyTreeSmall.png');
 
 export default {
   name: "Home",
-  props: ['handleFormSubmit'],
+  props: ['handleFormSubmit', 'currentUserID'],
   components: {},
+
+  mounted() {
+    this.$refs.mapRef.$mapPromise.then(map => (this.map = map));
+    console.log('HOME current user', this.currentUserID);
+
+  },
 
   data() {
     return {
+      yes: false,
       markerOptions: {
-      url: mapMarker,
-      size: {width: 60, height: 90, f: 'px', b: 'px',},
-      scaledSize: {width: 30, height: 45, f: 'px', b: 'px',},
+      url: 
+      allTreesMarker,
+      myTreesMarker
+
     },
       allTrees: [],
       isLoggedIn: false,
-      fakeData: [
-        {
-          lat: 45.5055,
-          lng: -122.5956
-        },
-        {
-          lat: 45.5328,
-          lng: -122.5758
-        }
-      ],
       styles: mapStyle,
       map: null,
       myCoordinates: {
@@ -143,10 +145,6 @@ export default {
           });
       });
     });
-  },
-
-  mounted() {
-    this.$refs.mapRef.$mapPromise.then(map => (this.map = map));
   },
 
   computed: {
