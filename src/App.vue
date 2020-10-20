@@ -99,7 +99,6 @@
       </div>
     </modal>
   
-    <!-- <p class="hackFireFuntion">{{getCurrentUserID()}}</p> -->
   </div>
 </template>
 
@@ -360,7 +359,4 @@ body {
   border-radius: 5px;
 }
 
-.hackFireFuntion {
-  color: $primary;
-}
 </style>
