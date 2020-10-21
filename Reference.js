@@ -217,3 +217,42 @@ export default {
   text-align: left;
 }
 </style>
+
+
+{/* 
+EXTRA PARAMS ON INPUT */}
+          <!-- <b-row md="1">
+            <b-form-group>
+              <b-form-input
+                size="sm"
+                id="cityInput"
+                placeholder="City"
+                class="input"
+                v-model="formData.city"
+              ></b-form-input>
+            </b-form-group>
+          </b-row>
+
+          <b-row md="1">
+            <b-form-group>
+              <b-form-input
+                size="sm"
+                id="stateInput"
+                placeholder="State"
+                class="input"
+                v-model="formData.state"
+              ></b-form-input>
+            </b-form-group>
+          </b-row>
+
+          <b-row md="1">
+            <b-form-group>
+              <b-form-input
+                size="sm"
+                id="zipInput"
+                placeholder="Zip Code"
+                class="input"
+                v-model="formData.zip"
+              ></b-form-input>
+            </b-form-group>
+          </b-row> -->

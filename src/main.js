@@ -7,7 +7,6 @@ import axios from 'axios';
 import './firebaseApp'
 import firebase from "firebase/app";
 import 'firebase/firestore'
-// import "firebase/auth";
 import VueGeolocation from "vue-browser-geolocation";
 import * as VueGoogleMaps from 'vue2-google-maps';
 import VModal from "vue-js-modal/dist/index.nocss.js";

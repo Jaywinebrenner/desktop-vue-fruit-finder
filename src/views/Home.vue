@@ -32,29 +32,42 @@
         scaleControl: false
       >
 
+    <!-- USER LOCATION -->
     <div v-if="allTrees.length > 0">
       <GmapMarker
         :position= myCoordinates 
         :clickable="true"
         :draggable="false"   
         @click="center-myCoordinates"
-
       />
     </div>
 
-    <div v-for="tree in allTrees" :key="tree.coords">
+
         <GmapMarker
+        v-for="(tree, index) in allTrees" 
+        :key="tree.coords"
         :icon="{ url: require('../assets/customTreeSmall.png')}" 
-        :v-if="tree.userID !== currentUserID" 
-        :position= tree.coordinates
+        :position="tree.coordinates"
         :clickable="true"
         :draggable="true"
-        @click="center=tree.coordinates"
-      />
-      </div>
+        :label="tree.treeType"
+        @click="toggleInfoWindow(tree, index)">
+      ></GmapMarker>
+     <gmap-info-window
+        :options="infoOptions"
+        :position="infoWindowPos"
+        :opened="infoWinOpen"
+        @closeclick="infoWinOpen=false"
+      >
+        <div v-html="infoContent"></div>
+      </gmap-info-window>
+
+
+
+ 
 
       <!-- Light Tree Icon -->
-   <div v-for="tree in allTrees" :key="tree.coords">
+   <!-- <div v-for="tree in allTrees" :key="tree.coords">
         <GmapMarker
         :icon="{ url: require('../assets/customTreeMyTreeSmall.png')}" 
         v-if="tree.userID === currentUserID"
@@ -63,7 +76,7 @@
         :draggable="true"
         @click="center=tree.coordinates"
       />
-      </div>
+      </div> -->
 
       </GmapMap>
     </div>
@@ -74,30 +87,44 @@
 
 <script>
 import { mapStyle } from "../constants/mapStyle.js";
-import db from '@/main.js'
+import db from "@/main.js";
 
-const allTreesMarker = require('../assets/customTreeSmall.png');
-const myTreesMarker = require('../assets/customTreeMyTreeSmall.png');
+const allTreesMarker = require("../assets/customTreeSmall.png");
+const myTreesMarker = require("../assets/customTreeMyTreeSmall.png");
 
 export default {
   name: "Home",
-  props: ['handleFormSubmit', 'currentUserID'],
+  props: ["handleFormSubmit", "currentUserID"],
   components: {},
 
   mounted() {
     this.$refs.mapRef.$mapPromise.then(map => (this.map = map));
-    console.log('HOME current user', this.currentUserID);
+    console.log("HOME current user", this.currentUserID);
   },
 
   data() {
     return {
-      yes: false,
-      markerOptions: {
-      url: 
-      allTreesMarker,
-      myTreesMarker
+      center: {lat: 52.511950, lng: 6.089625},
+      infoContent: '',
+      infoWindowPos: {
+        lat: 0,
+        lng: 0
+      },
+      infoWinOpen: false,
+      currentMidx: null,
+      //optional: offset infowindow so it visually sits nicely on top of our marker
+      infoOptions: {
+        pixelOffset: {
+          width: 0,
+          height: -35
+        }
+      },
+    
 
-    },
+      markerOptions: {
+        url: allTreesMarker,
+        myTreesMarker
+      },
       allTrees: [],
       isLoggedIn: false,
       styles: mapStyle,
@@ -110,6 +137,9 @@ export default {
   },
 
   methods: {
+    openWindow() {
+      this.window_open = true;
+    },
     handleDrag() {
       // get center and zoom level, and store it
       let center = {
@@ -121,25 +151,52 @@ export default {
       localStorage.center = JSON.stringify(center);
       localStorage.zoom = zoom;
     },
+
+    toggleInfoWindow(tree, idx) {
+
+      this.infoWindowPos = tree.coordinates;
+      this.infoContent = this.getInfoWindowContent(tree);
+
+      //check if its the same marker that was selected if yes toggle
+      if (this.currentMidx == idx) {
+        this.infoWinOpen = !this.infoWinOpen;
+      }
+      //if different marker set infowindow to open and reset current marker index
+      else {
+        this.infoWinOpen = true;
+        this.currentMidx = idx;
+      }
+    },
+
+    getInfoWindowContent: function(marker) {
+      return `<div class="windowCard">
+      <div class="windowTop">
+      <h6 class="windowTopText">${marker.treeType}</h6>
+      </div>
+
+      <div class="windowBottom">
+      <h6 class="windowBottomText">${marker.description}</h6>
+      </div>
+
+      </div>`;
+    }
   },
   created() {
-    navigator.geolocation.getCurrentPosition(
-      position => {
-        this.myCoordinates.lat = position.coords.latitude
-        this.myCoordinates.lng = position.coords.longitude
-      },
-   ),
-   db.collection("locations").onSnapshot(res => {
-      const changes = res.docChanges();
-      console.log("changes", changes);
-      changes.forEach(change => {
+    navigator.geolocation.getCurrentPosition(position => {
+      this.myCoordinates.lat = position.coords.latitude;
+      this.myCoordinates.lng = position.coords.longitude;
+    }),
+      db.collection("locations").onSnapshot(res => {
+        const changes = res.docChanges();
+        console.log("changes", changes);
+        changes.forEach(change => {
           this.allTrees.push({
             ...change.doc.data(),
             id: change.doc.id,
             visible: true
           });
+        });
       });
-    });
   },
 
   computed: {
@@ -190,7 +247,6 @@ body {
 
 .mapListButtonWrapper {
   padding: 10px;
-
 }
 
 .mapListButton {
@@ -210,9 +266,37 @@ body {
 
 .mapWrapper {
   overflow: hidden;
+  
 }
 
 .temporaryCoordDiv {
   display: flex;
+}
+
+.windowCard {
+  border: 1px solid $primary;
+  border-radius: 5px;
+  width: 180px;
+  height: 90px;
+  padding: 0;
+}
+
+.windowTop {
+background-color: $primary;
+}
+
+.windowTopText {
+  padding: 2px;
+  font-size: .9rem;
+}
+
+.windowBottomText {
+  padding: 0;
+  font-size: .7rem;
+  color: $primary;
+}
+
+.windowBottom {
+
 }
 </style>

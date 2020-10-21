@@ -53,41 +53,7 @@
             </b-form-group>
           </b-row>
 
-          <!-- <b-row md="1">
-            <b-form-group>
-              <b-form-input
-                size="sm"
-                id="cityInput"
-                placeholder="City"
-                class="input"
-                v-model="formData.city"
-              ></b-form-input>
-            </b-form-group>
-          </b-row>
 
-          <b-row md="1">
-            <b-form-group>
-              <b-form-input
-                size="sm"
-                id="stateInput"
-                placeholder="State"
-                class="input"
-                v-model="formData.state"
-              ></b-form-input>
-            </b-form-group>
-          </b-row>
-
-          <b-row md="1">
-            <b-form-group>
-              <b-form-input
-                size="sm"
-                id="zipInput"
-                placeholder="Zip Code"
-                class="input"
-                v-model="formData.zip"
-              ></b-form-input>
-            </b-form-group>
-          </b-row> -->
           <b-row class="buttonRow" md="1">
             <button type="submit" id="submitTreeButton">
               <b-spinner small v-if="spinLoading" label="Spinning"></b-spinner
@@ -168,9 +134,6 @@ export default {
       this.treeType = "";
       this.description = "";
       this.street = "";
-      this.city = "";
-      this.state = "";
-      this.zip = "";
     },
     async handleFormSubmit() {
       this.spinLoading = true;
@@ -178,9 +141,6 @@ export default {
         !this.formData.treeType ||
         !this.formData.description ||
         !this.formData.street 
-        // !this.formData.city ||
-        // !this.formData.state ||
-        // !this.formData.zip
       ) {
         alert("You didn't fill out the form properly. Give it another shot!");
         return;
@@ -193,9 +153,6 @@ export default {
 
       const addressObject = {
           street: this.formData.street,
-          // city: this.formData.city,
-          // state: this.formData.state,
-          // zip: this.formData.zip
         };
 
     let formattedAddress = ''
@@ -207,13 +164,17 @@ export default {
         }
       })
       .then((response)=> {
-        console.log("Response", response);
-        console.log("GEOLOCATION OBJECT", response.data.results[0]);
-        coordObject = response.data.results[0].geometry.location;
-        formattedAddress = response.data.results[0].formatted_address;
+        if (response !== "undefined") {
+          coordObject = response.data.results[0].geometry.location;
+          formattedAddress = response.data.results[0].formatted_address;
+        } else {
+          alert("Sorry. The address you entered was wonky. Please try again.")
+          return;
+        }
       })
       .catch((error)=> {
         alert(error)
+        return;
       });
       
   
@@ -233,14 +194,10 @@ export default {
           console.log("upload successful!");
         });
 
-
       // Clean up 
       this.formData.treeType = "";
       this.formData.description = "";
       this.formData.street = "";
-      // this.formData.city = "";
-      // this.formData.state = "";
-      // this.formData.zip = "";
       this.hideAddTreeModal();
       this.spinLoading = false;
       this.makeToast();
