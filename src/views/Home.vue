@@ -111,7 +111,7 @@ export default {
       },
       infoWinOpen: false,
       currentMidx: null,
-      //optional: offset infowindow so it visually sits nicely on top of our marker
+
       infoOptions: {
         pixelOffset: {
           width: 0,
@@ -119,7 +119,6 @@ export default {
         }
       },
     
-
       markerOptions: {
         url: allTreesMarker,
         myTreesMarker
@@ -151,18 +150,18 @@ export default {
       localStorage.zoom = zoom;
     },
 
-    toggleInfoWindow(tree, idx) {
+    toggleInfoWindow(tree, index) {
       this.infoWindowPos = tree.coordinates;
       this.infoContent = this.getInfoWindowContent(tree);
 
       //check if its the same marker that was selected if yes toggle
-      if (this.currentMidx == idx) {
+      if (this.currentMidx == index) {
         this.infoWinOpen = !this.infoWinOpen;
       }
       //if different marker set infowindow to open and reset current marker index
       else {
         this.infoWinOpen = true;
-        this.currentMidx = idx;
+        this.currentMidx = index;
       }
     },
 

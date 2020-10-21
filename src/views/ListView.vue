@@ -25,7 +25,7 @@
         <div class="treeCardTop__typeTextWrapper">
           <h6 class="treeCardTop__typeText">{{ tree.treeType }}</h6>
           <h6 class="treeCardTop__distanceText">30 yards away</h6>
-          <h6>{{  tree.id }}</h6>
+          <!-- <h6>{{  tree.id }}</h6> -->
         </div>
 
         <div class="treeCardTop__buttonWrapper">
