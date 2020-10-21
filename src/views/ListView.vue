@@ -1,6 +1,6 @@
 <template>
-  <div class="listViewWrapper" >
-    <div class="homeSubheader" >
+  <div class="listViewWrapper">
+    <div class="homeSubheader">
       <h5 class="homeText">Browse the Map for Fruit Trees near you</h5>
     </div>
     <div class="mapListButtonWrapper">
@@ -29,7 +29,18 @@
         </div>
 
         <div class="treeCardTop__buttonWrapper">
-          <div @click="tree.visible = !tree.visible" class="treeCardTop__button">Details</div>
+          <div
+            @click="areYouSure(tree.id)"
+            class="treeTopCard__deleteButton"
+          >
+            <p class="treeTopCard__deleteButtonText">Delete</p>
+          </div>
+          <div
+            @click="tree.visible = !tree.visible"
+            class="treeTopCard__detailsButton"
+          >
+            <p class="treeTopCard__detailsButtonText">Details</p>
+          </div>
         </div>
       </div>
 
@@ -37,17 +48,16 @@
         <div>
           <h6 class="treeCardBottom__typeText">{{ tree.formattedAddress }}</h6>
           <h6 class="treeCardBottom__distanceText">
-            {{ tree.description}}
+            {{ tree.description }}
           </h6>
         </div>
       </div>
     </div>
-
   </div>
 </template>
 
 <script>
-import db from '@/main.js'
+import db from "@/main.js";
 export default {
   data() {
     return {
@@ -60,6 +70,27 @@ export default {
     // this.allTrees && console.log("db on List View", this.allTrees);
   },
 
+  methods: {
+    areYouSure() {
+        this.$fire({
+            title: "Warning",
+            text: "Are you sure you want to delete this tree?",
+            type: "warning",
+            timer: 3000
+        }).then(r => {
+          console.log(r.value);
+        });
+    },
+    // deleteTree() {
+    //   this.allTrees.map((treeIDInput) => {
+    //       if(tree.id === treeIDInput) {
+
+    //       }
+    //   })
+
+    
+  },
+
   created() {
     // Listens for changes in DB
     db.collection("locations").onSnapshot(res => {
@@ -68,17 +99,15 @@ export default {
 
       changes.forEach(change => {
         // if (change.type === "added" || change.type == "") {
-          this.allTrees.push({
-            ...change.doc.data(),
-            id: change.doc.id,
-            visible: true
-          });
+        this.allTrees.push({
+          ...change.doc.data(),
+          id: change.doc.id,
+          visible: true
+        });
         // }
       });
     });
   },
-  methods: {
-  }
 };
 </script>
 
@@ -96,11 +125,8 @@ export default {
 }
 
 .treeCardWrapper {
-  // display: flex;
-  // flex-direction: column;
   width: 90%;
   border: 1px solid white;
-  // justify-content: center;
   margin-top: 15px;
   border-radius: 5px;
 }
@@ -108,7 +134,6 @@ export default {
 .treeCardTop__wrapper {
   display: flex;
   border: 1px solid white;
-  // justify-content: flex-start;
   align-items: center;
 }
 
@@ -135,15 +160,32 @@ export default {
 }
 
 .treeCardTop__buttonWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   margin-left: auto;
   margin-right: 1rem;
   color: white;
+  border-radius: 5px;
+}
+
+.treeTopCard__detailsButton {
+  cursor: pointer;
+  padding: 5px;
   border: 1px solid white;
   border-radius: 5px;
 }
 
-.treeCardTop__button {
-  padding: 5px;
+.treeTopCard__deleteButton {
+  cursor: pointer;
+  margin-right: 1vh;
+  border: 1px solid white;
+  border-radius: 5px;
+  background-color: white;
+}
+
+.treeTopCard__deleteButtonText {
+  color: $primary;
 }
 
 .treeCardBottom__Wrapper {

@@ -12,6 +12,9 @@ import * as VueGoogleMaps from 'vue2-google-maps';
 import VModal from "vue-js-modal/dist/index.nocss.js";
 import "vue-js-modal/dist/styles.css";
 import UUID from "vue-uuid";
+import VueSimpleAlert from "vue-simple-alert";
+
+Vue.use(VueSimpleAlert);
 
 Vue.use(UUID);
 

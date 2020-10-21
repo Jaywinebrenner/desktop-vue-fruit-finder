@@ -44,7 +44,7 @@
 
 
       <GmapMarker
-        v-for="(tree, index) in allTrees" 
+        v-for="(tree, index) in userTrees" 
         :key="tree.coords"
         :icon="{ url: require('../assets/customTreeSmall.png')}" 
         :position="tree.coordinates"
@@ -52,6 +52,7 @@
         :draggable="true"
         @click="toggleInfoWindow(tree, index)">
       </GmapMarker>
+
      <gmap-info-window
         :options="infoOptions"
         :position="infoWindowPos"
@@ -62,22 +63,30 @@
       </gmap-info-window>
 
 
+      <!-- Light Tree / myTrees Icon -->
 
- 
+      <div v-if="allTrees.length > 0">
+          <GmapMarker
+            v-for="(tree, index) in myTrees" 
+            :key="index"
+            :icon="{ url: require('../assets/customTreeMyTreeSmall.png')}" 
+            :position="tree.coordinates"
+            :clickable="true"
+            :draggable="true"
+            @click="toggleInfoWindow(tree, index)">
+        </GmapMarker>
 
-      <!-- Light Tree Icon -->
-   <!-- <div v-for="tree in allTrees" :key="tree.coords">
-        <GmapMarker
-        :icon="{ url: require('../assets/customTreeMyTreeSmall.png')}" 
-        v-if="tree.userID === currentUserID"
-        :position= tree.coordinates
-        :clickable="true"
-        :draggable="true"
-        @click="center=tree.coordinates"
-      />
-      </div> -->
-
+        <gmap-info-window
+          :options="infoOptions"
+          :position="infoWindowPos"
+          :opened="infoWinOpen"
+          @closeclick="infoWinOpen=false"
+        >
+          <div v-html="infoContent"></div>
+      </gmap-info-window>
+       </div>
       </GmapMap>
+
     </div>
     
 
@@ -87,18 +96,21 @@
 <script>
 import { mapStyle } from "../constants/mapStyle.js";
 import db from "@/main.js";
+import firebase from 'firebase/app';
+import "firebase/auth";
 
 const allTreesMarker = require("../assets/customTreeSmall.png");
 const myTreesMarker = require("../assets/customTreeMyTreeSmall.png");
 
 export default {
   name: "Home",
-  props: ["handleFormSubmit", "currentUserID"],
+  props: ["handleFormSubmit" ],
   components: {},
 
   mounted() {
     this.$refs.mapRef.$mapPromise.then(map => (this.map = map));
     console.log("HOME current user", this.currentUserID);
+    console.log("firebase", firebase);
   },
 
   data() {
@@ -135,6 +147,7 @@ export default {
   },
 
   methods: {
+
     openWindow() {
       this.window_open = true;
     },
@@ -194,7 +207,23 @@ export default {
       });
   },
 
+
   computed: {
+    currentUserID() {
+      if (firebase.auth().currentUser) {
+        return firebase.auth().currentUser.uid
+      } else {
+        return null
+      }
+    },
+
+    userTrees() {
+      return this.allTrees.filter(tree => tree.userID !== firebase.auth().currentUser.uid)
+    },
+      myTrees() {
+          return this.allTrees.filter(tree => tree.userID === firebase.auth().currentUser.uid)
+      },
+
     mapCoordinates() {
       if (!this.map) {
         return {
@@ -272,7 +301,8 @@ body {
   border: 1px solid $primary;
   border-radius: 5px;
   width: 180px;
-  height: 90px;
+  min-height: 90px;
+  max-height: 120px;
   padding: 0;
 }
 
