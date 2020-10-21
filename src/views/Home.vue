@@ -43,16 +43,15 @@
     </div>
 
 
-        <GmapMarker
+      <GmapMarker
         v-for="(tree, index) in allTrees" 
         :key="tree.coords"
         :icon="{ url: require('../assets/customTreeSmall.png')}" 
         :position="tree.coordinates"
         :clickable="true"
         :draggable="true"
-        :label="tree.treeType"
         @click="toggleInfoWindow(tree, index)">
-      ></GmapMarker>
+      </GmapMarker>
      <gmap-info-window
         :options="infoOptions"
         :position="infoWindowPos"
@@ -153,7 +152,6 @@ export default {
     },
 
     toggleInfoWindow(tree, idx) {
-
       this.infoWindowPos = tree.coordinates;
       this.infoContent = this.getInfoWindowContent(tree);
 
@@ -170,14 +168,12 @@ export default {
 
     getInfoWindowContent: function(marker) {
       return `<div class="windowCard">
-      <div class="windowTop">
-      <h6 class="windowTopText">${marker.treeType}</h6>
-      </div>
-
-      <div class="windowBottom">
-      <h6 class="windowBottomText">${marker.description}</h6>
-      </div>
-
+        <div class="windowTop">
+          <h6 class="windowTopText">${marker.treeType}</h6>
+        </div>
+        <div class="windowBottom">
+          <h6 class="windowBottomText">${marker.description}</h6>
+        </div>
       </div>`;
     }
   },
