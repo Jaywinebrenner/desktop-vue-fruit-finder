@@ -32,7 +32,7 @@
         scaleControl: false
       >
 
-    <!-- USER LOCATION -->
+    <!-- RENDER USER LOCATION -->
     <div v-if="allTrees.length > 0">
       <GmapMarker
         :position= myCoordinates 
@@ -42,7 +42,33 @@
       />
     </div>
 
+  <!-- RENDER ALL TREES IF NO ONE IS SIGNED IN -->
+  <div v-if="!currentUserID">
+      <GmapMarker
+        v-for="(tree, index) in allTrees" 
+        :key="tree.coords"
+        :icon="{ url: require('../assets/customTreeSmall.png')}" 
+        :position="tree.coordinates"
+        :clickable="true"
+        :draggable="true"
+        @click="toggleInfoWindow(tree, index)">
+      </GmapMarker>
 
+    <gmap-info-window
+        :options="infoOptions"
+        :position="infoWindowPos"
+        :opened="infoWinOpen"
+        @closeclick="infoWinOpen=false"
+      >
+        <div v-html="infoContent"></div>
+      </gmap-info-window>
+
+        </div>
+      
+ 
+
+
+      <!-- RENDER USER SUBMITTED TREES -->
       <GmapMarker
         v-for="(tree, index) in userTrees" 
         :key="tree.coords"
@@ -62,9 +88,7 @@
         <div v-html="infoContent"></div>
       </gmap-info-window>
 
-
-      <!-- Light Tree / myTrees Icon -->
-
+      <!-- RENDER MY TREES -->
       <div v-if="allTrees.length > 0">
           <GmapMarker
             v-for="(tree, index) in myTrees" 
@@ -104,17 +128,18 @@ const myTreesMarker = require("../assets/customTreeMyTreeSmall.png");
 
 export default {
   name: "Home",
-  props: ["handleFormSubmit" ],
+  props: ["handleFormSubmit", "props"],
   components: {},
 
   mounted() {
     this.$refs.mapRef.$mapPromise.then(map => (this.map = map));
-    console.log("HOME current user", this.currentUserID);
-    console.log("firebase", firebase);
+    // console.log("HOME current user", this.currentUserID);
+    // console.log("firebase", firebase);
   },
 
   data() {
     return {
+      isTrue: true,
       center: {lat: 52.511950, lng: 6.089625},
       infoContent: '',
       infoWindowPos: {
@@ -130,7 +155,6 @@ export default {
           height: -35
         }
       },
-    
       markerOptions: {
         url: allTreesMarker,
         myTreesMarker
@@ -139,6 +163,7 @@ export default {
       isLoggedIn: false,
       styles: mapStyle,
       map: null,
+      
       myCoordinates: {
         lat: 0,
         lng: 0
@@ -207,7 +232,6 @@ export default {
       });
   },
 
-
   computed: {
     currentUserID() {
       if (firebase.auth().currentUser) {
@@ -218,11 +242,11 @@ export default {
     },
 
     userTrees() {
-      return this.allTrees.filter(tree => tree.userID !== firebase.auth().currentUser.uid)
+      return this.allTrees.filter(tree => tree.userID !== this.currentUserID)
     },
-      myTrees() {
-          return this.allTrees.filter(tree => tree.userID === firebase.auth().currentUser.uid)
-      },
+    myTrees() {
+        return this.allTrees.filter(tree => tree.userID === this.currentUserID)
+    },
 
     mapCoordinates() {
       if (!this.map) {

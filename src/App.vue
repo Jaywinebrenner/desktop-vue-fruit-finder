@@ -8,7 +8,8 @@
     <div class="appPage">
       <router-view 
       :handleFormSubmit="handleFormSubmit"
-      :currentUserID="currentUserID" />
+      :userID="userID"
+      />
     </div>
 
     <modal name="addTreeModal" :width="'90%'" :height="'75%'">
@@ -99,25 +100,27 @@ export default {
     };
   },
   mounted() {
-  //   if (firebase.auth().currentUser) {
-  //     this.currentUserID = firebase.auth().currentUser.uid
-  //       console.log("user id: " + firebase.auth().currentUser.uid);
-  //       console.log("APP this.currentUserID", this.currentUserID);
-  //   }  
-  console.log("UID on APP", this.currentUserID);
+
   },
 
   computed: {
-    currentUserID() {
+    userID() {
       if (firebase.auth().currentUser) {
         return firebase.auth().currentUser.uid
       } else {
-        return null
+        return "candy"
       }
     }
   },
 
   methods: {
+    // async getCurrentUser() {
+    //   alert("ONE")
+    //   let id = null
+    //   id = await firebase.auth().currentUser.uid
+    //   id && console.log("currentUserID", id);
+    //   alert("TWO")
+    // },
     makeToast(append = false) {
         this.$bvToast.toast("You have successfully uploaded your tree.", {
           title: 'Well done, friend!',
@@ -155,7 +158,7 @@ export default {
           street: this.formData.street,
         };
 
-    let formattedAddress = ''
+    let formattedAddress = '';
 
       await axios.get('https://maps.googleapis.com/maps/api/geocode/json', {
         params:{

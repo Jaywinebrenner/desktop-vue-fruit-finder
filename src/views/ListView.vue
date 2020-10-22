@@ -30,14 +30,15 @@
 
         <div class="treeCardTop__buttonWrapper">
           <div
-            @click="areYouSure(tree.id)"
             class="treeTopCard__deleteButton"
+            @click="areYouSure(tree.id)"
           >
             <p class="treeTopCard__deleteButtonText">Delete</p>
           </div>
+
           <div
-            @click="tree.visible = !tree.visible"
             class="treeTopCard__detailsButton"
+            @click="tree.visible = !tree.visible"
           >
             <p class="treeTopCard__detailsButtonText">Details</p>
           </div>
@@ -58,12 +59,14 @@
 
 <script>
 import db from "@/main.js";
+// import firebase from "firebase/app";
+// import "firebase/auth";
+
 export default {
   data() {
     return {
       allTrees: [],
-      isBottomOpen: false,
-      currentUserID: null
+      isBottomOpen: false
     };
   },
   mounted() {
@@ -71,25 +74,31 @@ export default {
   },
 
   methods: {
-    areYouSure() {
-        this.$fire({
-            title: "Warning",
-            text: "Are you sure you want to delete this tree?",
-            type: "warning",
-            timer: 3000
-        }).then(r => {
-          console.log(r.value);
+    areYouSure(treeIDInput) {
+      this.$fire({
+        title: "Warning",
+        text: "Are you sure you want to delete this tree?",
+        type: "warning",
+        timer: 3000
+      }).then(r => {
+        this.allTrees.map(tree => {
+          if (tree.id === treeIDInput) {
+            console.log("tree.ID", tree.id);
+            console.log("treeINPUT", treeIDInput);
+            console.log(r.value);
+          }
         });
-    },
-    // deleteTree() {
-    //   this.allTrees.map((treeIDInput) => {
-    //       if(tree.id === treeIDInput) {
-
-    //       }
-    //   })
-
-    
+      });
+    }
   },
+
+  //   userTrees() {
+  //     return this.allTrees.filter(tree => tree.userID !== firebase.auth().currentUser.uid)
+  //   },
+  //   myTrees() {
+  //       return this.allTrees.filter(tree => tree.userID === firebase.auth().currentUser.uid)
+  //   },
+  // },
 
   created() {
     // Listens for changes in DB
@@ -107,7 +116,7 @@ export default {
         // }
       });
     });
-  },
+  }
 };
 </script>
 
