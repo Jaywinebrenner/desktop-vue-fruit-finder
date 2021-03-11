@@ -1,6 +1,6 @@
 <template>
   <div class="listViewWrapper">
-    <div class="homeSubheader">
+    <!-- <div class="homeSubheader">
       <h5 class="homeText">Browse the Map for Fruit Trees near you</h5>
     </div>
     <div class="mapListButtonWrapper">
@@ -10,7 +10,7 @@
       <router-link class="viewButton" to="/listview"
         ><button class="mapListButton">List View</button></router-link
       >
-    </div>
+    </div> -->
 
     <div class="treeCardWrapper" v-for="tree in allTrees" :key="tree.id">
       <div class="treeCardTop__wrapper">

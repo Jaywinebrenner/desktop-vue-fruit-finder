@@ -1,15 +1,15 @@
 <template>
   <div class="home">
 
-    <div class="homeSubheader">
+    <!-- <div class="homeSubheader">
       <h5 class="homeText">Browse the Map for Fruit Trees near you</h5>
-      <!-- <p>{{allTrees[0].userID}}</p> -->
+      <p>{{allTrees[0].userID}}</p> 
     </div>
 
     <div class="mapListButtonWrapper">
        <router-link v-if="!isLoggedIn" class="viewButton" to="/"><button class="mapListButton">Map View</button></router-link>
        <router-link v-if="!isLoggedIn" class="viewButton" to="/listview"><button class="mapListButton">List View</button> </router-link>
-    </div>
+    </div> -->
 
     <div class="mapWrapper">
 
@@ -63,7 +63,7 @@
         <div v-html="infoContent"></div>
       </gmap-info-window>
 
-        </div>
+    </div>
       
  
 

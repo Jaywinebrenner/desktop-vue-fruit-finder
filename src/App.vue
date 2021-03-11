@@ -2,16 +2,40 @@
   <div id="appWrapper">
 		<button style="background-color: white;" @click="getCurrentUserButton()">Get Current User</button>
     <Navbar
+			:showAboutView="showAboutView"
+			:showMapView="showMapView"
       :showAddTreeModal="showAddTreeModal"
       :hideAddTreeModal="hideAddTreeModal"
       :formData="formData"
     />
-    <div class="appPage">
+    <!-- <div class="appPage">
       <router-view 
       :handleFormSubmit="handleFormSubmit"
       :userID="userID"
       />
+    </div> -->
+
+		<!-- SUBHEADER -->
+		<div class="homeSubheader">
+      <h5 class="homeText">Browse the Map for Fruit Trees near you</h5>
+      <!-- <p>{{allTrees[0].userID}}</p> -->
     </div>
+    <div class="mapListButtonWrapper">
+       <button class="mapListButton" @click="showMapView()">Map View</button>
+       <button class="mapListButton" @click="showListView()">List View</button> 
+    </div>
+		<!-- END SUBHEADER -->
+
+		<Home
+			v-if="whichView === 'Map'"
+		/>
+		<ListView
+			v-if="whichView === 'List'"
+		/>
+
+		<About 
+			v-if="whichView === 'About'"
+		/>
 
     <modal name="addTreeModal" :width="'90%'" :height="'75%'">
       <h5 class="modalHeader">Enter Tree Information</h5>
@@ -72,6 +96,9 @@
 
 <script>
 import Navbar from "./components/Navbar";
+import Home from "./views/Home";
+import ListView from "./views/ListView";
+import About from "./views/About";
 import db from "./main.js";
 import axios from 'axios';
 import firebase from 'firebase/app';
@@ -80,8 +107,17 @@ import "firebase/auth";
 
 export default {
 	name:"App",
-  data() {
+	components: {
+		Home, 
+		Navbar,
+		ListView,
+		About
+	},
+  
+data() {
     return {
+			whichView: "Map",
+			isMapViewVisible: true,
       API_KEY: process.env.API_KEY_GEOCODE,
       spinLoading: false,
       savedLocations: [],
@@ -141,6 +177,22 @@ export default {
       this.description = "";
       this.street = "";
     },
+		// toggleMapAndList() {
+		// 	console.log("isMapViewVisible?", this.isMapViewVisible)
+		// 	this.isMapViewVisible = !this.isMapViewVisible
+		// },
+		showMapView() {
+			this.whichView = 'Map'
+			console.log("which View??", this.whichView)
+		},
+		showListView() {
+			this.whichView = 'List'
+			console.log("which View??", this.whichView)
+		},
+		showAboutView() {
+			this.whichView = 'About'
+			console.log("which View??", this.whichView)
+		},
     async handleFormSubmit() {
       this.spinLoading = true;
       if (
@@ -211,9 +263,6 @@ export default {
     },
 
   },
-  components: {
-    Navbar
-  }
 };
 </script>
 
@@ -325,6 +374,11 @@ body {
   margin: 4px 0;
   border: 2px black solid;
   border-radius: 5px;
+}
+
+.mapListButtonWrapper {
+  padding: 10px;
+	margin: 0 auto;
 }
 
 </style>
