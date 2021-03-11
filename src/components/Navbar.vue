@@ -6,8 +6,8 @@
         <div id="navbarLeft">
             <!-- <router-link class="routerLinksLeft" to="/">Home</router-link> 
             <router-link class="routerLinksLeft" to="/about">About</router-link> -->
-            <button @click="showMapView" class="routerLinksLeft">Home</button>
-            <button @click="showAboutView" class="routerLinksLeft">About</button>
+            <h2 @click="showView('Map')" class="routerLinksLeft">Home</h2>
+            <h2 @click="showView('About')" class="routerLinksLeft">About</h2>
         </div>
 
         <div  id="navbarRight">
@@ -35,7 +35,7 @@ import "firebase/auth";
 
 export default {
   name:"navbar",
-  props: ['showAboutView', 'showMapView', 'hideAddTreeModal', 'showAddTreeModal', 'formData', 'treeType', 'description', 'street', 'city', 'zip'],
+  props: ['showView', 'hideAddTreeModal', 'showAddTreeModal', 'formData', 'treeType', 'description', 'street', 'city', 'zip'],
   created() {
     firebase.auth().onAuthStateChanged(user => {
         if(user) {

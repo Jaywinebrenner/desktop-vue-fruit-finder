@@ -2,27 +2,19 @@
   <div id="appWrapper">
 		<button style="background-color: white;" @click="getCurrentUserButton()">Get Current User</button>
     <Navbar
-			:showAboutView="showAboutView"
-			:showMapView="showMapView"
+			:showView="showView"
       :showAddTreeModal="showAddTreeModal"
       :hideAddTreeModal="hideAddTreeModal"
       :formData="formData"
     />
-    <!-- <div class="appPage">
-      <router-view 
-      :handleFormSubmit="handleFormSubmit"
-      :userID="userID"
-      />
-    </div> -->
-
 		<!-- SUBHEADER -->
-		<div class="homeSubheader">
+		<div v-if="whichView === 'Map' || whichView === 'List'" class="homeSubheader">
       <h5 class="homeText">Browse the Map for Fruit Trees near you</h5>
       <!-- <p>{{allTrees[0].userID}}</p> -->
     </div>
-    <div class="mapListButtonWrapper">
-       <button class="mapListButton" @click="showMapView()">Map View</button>
-       <button class="mapListButton" @click="showListView()">List View</button> 
+    <div v-if="whichView === 'Map' || whichView === 'List'" class="mapListButtonWrapper">
+       <button class="mapListButton" @click="showView('Map')">Map View</button>
+       <button class="mapListButton" @click="showView('List')">List View</button> 
     </div>
 		<!-- END SUBHEADER -->
 
@@ -35,6 +27,16 @@
 
 		<About 
 			v-if="whichView === 'About'"
+		/>
+
+		<!-- NEED TO IMPLEMENT LOGIN / SIGN UP views -->
+
+		<Login
+			v-if="whichView === 'Login'"
+		/>
+
+		<SignUp
+			v-if="whichView === 'SignUp'"
 		/>
 
     <modal name="addTreeModal" :width="'90%'" :height="'75%'">
@@ -79,7 +81,6 @@
             </b-form-group>
           </b-row>
 
-
           <b-row class="buttonRow" md="1">
 						
             <button type="submit" id="submitTreeButton">
@@ -99,6 +100,8 @@ import Navbar from "./components/Navbar";
 import Home from "./views/Home";
 import ListView from "./views/ListView";
 import About from "./views/About";
+import Login from "./views/Login";
+import SignUp from "./views/SignUp";
 import db from "./main.js";
 import axios from 'axios';
 import firebase from 'firebase/app';
@@ -111,9 +114,11 @@ export default {
 		Home, 
 		Navbar,
 		ListView,
-		About
+		About,
+		Login,
+		SignUp
 	},
-  
+
 data() {
     return {
 			whichView: "Map",
@@ -192,6 +197,18 @@ data() {
 		showAboutView() {
 			this.whichView = 'About'
 			console.log("which View??", this.whichView)
+		},
+		showLoginView() {
+			this.whichView = 'Login'
+			console.log("which View??", this.whichView)
+		},
+		showSignUpView() {
+			this.whichView = 'SignUp'
+			console.log("which View??", this.whichView)
+		},
+		showView(view){
+			this.whichView = view;
+			console.log("Which View? ", this.whichView)
 		},
     async handleFormSubmit() {
       this.spinLoading = true;
