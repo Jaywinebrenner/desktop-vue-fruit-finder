@@ -32,21 +32,22 @@ import * as firebase from "firebase/app"
 import "firebase/auth";
 
 export default {
+  name:"navbar",
   props: ['hideAddTreeModal', 'showAddTreeModal', 'formData', 'treeType', 'description', 'street', 'city', 'zip'],
   created() {
     firebase.auth().onAuthStateChanged(user => {
         if(user) {
           this.isLoggedIn = true;
-          console.log("You just logged in");
+          console.log("Are you logged in?", this.isLoggedIn)
         } else {
           this.isLoggedIn = false;
-          console.log("You just logged out");
+          console.log("Are you logged in?", this.isLoggedIn)
         }
     })
   },
   data() {
     return {
-      isLoggedIn: true,
+      isLoggedIn: null,
     }
   },
   methods: {

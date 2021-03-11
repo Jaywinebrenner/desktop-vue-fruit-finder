@@ -25,6 +25,7 @@ import * as firebase from "firebase/app"
 import "firebase/auth";
 
 export default {
+  name:"Sign Up",
   methods: {
     async pressedSignUp() {
       try {

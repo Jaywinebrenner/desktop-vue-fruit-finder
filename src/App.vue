@@ -1,5 +1,6 @@
 <template>
   <div id="appWrapper">
+		<button style="background-color: white;" @click="getCurrentUserButton()">Get Current User</button>
     <Navbar
       :showAddTreeModal="showAddTreeModal"
       :hideAddTreeModal="hideAddTreeModal"
@@ -56,6 +57,7 @@
 
 
           <b-row class="buttonRow" md="1">
+						
             <button type="submit" id="submitTreeButton">
               <b-spinner small v-if="spinLoading" label="Spinning"></b-spinner
               ><span v-if="!spinLoading">Submit Tree</span>
@@ -77,7 +79,7 @@ import "firebase/auth";
 // import API_KEY from '@/geocoder.js'
 
 export default {
-
+	name:"App",
   data() {
     return {
       API_KEY: process.env.API_KEY_GEOCODE,
@@ -100,7 +102,7 @@ export default {
     };
   },
   mounted() {
-
+		this.getCurrentUser()
   },
 
   computed: {
@@ -108,19 +110,20 @@ export default {
       if (firebase.auth().currentUser) {
         return firebase.auth().currentUser.uid
       } else {
-        return "candy"
+        return "No User ID Available"
       }
     }
   },
 
   methods: {
-    // async getCurrentUser() {
-    //   alert("ONE")
-    //   let id = null
-    //   id = await firebase.auth().currentUser.uid
-    //   id && console.log("currentUserID", id);
-    //   alert("TWO")
-    // },
+    async getCurrentUser() {
+      let id = null
+      id = await firebase.auth().currentUser.uid
+      console.log("currentUserID", id);
+    },
+		getCurrentUserButton() {
+			console.log("CURRENT USER: ", firebase.auth().currentUser)
+		},
     makeToast(append = false) {
         this.$bvToast.toast("You have successfully uploaded your tree.", {
           title: 'Well done, friend!',
@@ -146,6 +149,7 @@ export default {
         !this.formData.street 
       ) {
         alert("You didn't fill out the form properly. Give it another shot!");
+        this.spinLoading = false;
         return;
       }
 
