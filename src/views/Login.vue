@@ -27,14 +27,24 @@ import "firebase/auth";
 
 export default {
   name:"Login",
+  props: {
+    showView: Function
+  },
   methods: {
     async pressedLogin() {
       try {
         const value = await firebase.auth().signInWithEmailAndPassword(this.email, this.password);
         // this.$router.replace({name: '/'})
-        this.$router.push('/')
+        // this.$router.push('/')
+        this.showView("Map")
+        this.$toastr.s(
+              "You have successfully logged in. Happy hunting!"
+            );
         console.log("value after pressing login", value);
       } catch (err) {
+        this.$toastr.e(
+              err
+            );
         console.log(err);
       }
     },

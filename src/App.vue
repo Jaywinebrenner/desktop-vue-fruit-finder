@@ -3,6 +3,7 @@
 		<button style="background-color: white;" @click="getCurrentUserButton()">Get Current User</button>
     <Navbar
 			:showView="showView"
+      :isLoggedIn="isLoggedIn"
       :showAddTreeModal="showAddTreeModal"
       :hideAddTreeModal="hideAddTreeModal"
       :formData="formData"
@@ -33,10 +34,12 @@
 
 		<Login
 			v-if="whichView === 'Login'"
+      :showView="showView"
 		/>
 
 		<SignUp
 			v-if="whichView === 'SignUp'"
+      :showView="showView"
 		/>
 
     <modal name="addTreeModal" :width="'90%'" :height="'75%'">
@@ -126,6 +129,7 @@ data() {
       API_KEY: process.env.API_KEY_GEOCODE,
       spinLoading: false,
       savedLocations: [],
+      isLoggedIn: null,
       formData: {
         treeType: "",
         description: "",
@@ -160,10 +164,11 @@ data() {
     async getCurrentUser() {
       let id = null
       id = await firebase.auth().currentUser.uid
-      console.log("currentUserID", id);
+      console.log("CURRENT USER ID", id);
     },
 		getCurrentUserButton() {
-			console.log("CURRENT USER: ", firebase.auth().currentUser)
+      console.log("Made it bro")
+			// console.log("CURRENT USER: ", firebase.auth().currentUser)
 		},
     makeToast(append = false) {
         this.$bvToast.toast("You have successfully uploaded your tree.", {
@@ -182,28 +187,8 @@ data() {
       this.description = "";
       this.street = "";
     },
-		// toggleMapAndList() {
-		// 	console.log("isMapViewVisible?", this.isMapViewVisible)
-		// 	this.isMapViewVisible = !this.isMapViewVisible
-		// },
 		showMapView() {
 			this.whichView = 'Map'
-			console.log("which View??", this.whichView)
-		},
-		showListView() {
-			this.whichView = 'List'
-			console.log("which View??", this.whichView)
-		},
-		showAboutView() {
-			this.whichView = 'About'
-			console.log("which View??", this.whichView)
-		},
-		showLoginView() {
-			this.whichView = 'Login'
-			console.log("which View??", this.whichView)
-		},
-		showSignUpView() {
-			this.whichView = 'SignUp'
 			console.log("which View??", this.whichView)
 		},
 		showView(view){
@@ -278,7 +263,17 @@ data() {
       this.spinLoading = false;
       this.makeToast();
     },
-
+  },
+  created() {
+    firebase.auth().onAuthStateChanged(user => {
+        if(user) {
+          this.isLoggedIn = true;
+          console.log("Are you logged in?", this.isLoggedIn)
+        } else {
+          this.isLoggedIn = false;
+          console.log("Are you logged in?", this.isLoggedIn)
+        }
+    })
   },
 };
 </script>

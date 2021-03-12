@@ -24,20 +24,11 @@
 import * as firebase from "firebase/app"
 import "firebase/auth";
 
-export default {
-  name:"Sign Up",
-  methods: {
-    async pressedSignUp() {
-      try {
-        const user = await firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
-        // this.$router.replace({name: '/'})
-        this.$router.push('/')
-        console.log("user", user);
 
-      } catch (err) {
-        console.log(err);
-      }
-    },
+export default {
+  name:"SignUp",
+  props: {
+    showView: Function
   },
   data() {
     return {
@@ -45,7 +36,29 @@ export default {
       password: '',
       error: ''
     }
-  }
+  },
+  methods: {
+    async pressedSignUp() {
+      try {
+        const user = await firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
+        // this.$router.replace({name: '/'})
+        // this.$router.push('/')
+        this.showView("Map")
+        this.$toastr.s(
+              "You have successfully created an account. Happy hunting!"
+            );
+        console.log("user", user);
+
+      } catch (err) {
+        console.log(err);
+            this.$toastr.e(
+              err
+            );
+           
+  
+      }
+    },
+  },
 
 }
 </script>
