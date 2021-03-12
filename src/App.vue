@@ -30,8 +30,6 @@
 			v-if="whichView === 'About'"
 		/>
 
-		<!-- NEED TO IMPLEMENT LOGIN / SIGN UP views -->
-
 		<Login
 			v-if="whichView === 'Login'"
       :showView="showView"
@@ -90,6 +88,7 @@
               <b-spinner small v-if="spinLoading" label="Spinning"></b-spinner
               ><span v-if="!spinLoading">Submit Tree</span>
             </button>
+
           </b-row>
         </b-form>
       </div>
@@ -170,13 +169,13 @@ data() {
       console.log("Made it bro")
 			// console.log("CURRENT USER: ", firebase.auth().currentUser)
 		},
-    makeToast(append = false) {
-        this.$bvToast.toast("You have successfully uploaded your tree.", {
-          title: 'Well done, friend!',
-          autoHideDelay: 3000,
-          appendToast: append
-        })
-      },
+    // makeToast(append = false) {
+    //     this.$bvToast.toast("You have successfully uploaded your tree.", {
+    //       title: 'Well done, friend!',
+    //       autoHideDelay: 3000,
+    //       appendToast: append
+    //     })
+    //   },
    
     showAddTreeModal() {
       this.$modal.show("addTreeModal");
@@ -187,10 +186,6 @@ data() {
       this.description = "";
       this.street = "";
     },
-		showMapView() {
-			this.whichView = 'Map'
-			console.log("which View??", this.whichView)
-		},
 		showView(view){
 			this.whichView = view;
 			console.log("Which View? ", this.whichView)
@@ -202,7 +197,9 @@ data() {
         !this.formData.description ||
         !this.formData.street 
       ) {
-        alert("You didn't fill out the form properly. Give it another shot!");
+        this.$toastr.e(
+              "You didn't fill out the form properly. Give it another shot!"
+            );
         this.spinLoading = false;
         return;
       }
@@ -216,7 +213,7 @@ data() {
           street: this.formData.street,
         };
 
-    let formattedAddress = '';
+      let formattedAddress = '';
 
       await axios.get('https://maps.googleapis.com/maps/api/geocode/json', {
         params:{
@@ -261,7 +258,10 @@ data() {
       this.formData.street = "";
       this.hideAddTreeModal();
       this.spinLoading = false;
-      this.makeToast();
+      // this.makeToast();
+      this.$toastr.s(
+          "You have successfully uploaded your tree!"
+        );
     },
   },
   created() {

@@ -11,7 +11,13 @@
     <div class="password">
       <input type="password" v-model="password" placeholder="password">
     </div>
-    <button class="signUpButton" type="submit">Sign Up</button>
+
+    <button type="submit" class="signUpButton">
+      <b-spinner small v-if="spinLoading" label="Spinning"></b-spinner>
+      <span v-if="!spinLoading">Sign Up</span>
+    </button>
+
+
   </form>
   </div>
 
@@ -34,11 +40,13 @@ export default {
     return {
       email: '',
       password: '',
-      error: ''
+      error: '',
+      spinLoading: false
     }
   },
   methods: {
     async pressedSignUp() {
+      this.spinLoading = true;
       try {
         const user = await firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
         // this.$router.replace({name: '/'})
@@ -48,12 +56,14 @@ export default {
               "You have successfully created an account. Happy hunting!"
             );
         console.log("user", user);
+        this.spinLoading = false;
 
       } catch (err) {
         console.log(err);
             this.$toastr.e(
               err
             );
+        this.spinLoading = false;
            
   
       }

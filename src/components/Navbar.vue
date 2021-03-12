@@ -12,8 +12,6 @@
         </div>
 
         <div  id="navbarRight">
-            <!-- <router-link v-if="!isLoggedIn" class="routerLinkRight" to="/signUp">Sign Up</router-link>
-            <router-link v-if="!isLoggedIn" class="routerLinkRight" to="/login">Login </router-link> -->
             <h5 @click="showView('SignUp')" v-if="!isLoggedIn" class="routerLinkRight">Sign Up</h5>
             <h5 @click="showView('Login')" v-if="!isLoggedIn" class="routerLinkRight">Login</h5>
             <h5 v-if="isLoggedIn" @click="logout" class="logoutText">Logout</h5>
