@@ -4,7 +4,7 @@
     <div class="topNavbarWrapper">
 
         <div id="navbarLeft">
-          <button @click="test()">TEST</button>
+          <!-- <button @click="test()">TEST</button> -->
             <!-- <router-link class="routerLinksLeft" to="/">Home</router-link> 
             <router-link class="routerLinksLeft" to="/about">About</router-link> -->
             <h5 @click="showView('Map')" class="routerLinksLeft">Home</h5>
@@ -39,19 +39,10 @@ export default {
   props: {
     showView: Function,
     showAddTreeModal: Function,
-    isLoggedIn: Boolean
+    isLoggedIn: Boolean,
+    getCurrentUser: Function,
+    getCurrentUserID: Function
   },
-  // created() {
-  //   firebase.auth().onAuthStateChanged(user => {
-  //       if(user) {
-  //         this.isLoggedIn = true;
-  //         console.log("Are you logged in?", this.isLoggedIn)
-  //       } else {
-  //         this.isLoggedIn = false;
-  //         console.log("Are you logged in?", this.isLoggedIn)
-  //       }
-  //   })
-  // },
   data() {
     return {
     }
@@ -65,9 +56,15 @@ export default {
       try {
         const data = await firebase.auth().signOut();
         console.log("logout data", data);
-        this.$router.push('/')
+        this.getCurrentUser();
+        this.getCurrentUserID();
+        this.$toastr.e(
+            "You have successfully logged out of the Fruit Finder. See you soon!"
+          );
       } catch (err) {
-        console.log(err);
+        this.$toastr.e(
+            err
+          );
       }
     },
     

@@ -1,17 +1,21 @@
 <template>
   <div id="appWrapper">
-		<button style="background-color: white;" @click="getCurrentUserButton()">Get Current User</button>
     <Navbar
 			:showView="showView"
       :isLoggedIn="isLoggedIn"
       :showAddTreeModal="showAddTreeModal"
       :hideAddTreeModal="hideAddTreeModal"
       :formData="formData"
+      :getCurrentUser="getCurrentUser"
+      :getCurrentUserID="getCurrentUserID"
     />
 		<!-- SUBHEADER -->
-		<div v-if="whichView === 'Map' || whichView === 'List'" class="homeSubheader">
-      <h5 class="homeText">Browse the Map for Fruit Trees near you</h5>
+		<div v-if="whichView === 'Map'" class="homeSubheader">
+      <h5 class="homeText">Browse the Map for Fruit Trees Near You</h5>
       <!-- <p>{{allTrees[0].userID}}</p> -->
+    </div>
+    <div v-if="whichView === 'List'" class="homeSubheader">
+      <h5 class="homeText">Peruse the list for Fruit Trees Near You</h5>
     </div>
     <div v-if="whichView === 'Map' || whichView === 'List'" class="mapListButtonWrapper">
        <button class="mapListButton" @click="showView('Map')">Map View</button>
@@ -21,9 +25,13 @@
 
 		<Home
 			v-if="whichView === 'Map'"
+      :allTrees="allTrees"
+      :currentUser="currentUser"
+      :currentUserID="currentUserID"
 		/>
 		<ListView
 			v-if="whichView === 'List'"
+      :allTrees="allTrees"
 		/>
 
 		<About 
@@ -33,6 +41,7 @@
 		<Login
 			v-if="whichView === 'Login'"
       :showView="showView"
+      :getCurrentUser="getCurrentUser"
 		/>
 
 		<SignUp
@@ -40,7 +49,12 @@
       :showView="showView"
 		/>
 
-    <modal name="addTreeModal" :width="'90%'" :height="'75%'">
+    <modal class="modalWrapper" name="addTreeModal" :width="'90%'" :height="'75%'">
+      <div class="xIconWrapper">
+         <font-awesome-icon @click="hideAddTreeModal()" class="xIcon" icon="times" size="lg"/>
+         <!-- <font-awesome-icon @click="hideAddTreeModal()" class="treeIcon" icon="tree" size="lg"/> -->
+      </div>
+ 
       <h5 class="modalHeader">Enter Tree Information</h5>
 
       <div class="formWrapper container mt-6">
@@ -123,6 +137,9 @@ export default {
 
 data() {
     return {
+      allTrees: [],
+      currentUser: null,
+      currentUserID: null,
 			whichView: "Map",
 			isMapViewVisible: true,
       API_KEY: process.env.API_KEY_GEOCODE,
@@ -149,26 +166,17 @@ data() {
 		this.getCurrentUser()
   },
 
-  computed: {
-    userID() {
-      if (firebase.auth().currentUser) {
-        return firebase.auth().currentUser.uid
-      } else {
-        return "No User ID Available"
-      }
-    }
-  },
-
   methods: {
     async getCurrentUser() {
-      let id = null
-      id = await firebase.auth().currentUser.uid
-      console.log("CURRENT USER ID", id);
+      this.currentUser = await firebase.auth().currentUser;
     },
-		getCurrentUserButton() {
-      console.log("Made it bro")
-			// console.log("CURRENT USER: ", firebase.auth().currentUser)
-		},
+    async getCurrentUserID() {
+      if (firebase.auth().currentUser) {
+        this.currentUserID = await firebase.auth().currentUser.uid;
+      } else {
+        this.currentUserID = null;
+      }
+    },
     // makeToast(append = false) {
     //     this.$bvToast.toast("You have successfully uploaded your tree.", {
     //       title: 'Well done, friend!',
@@ -176,6 +184,7 @@ data() {
     //       appendToast: append
     //     })
     //   },
+
    
     showAddTreeModal() {
       this.$modal.show("addTreeModal");
@@ -190,6 +199,7 @@ data() {
 			this.whichView = view;
 			console.log("Which View? ", this.whichView)
 		},
+    
     async handleFormSubmit() {
       this.spinLoading = true;
       if (
@@ -203,18 +213,14 @@ data() {
         this.spinLoading = false;
         return;
       }
-
       let coordObject = {
         lat: '',
         lng: ''
       }
-
       const addressObject = {
           street: this.formData.street,
         };
-
       let formattedAddress = '';
-
       await axios.get('https://maps.googleapis.com/maps/api/geocode/json', {
         params:{
           address: addressObject,
@@ -226,16 +232,19 @@ data() {
           coordObject = response.data.results[0].geometry.location;
           formattedAddress = response.data.results[0].formatted_address;
         } else {
-          alert("Sorry. The address you entered was wonky. Please try again.")
+          this.$toastr.e(
+              "Sorry, the address or cross street you entered was wonky... Give it another shot!"
+            );
           return;
         }
       })
       .catch((error)=> {
-        alert(error)
+        this.$toastr.e(
+              error
+            );
         return;
       });
       
-  
       let submittedTreeData = {
         userID: firebase.auth().currentUser.uid,
         treeType: this.formData.treeType,
@@ -263,17 +272,33 @@ data() {
           "You have successfully uploaded your tree!"
         );
     },
+    
   },
   created() {
     firebase.auth().onAuthStateChanged(user => {
         if(user) {
           this.isLoggedIn = true;
+          this.getCurrentUser()
+          this.getCurrentUserID()
           console.log("Are you logged in?", this.isLoggedIn)
         } else {
           this.isLoggedIn = false;
+          this.getCurrentUser()
+          this.getCurrentUserID()
           console.log("Are you logged in?", this.isLoggedIn)
         }
     })
+    db.collection("locations").onSnapshot(res => {
+      const changes = res.docChanges();
+      console.log("changes", changes);
+      changes.forEach(change => {
+        this.allTrees.push({
+          ...change.doc.data(),
+          id: change.doc.id,
+          visible: true
+        });
+      });
+    });
   },
 };
 </script>
@@ -321,6 +346,8 @@ body {
   margin: 20px 0;
   color: $primary;
 }
+
+
 
 .formWrapper {
   display: flex;
@@ -391,6 +418,22 @@ body {
 .mapListButtonWrapper {
   padding: 10px;
 	margin: 0 auto;
+}
+
+.xIcon {
+  display: inline-block;
+  color: $primary;
+  cursor: pointer;
+  width: 30px;
+}
+
+// .treeIcon {
+//   color: $hover;
+//   padding: 20px;
+// }
+
+.xIconWrapper {
+  padding: 10px;
 }
 
 </style>

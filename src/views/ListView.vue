@@ -1,17 +1,5 @@
 <template>
   <div class="listViewWrapper">
-    <!-- <div class="homeSubheader">
-      <h5 class="homeText">Browse the Map for Fruit Trees near you</h5>
-    </div>
-    <div class="mapListButtonWrapper">
-      <router-link class="viewButton" to="/"
-        ><button class="mapListButton">Map View</button></router-link
-      >
-      <router-link class="viewButton" to="/listview"
-        ><button class="mapListButton">List View</button></router-link
-      >
-    </div> -->
-
     <div class="treeCardWrapper" v-for="tree in allTrees" :key="tree.id">
       <div class="treeCardTop__wrapper">
         <div class="treeCardTop__logoWrapper">
@@ -63,9 +51,12 @@ import db from "@/main.js";
 // import "firebase/auth";
 
 export default {
+  props: {
+    allTrees: Array
+  },
   data() {
     return {
-      allTrees: [],
+      // allTrees: [],
       isBottomOpen: false
     };
   },
@@ -127,7 +118,7 @@ export default {
   background-color: $primary;
   display: flex;
   flex-flow: column;
-  height: 100%;
+  // height: 100%;
   justify-content: center;
   align-items: center;
   flex-direction: column;
@@ -144,6 +135,11 @@ export default {
   display: flex;
   border: 1px solid white;
   align-items: center;
+}
+
+.treeCardBottom__Wrapper {
+  background-color: white;
+  padding: 10px;
 }
 
 .treeCardTop__logoWrapper {
@@ -195,11 +191,6 @@ export default {
 
 .treeTopCard__deleteButtonText {
   color: $primary;
-}
-
-.treeCardBottom__Wrapper {
-  background-color: white;
-  padding: 10px;
 }
 
 .treeCardBottom__typeText {

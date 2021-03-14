@@ -61,7 +61,8 @@
         :icon="{ url: require('../assets/customTreeSmall.png')}" 
         :position="tree.coordinates"
         :clickable="true"
-        :draggable="false"
+        :draggable="true"
+        @dragend="getDraggedMarkerPosition($event)"
         @click="toggleInfoWindow(tree, index)">
       </GmapMarker>
 
@@ -82,8 +83,7 @@
             :icon="{ url: require('../assets/customTreeMyTreeSmall.png')}" 
             :position="tree.coordinates"
             :clickable="true"
-            :draggable="false"
-            @dragend="getDraggedMarkerPosition($event)"
+            :draggable="true"
             @click="toggleInfoWindow(tree, index)">
         </GmapMarker>
 
@@ -107,7 +107,7 @@
 <script>
 import { mapStyle } from "../constants/mapStyle.js";
 import db from "@/main.js";
-// import firebase from 'firebase/app';
+import firebase from 'firebase/app';
 import "firebase/auth";
 
 const allTreesMarker = require("../assets/customTreeSmall.png");
@@ -118,9 +118,7 @@ export default {
   name: "Home",
   props: {
     handleFormSubmit: Function,
-    allTrees: Array,
-    currentUserID: String,
-    currentUser: Object
+    allTrees: Array
   },
   components: {},
 
@@ -260,6 +258,14 @@ export default {
   },
 
   computed: {
+    currentUserID() {
+      if (firebase.auth().currentUser) {
+        return firebase.auth().currentUser.uid
+      } else {
+        return null
+      }
+    },
+
     userTrees() {
       return this.allTrees.filter(tree => tree.userID !== this.currentUserID)
     },

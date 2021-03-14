@@ -32,7 +32,8 @@ import "firebase/auth";
 export default {
   name:"Login",
   props: {
-    showView: Function
+    showView: Function,
+    getCurrentUser: Function
   },
   data() {
     return {
@@ -45,11 +46,13 @@ export default {
   methods: {
     async pressedLogin() {
       this.spinLoading = true;
+      
       try {
         const value = await firebase.auth().signInWithEmailAndPassword(this.email, this.password);
         this.showView("Map")
         console.log("value after pressing login", value);
         this.spinLoading = false;
+        this.getCurrentUser()
       } catch (err) {
         this.$toastr.e(
             err
