@@ -231,10 +231,15 @@ export default {
     },
 
     getInfoWindowContent: function(marker) {
+      console.log("marker",marker)
       return `<div class="windowCard">
         <div class="windowTop">
           <h6 class="windowTopText">${marker.treeType}</h6>
         </div>
+        <div class="contributorDiv">
+           <p class="contributorText"><strong>Contributed by: </strong> ${marker.contributorName}</p>
+        </div>
+      
         <div class="windowBottom">
           <h6 class="windowBottomText">${marker.description}</h6>
         </div>
@@ -367,6 +372,8 @@ background-color: $primary;
 .windowTopText {
   padding: 2px;
   font-size: .9rem;
+  // line-height: .9;
+  margin-bottom: 0px;
 }
 
 .windowBottomText {
@@ -378,4 +385,12 @@ background-color: $primary;
 .windowBottom {
 
 }
+
+.contributorText {
+  font-size: 10px;
+  color: black;
+  margin-bottom: 0;
+  line-height: 1.5;
+}
+
 </style>

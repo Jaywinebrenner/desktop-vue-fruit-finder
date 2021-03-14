@@ -251,7 +251,8 @@ data() {
         description: this.formData.description,
         address: addressObject,
         formattedAddress: formattedAddress,
-        coordinates: coordObject
+        coordinates: coordObject,
+        contributorName: this.currentUser.displayName
       }
 
       await db

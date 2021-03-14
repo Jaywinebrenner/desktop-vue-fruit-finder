@@ -5,6 +5,9 @@
   <div v-if="error" class="error">{{error.message}}</div>
   <form @submit.prevent="pressedSignUp">
     <h3>Sign Up</h3>
+    <div>
+      <input type="text" v-model="name" placeholder="Fred McTree">
+    </div>
     <div class="email">
       <input type="email" v-model="email" placeholder="email">
     </div>
@@ -40,6 +43,7 @@ export default {
     return {
       email: '',
       password: '',
+      name: '',
       error: '',
       spinLoading: false
     }
@@ -47,11 +51,37 @@ export default {
   methods: {
     async pressedSignUp() {
       this.spinLoading = true;
+      if (!this.name) {
+        this.$toastr.s(
+              "Please enter your name. But, ya know, it doesn't have to be your real name."
+            );
+            this.spinLoading = false;
+        return;
+      }
+
+      // firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
+      // .then(
+      //   (user)=>{
+      //     if(user){
+      //       user.updateProfile({
+      //         displayName: this.name
+      //       }).then(
+      //         (s)=> // perform any other operation
+            
+      //     }
+      // })
+      // .catch(function(error) {
+      //   // Handle Errors here.
+      //   var errorCode = error.code;
+      //   var errorMessage = error.message;
+      //   // ...
+      // });
       try {
-        const user = await firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
-        // this.$router.replace({name: '/'})
-        // this.$router.push('/')
-        this.showView("Map")
+        const user = await firebase.auth().createUserWithEmailAndPassword(this.email, this.password);
+        firebase.auth().currentUser.updateProfile({
+          displayName: this.name
+        })
+        this.showView("Map");
         this.$toastr.s(
               "You have successfully created an account. Happy hunting!"
             );
@@ -64,9 +94,9 @@ export default {
               err
             );
         this.spinLoading = false;
-           
-  
       }
+
+
     },
   },
 
