@@ -247,23 +247,37 @@ export default {
     }
   },
   created() {
+    
     navigator.geolocation.getCurrentPosition(position => {
       this.myCoordinates.lat = position.coords.latitude;
       this.myCoordinates.lng = position.coords.longitude;
     }),
       db.collection("locations").onSnapshot(res => {
         const changes = res.docChanges();
-        console.log("changes", changes);
         changes.forEach(change => {
-          this.allTrees.push({
-            ...change.doc.data(),
-            id: change.doc.id,
-            visible: true
-          });
+          let newTrees = [];
+          if (change.type === "added") {
+            const changedData = change.doc.data();
+            console.log("Added: ", change.doc.data());
+            newTrees.push(changedData);
+            }
+            if (change.type === "modified") {
+            console.log("Modified: ", change.doc.data());
+            }
+            if (change.type === "removed") {
+            console.log("Removed: ", change.doc.data());
+            }
+
+          // this.allTrees.push({
+          //   ...change.doc.data(),
+          //   id: change.doc.id,
+          //   visible: true
+          // });
+          console.log("allTrees in Home", this.allTrees)
         });
       });
   },
-
+ 
   computed: {
     userTrees() {
       return this.allTrees.filter(tree => tree.userID !== this.currentUserID)

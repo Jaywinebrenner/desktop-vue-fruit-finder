@@ -19,6 +19,7 @@
         <div class="treeCardTop__buttonWrapper">
           <div
             class="treeTopCard__deleteButton"
+            v-if="tree.userID === currentUserID"
             @click="areYouSure(tree.id)"
           >
             <p class="treeTopCard__deleteButtonText">Delete</p>
@@ -51,8 +52,10 @@ import db from "@/main.js";
 // import "firebase/auth";
 
 export default {
+  name: "ListView",
   props: {
-    allTrees: Array
+    allTrees: Array,
+    currentUserID: String
   },
   data() {
     return {
@@ -61,7 +64,7 @@ export default {
     };
   },
   mounted() {
-    // this.allTrees && console.log("db on List View", this.allTrees);
+    
   },
 
   methods: {
@@ -77,6 +80,11 @@ export default {
             console.log("tree.ID", tree.id);
             console.log("treeINPUT", treeIDInput);
             console.log(r.value);
+            db.collection("locations").doc(tree.id).delete().then(() => {
+                console.log("Document successfully deleted!");
+            }).catch((error) => {
+                console.error("Error removing document: ", error);
+            });
           }
         });
       });
@@ -92,21 +100,22 @@ export default {
   // },
 
   created() {
+    this.allTrees && console.log("allTrees on List View", this.allTrees);
     // Listens for changes in DB
-    db.collection("locations").onSnapshot(res => {
-      const changes = res.docChanges();
-      console.log("changes", changes);
+    // db.collection("locations").onSnapshot(res => {
+    //   const changes = res.docChanges();
+    //   console.log("changes", changes);
 
-      changes.forEach(change => {
-        // if (change.type === "added" || change.type == "") {
-        this.allTrees.push({
-          ...change.doc.data(),
-          id: change.doc.id,
-          visible: true
-        });
-        // }
-      });
-    });
+    //   changes.forEach(change => {
+    //     // if (change.type === "added" || change.type == "") {
+    //     this.allTrees.push({
+    //       ...change.doc.data(),
+    //       id: change.doc.id,
+    //       visible: true
+    //     });
+    //     // }
+    //   });
+    // });
   }
 };
 </script>

@@ -32,6 +32,7 @@
 		<ListView
 			v-if="whichView === 'List'"
       :allTrees="allTrees"
+      :currentUserID="currentUserID"
 		/>
 
 		<About 
