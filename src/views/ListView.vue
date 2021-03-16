@@ -48,6 +48,7 @@
 
 <script>
 import db from "@/main.js";
+import {  convertDistance } from 'geolib';
 // import firebase from "firebase/app";
 // import "firebase/auth";
 
@@ -82,7 +83,17 @@ export default {
                 console.error("Error removing document: ", error);
             });
       });
+    },
+    milesOrYards(distance) {
+      if (distance < 1609.34) {
+        let dist = Math.round(convertDistance(distance, "yd"));
+        return(dist + " yards away");
+      } else {
+        let dist = Math.round(convertDistance(distance, "mi"));
+        return (dist + " miles away");
+      }
     }
+    
   },
 
   //   userTrees() {

@@ -252,30 +252,6 @@ export default {
       this.myCoordinates.lat = position.coords.latitude;
       this.myCoordinates.lng = position.coords.longitude;
     })
-      // db.collection("locations").onSnapshot(res => {
-      //   const changes = res.docChanges();
-      //   changes.forEach(change => {
-      //     let newTrees = [];
-      //     if (change.type === "added") {
-      //       const changedData = change.doc.data();
-      //       console.log("Added: ", change.doc.data());
-      //       newTrees.push(changedData);
-      //       }
-      //       if (change.type === "modified") {
-      //       console.log("Modified: ", change.doc.data());
-      //       }
-      //       if (change.type === "removed") {
-      //       console.log("Removed: ", change.doc.data());
-      //       }
-
-      //     // this.allTrees.push({
-      //     //   ...change.doc.data(),
-      //     //   id: change.doc.id,
-      //     //   visible: true
-      //     // });
-      //     console.log("allTrees in Home", this.allTrees)
-      //   });
-      // });
   },
  
   computed: {
