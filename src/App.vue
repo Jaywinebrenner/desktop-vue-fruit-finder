@@ -289,18 +289,34 @@ data() {
           this.getCurrentUserID()
           console.log("Are you logged in?", this.isLoggedIn)
         }
-    })
+    })      
     db.collection("locations").onSnapshot(res => {
-      const changes = res.docChanges();
-      console.log("changes", changes);
-      changes.forEach(change => {
-        this.allTrees.push({
-          ...change.doc.data(),
-          id: change.doc.id,
-          visible: true
+        const changes = res.docChanges();
+        changes.forEach(change => {
+          let newTrees = [];
+          if (change.type === "added") {
+              const changedData = change.doc.data();
+              console.log("Added: ", change.doc.data());
+              newTrees.push(changedData);
+
+              this.allTrees.push({
+                ...change.doc.data(),
+                id: change.doc.id, 
+                visible: true
+              });
+            }
+            if (change.type === "modified") {
+              console.log("Modified: ", change.doc.data());
+            }
+            if (change.type === "removed") {
+              // Find index of removed tree and remove it from UI
+              var removeIndex = this.allTrees.map(function(item) { return item.id; }).indexOf(change.doc.id);
+              this.allTrees.splice(removeIndex, 1);
+              console.log("allTrees DELETE", this.allTrees);
+              console.log("Removed: ", change.doc.data());
+            }
         });
       });
-    });
   },
 };
 </script>

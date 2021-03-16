@@ -75,18 +75,12 @@ export default {
         type: "warning",
         timer: 3000
       }).then(r => {
-        this.allTrees.map(tree => {
-          if (tree.id === treeIDInput) {
-            console.log("tree.ID", tree.id);
-            console.log("treeINPUT", treeIDInput);
-            console.log(r.value);
-            db.collection("locations").doc(tree.id).delete().then(() => {
+            console.log(r);
+            db.collection("locations").doc(treeIDInput).delete().then(() => {
                 console.log("Document successfully deleted!");
             }).catch((error) => {
                 console.error("Error removing document: ", error);
             });
-          }
-        });
       });
     }
   },
