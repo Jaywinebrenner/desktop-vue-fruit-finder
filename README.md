@@ -89,7 +89,5 @@ npm run lint
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
 
-Animate growing trees.
-add X to modal
-add spin to login / sign out / 
+
 

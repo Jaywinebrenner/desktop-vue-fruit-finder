@@ -120,7 +120,8 @@ export default {
     handleFormSubmit: Function,
     allTrees: Array,
     currentUserID: String,
-    currentUser: Object
+    currentUser: Object,
+    myCoordinates: Object
   },
   components: {},
 
@@ -155,10 +156,10 @@ export default {
       styles: mapStyle,
       map: null,
       
-      myCoordinates: {
-        lat: 0,
-        lng: 0
-      },
+      // myCoordinates: {
+      //   lat: 0,
+      //   lng: 0
+      // },
       // postDragCoords: {},
       treeIcon: null
 
@@ -248,10 +249,10 @@ export default {
   },
   created() {
     
-    navigator.geolocation.getCurrentPosition(position => {
-      this.myCoordinates.lat = position.coords.latitude;
-      this.myCoordinates.lng = position.coords.longitude;
-    })
+    // navigator.geolocation.getCurrentPosition(position => {
+    //   this.myCoordinates.lat = position.coords.latitude;
+    //   this.myCoordinates.lng = position.coords.longitude;
+    // })
   },
  
   computed: {

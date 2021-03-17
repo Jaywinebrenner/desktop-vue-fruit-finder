@@ -28,11 +28,13 @@
       :allTrees="allTrees"
       :currentUser="currentUser"
       :currentUserID="currentUserID"
+      :myCoordinates="myCoordinates"
 		/>
 		<ListView
 			v-if="whichView === 'List'"
       :allTrees="allTrees"
       :currentUserID="currentUserID"
+      :myCoordinates="myCoordinates"
 		/>
 
 		<About 
@@ -160,7 +162,11 @@ data() {
           lat: "",
           lng: ""
         }
-      }
+      },
+      myCoordinates: {
+        lat: 0,
+        lng: 0
+      },
     };
   },
   mounted() {
@@ -317,6 +323,10 @@ data() {
             }
         });
       });
+      navigator.geolocation.getCurrentPosition(position => {
+        this.myCoordinates.lat = position.coords.latitude;
+        this.myCoordinates.lng = position.coords.longitude;
+      })
   },
 };
 </script>
