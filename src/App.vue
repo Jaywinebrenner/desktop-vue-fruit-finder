@@ -125,7 +125,8 @@ import db from "./main.js";
 import axios from 'axios';
 import firebase from 'firebase/app';
 import "firebase/auth";
-// import API_KEY from '@/geocoder.js'
+import getDistance from 'geolib/es/getPreciseDistance';
+
 
 export default {
 	name:"App",
@@ -280,9 +281,23 @@ data() {
           "You have successfully uploaded your tree!"
         );
     },
+
+    sortAllTrees() {
+    this.allTrees.forEach((tree) => {
+      console.log(tree)
+      let distance = getDistance(
+      { latitude: tree.coordinates.lat, longitude: tree.coordinates.lng },
+      { latitude: this.myCoordinates.lat, longitude: this.myCoordinates.lng },
+      );
+      tree.distance = distance;
+    });
+    this.allTrees.sort((a, b) =>
+    a.distance > b.distance ? 1 : -1,)
+  },
     
   },
   created() {
+    
     firebase.auth().onAuthStateChanged(user => {
         if(user) {
           this.isLoggedIn = true;
@@ -296,13 +311,14 @@ data() {
           console.log("Are you logged in?", this.isLoggedIn)
         }
     })      
-    db.collection("locations").onSnapshot(res => {
-        const changes = res.docChanges();
+      
+    db.collection("locations").onSnapshot(snapshot => {
+        const changes = snapshot.docChanges();
         changes.forEach(change => {
           let newTrees = [];
           if (change.type === "added") {
               const changedData = change.doc.data();
-              console.log("Added: ", change.doc.data());
+              // console.log("Added: ", change.doc.data());
               newTrees.push(changedData);
 
               this.allTrees.push({
@@ -321,8 +337,22 @@ data() {
               console.log("allTrees DELETE", this.allTrees);
               console.log("Removed: ", change.doc.data());
             }
+
+            // Sort trees by distance
+              this.allTrees.forEach((tree) => {
+                console.log(tree)
+                let distance = getDistance(
+                { latitude: tree.coordinates.lat, longitude: tree.coordinates.lng },
+                { latitude: this.myCoordinates.lat, longitude: this.myCoordinates.lng },
+                );
+                tree.distance = distance;
+                console.log("distance in computed", tree)
+              });
+              this.sortedTrees = this.allTrees.sort((a, b) =>
+              a.distance > b.distance ? 1 : -1,)
         });
       });
+
       navigator.geolocation.getCurrentPosition(position => {
         this.myCoordinates.lat = position.coords.latitude;
         this.myCoordinates.lng = position.coords.longitude;
@@ -348,8 +378,6 @@ body {
 }
 
 #appPage {
-  // display: flex;
-  // height: 100%;
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

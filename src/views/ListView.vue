@@ -1,6 +1,5 @@
 <template>
   <div class="listViewWrapper">
-    <button @click="sortedTrees()">TEST</button>
     <div class="treeCardWrapper" v-for="tree in allTrees" :key="tree.id">
       <div class="treeCardTop__wrapper">
         <div class="treeCardTop__logoWrapper">
@@ -14,7 +13,6 @@
         <div class="treeCardTop__typeTextWrapper">
           <h6 class="treeCardTop__typeText">{{ tree.treeType }}</h6>
           <h6 class="treeCardTop__distanceText">{{ calculateDistanceFromTree(tree.coordinates.lat, tree.coordinates.lng)}}</h6>
-          <!-- <h6>{{  tree.id }}</h6> -->
         </div>
 
         <div class="treeCardTop__buttonWrapper">
@@ -85,29 +83,13 @@ export default {
             });
       });
     },
-    sortedTrees() {
-        this.allTrees.forEach((tree) => {
-          let distance = getDistance(
-          { latitude: tree.coordinates.lat, longitude: tree.coordinates.lng },
-          { latitude: this.myCoordinates.lat, longitude: this.myCoordinates.lng },
-          console.log("distance in computed", distance)
-          );
-        });
-        let newTreeArray = this.allTrees.sort((a, b) =>
-        a.distance > b.distance ? 1 : -1,)
-        console.log("newTreesArray", newTreeArray)
-        // newTreeArray.push(this.allTrees)
-     },
-
     calculateDistanceFromTree(treeLat, treeLng) {
-        // let treeLat = tree.coordinates.lat;
-        // let treeLng = tree.coordinates.lng;
         let distance = getDistance( 
           { latitude: treeLat, longitude: treeLng },
           { latitude: this.myCoordinates.lat, longitude: this.myCoordinates.lng },
         )
         let distanceInMilesOrYards = this.milesOrYards(distance)
-        console.log("tree dis", distance)
+        // console.log("tree dis", distance)
         return distanceInMilesOrYards;
     },
     milesOrYards(distance) {
@@ -129,47 +111,6 @@ export default {
     },
   },
 
-  // function createTreeArray() {
-  //   if (treeList && userCoords) {
-  //     Object.values(treeList).forEach((tree) => {
-  //       let treeLat = tree.treeCoordinates[0];
-  //       let treeLong = tree.treeCoordinates[1];
-  //       tree.distance = getDistance(
-  //         { latitude: treeLat, longitude: treeLong },
-  //         { latitude: userCoords[0], longitude: userCoords[1] },
-  //       );
-  //     });
-  //     let newTreeArray = Object.values(treeList).sort((a, b) =>
-  //     a.distance > b.distance ? 1 : -1,);
-  //     setTreeArray(newTreeArray);
-  //   }
-  // }
-
-  computed: {
-    //   sortedTrees() {
-    //     this.allTrees.forEach((tree) => {
-    //       let distance = getDistance(
-    //       { latitude: tree.coordinates.lat, longitude: tree.coordinates.lng },
-    //       { latitude: this.myCoordinates.lat, longitude: this.myCoordinates.lng },
-    //       console.log("distance in computed", distance)
-    //       );
-    //     });
-    //     let newTreeArray = this.allTrees.sort((a, b) =>
-    //     a.distance > b.distance ? 1 : -1,);
-    //     console.log("newTreesArray", newTreeArray)
-    //     // newTreeArray.push(this.allTrees)
-    //     return newTreeArray;
-    //  }
-    //   userTrees() {
-    //     return this.allTrees.filter(tree => tree.userID !== firebase.auth().currentUser.uid)
-    //   },
-    //   myTrees() {
-    //       return this.allTrees.filter(tree => tree.userID === firebase.auth().currentUser.uid)
-    //   },
-    // },
-  },
-
-
   created() {
     this.allTrees && console.log("allTrees on List View", this.allTrees);
   }
@@ -183,7 +124,6 @@ export default {
   background-color: $primary;
   display: flex;
   flex-flow: column;
-  // height: 100%;
   justify-content: center;
   align-items: center;
   flex-direction: column;
