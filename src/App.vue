@@ -10,29 +10,6 @@
       :getCurrentUserID="getCurrentUserID"
     />
 
-
-		<!-- SUBHEADER -->
-    <!-- <div v-if="whichView === 'Map'">
-        <h5 class="homeText">Browse the Map for Fruit Trees Near You</h5>
-        </div>
-        <div class="homeText" v-if="whichView === 'List'">
-        <h5>Peruse the list for Fruit Trees Near You</h5>
-        </div>
-        <div v-if="whichView === 'Map' || whichView === 'List'" class="mapListButtonWrapper">
-        <div class="mapListButton"  
-        :style="{
-            backgroundColor: (isActive ? '#ccc' : '#ffffff'), 
-            color: 'black', 
-            }" @click="toggleMapAndListButton('showMap')">Map View</div>
-        <div class="mapListButton" 
-        :style="{
-            backgroundColor: (isActive ? '#ffffff' : '#ccc'), 
-            color: 'black', 
-            }" 
-        @click="toggleMapAndListButton('showList')">List View</div> 
-      </div> -->
-		<!-- END SUBHEADER -->
-
     <Subheader
       :toggleMapAndListButton="toggleMapAndListButton"
       :isActive="isActive"
@@ -88,6 +65,31 @@
               ></b-form-input>
             </b-form-group>
           </b-row>
+
+          <div>
+          <b-dropdown id="dropdown-1" v-model="formData.treeTypeDropdown" text="Select Tree Type" class="m-md-2">
+            <b-dropdown-item 
+              id="dropdown-item"
+  
+            >Cherry Tree</b-dropdown-item>
+            <b-dropdown-item id="dropdown-item">Apple Tree</b-dropdown-item>
+            <b-dropdown-item id="dropdown-item">Pear Tree</b-dropdown-item>
+            <b-dropdown-item id="dropdown-item">Plum Tree</b-dropdown-item>
+            <b-dropdown-item id="dropdown-item">Fig Tree</b-dropdown-item>
+            <b-dropdown-item id="dropdown-item">Lemon Tree</b-dropdown-item>
+            <b-dropdown-item id="dropdown-item">Avocado Tree</b-dropdown-item>
+            <b-dropdown-item id="dropdown-item">Orange Tree</b-dropdown-item>
+            <b-dropdown-item id="dropdown-item">Nectarine Tree</b-dropdown-item>
+            <b-dropdown-item id="dropdown-item">Peach Tree</b-dropdown-item>
+            <b-dropdown-item id="dropdown-item">Mandarin Tree</b-dropdown-item>
+            <b-dropdown-item id="dropdown-item">Grapefruit Tree</b-dropdown-item>
+            <b-dropdown-item id="dropdown-item">Mandarin</b-dropdown-item>
+            <b-dropdown-item id="dropdown-item">Mandarin</b-dropdown-item>
+            <b-dropdown-item id="dropdown-item">Mandarin</b-dropdown-item>
+            <b-dropdown-item id="dropdown-item">Mandarin</b-dropdown-item>
+            <b-dropdown-item id="dropdown-item">Mandarin</b-dropdown-item>
+          </b-dropdown>
+        </div>
 
           <b-row md="1">
             <b-form-group>
@@ -170,6 +172,7 @@ data() {
       isActive: true,
       formData: {
         treeType: "",
+        treeTypeDropdown: "",
         description: "",
         address: {
           street: "",
@@ -453,6 +456,30 @@ body {
   @include maroonButton;
 }
 
+.dropdown {
+
+} 
+//  #dropdown-1 {
+//    @include maroonButton;
+//    padding: 3px 10px;
+//    width: 290px;
+//    margin: 0 0 15px 0;
+//  }
+
+ #dropdown-1__BV_toggle_{
+      @include maroonButton;
+   padding: 3px 10px;
+   width: 290px;
+   margin: 0 0 15px 0;
+ }
+
+ .dropdown-menu {
+   height: auto;
+   max-height: 200px;
+   overflow-x: hidden;
+   width: 290px;
+ }
+
 #textArea {
   width: 290px;
   max-height: 200px;
@@ -498,49 +525,6 @@ body {
   border: 2px black solid;
   border-radius: 5px;
 }
-
-// .mapListButtonWrapper {
-//     // overflow: hidden;
-//   border: 1px solid #ccc;
-//   background-color: #f1f1f1;
-//   margin: 0 auto 8px auto;
-//   padding: 0px;
-// }
-// .mapListButton {
-//   background-color: #ffffff;
-//   float: left;
-//   border: none;
-//   outline: none;
-//   cursor: pointer;
-//   transition: 0.3s;
-//   padding-top: 5px;
-//   font-size: 13px;
-//   margin: 0px;
-//   text-align: center;
-//   border-radius: 0;
-// }
-
-// .mapListButtonActive{
-//   background-color: inherit;
-//   float: left;
-//   border: none;
-//   outline: none;
-//   cursor: pointer;
-//   transition: 0.3s;
-//   padding-top: 5px;
-//   font-size: 13px;
-//   margin: 0px;
-//   text-align: center;
-// }
-
-// .mapListButton:hover {
-//   background-color: #ddd;
-// }
-
-/* Create an active/current tablink class */
-// .mapListButtonWrapper .mapListButtontonActive {
-//   background-color: #ccc;
-// 
 
 .xIcon {
   display: inline-block;

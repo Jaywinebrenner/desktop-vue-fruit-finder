@@ -16,14 +16,6 @@
         </div>
 
         <div class="treeCardTop__buttonWrapper">
-          <!-- <div
-            class="treeTopCard__deleteButton"
-            v-if="tree.userID === currentUserID"
-            @click="areYouSure(tree.id)"
-          >
-            <p class="treeTopCard__deleteButtonText">Delete</p>
-          </div>  -->
-
           <div
             class="treeTopCard__detailsButton"
             @click="tree.visible = !tree.visible"
@@ -35,7 +27,7 @@
           class="deleteXWrapper"
           v-if="tree.userID === currentUserID"
           @click="areYouSure(tree.id)">
-            <font-awesome-icon id="deleteX" icon="times" size="lg"/>
+            <font-awesome-icon id="deleteX" icon="times" size="md"/>
           </div>
 
           <div class="emptyDiv" v-if="tree.userID !== currentUserID"></div>
@@ -222,8 +214,9 @@ export default {
 .deleteXWrapper{
   position: relative;
  height: 55px;
- width: 5px;
+ width: 3px;
  margin-left: 5px;
+  cursor: pointer;
 }
 
 .deleteX {
@@ -231,7 +224,7 @@ export default {
   display: inline-block;
   color: #ffffff;
   cursor: pointer;
-  width: 30px;
+  width: 25px;
 }
 
 .emptyDiv {
