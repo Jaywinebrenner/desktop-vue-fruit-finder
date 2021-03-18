@@ -11,7 +11,11 @@
     <div class="password">
       <input type="password" v-model="password" placeholder="password">
     </div>
-    <button class="signUpButton" type="submit">Login</button>
+    <button type="submit" class="signUpButton">
+      <b-spinner small v-if="spinLoading" label="Spinning"></b-spinner>
+      <span v-if="!spinLoading">Login</span>
+    </button>
+
   </form>
   </div>
 
@@ -27,25 +31,37 @@ import "firebase/auth";
 
 export default {
   name:"Login",
-  methods: {
-    async pressedLogin() {
-      try {
-        const value = await firebase.auth().signInWithEmailAndPassword(this.email, this.password);
-        // this.$router.replace({name: '/'})
-        this.$router.push('/')
-        console.log("value after pressing login", value);
-      } catch (err) {
-        console.log(err);
-      }
-    },
+  props: {
+    showView: Function,
+    getCurrentUser: Function
   },
   data() {
     return {
       email: '',
       password: '',
-      error: ''
+      error: '',
+      spinLoading: false
     }
-  }
+  },
+  methods: {
+    async pressedLogin() {
+      this.spinLoading = true;
+      
+      try {
+        const value = await firebase.auth().signInWithEmailAndPassword(this.email, this.password);
+        this.showView("Map")
+        console.log("value after pressing login", value);
+        this.spinLoading = false;
+        this.getCurrentUser()
+      } catch (err) {
+        this.$toastr.e(
+            err
+          );
+        console.log(err);
+        this.spinLoading = false;
+      }
+    },
+  },
 
 }
 </script>

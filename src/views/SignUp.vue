@@ -5,13 +5,22 @@
   <div v-if="error" class="error">{{error.message}}</div>
   <form @submit.prevent="pressedSignUp">
     <h3>Sign Up</h3>
+    <div>
+      <input type="text" v-model="name" placeholder="Fred McTree">
+    </div>
     <div class="email">
       <input type="email" v-model="email" placeholder="email">
     </div>
     <div class="password">
       <input type="password" v-model="password" placeholder="password">
     </div>
-    <button class="signUpButton" type="submit">Sign Up</button>
+
+    <button type="submit" class="signUpButton">
+      <b-spinner small v-if="spinLoading" label="Spinning"></b-spinner>
+      <span v-if="!spinLoading">Sign Up</span>
+    </button>
+
+
   </form>
   </div>
 
@@ -24,28 +33,72 @@
 import * as firebase from "firebase/app"
 import "firebase/auth";
 
-export default {
-  name:"Sign Up",
-  methods: {
-    async pressedSignUp() {
-      try {
-        const user = await firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
-        // this.$router.replace({name: '/'})
-        this.$router.push('/')
-        console.log("user", user);
 
-      } catch (err) {
-        console.log(err);
-      }
-    },
+export default {
+  name:"SignUp",
+  props: {
+    showView: Function
   },
   data() {
     return {
       email: '',
       password: '',
-      error: ''
+      name: '',
+      error: '',
+      spinLoading: false
     }
-  }
+  },
+  methods: {
+    async pressedSignUp() {
+      this.spinLoading = true;
+      if (!this.name) {
+        this.$toastr.s(
+              "Please enter your name. But, ya know, it doesn't have to be your real name."
+            );
+            this.spinLoading = false;
+        return;
+      }
+
+      // firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
+      // .then(
+      //   (user)=>{
+      //     if(user){
+      //       user.updateProfile({
+      //         displayName: this.name
+      //       }).then(
+      //         (s)=> // perform any other operation
+            
+      //     }
+      // })
+      // .catch(function(error) {
+      //   // Handle Errors here.
+      //   var errorCode = error.code;
+      //   var errorMessage = error.message;
+      //   // ...
+      // });
+      try {
+        const user = await firebase.auth().createUserWithEmailAndPassword(this.email, this.password);
+        firebase.auth().currentUser.updateProfile({
+          displayName: this.name
+        })
+        this.showView("Map");
+        this.$toastr.s(
+              "You have successfully created an account. Happy hunting!"
+            );
+        console.log("user", user);
+        this.spinLoading = false;
+
+      } catch (err) {
+        console.log(err);
+            this.$toastr.e(
+              err
+            );
+        this.spinLoading = false;
+      }
+
+
+    },
+  },
 
 }
 </script>

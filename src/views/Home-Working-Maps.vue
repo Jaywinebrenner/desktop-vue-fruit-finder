@@ -61,7 +61,8 @@
         :icon="{ url: require('../assets/customTreeSmall.png')}" 
         :position="tree.coordinates"
         :clickable="true"
-        :draggable="false"
+        :draggable="true"
+        @dragend="getDraggedMarkerPosition($event)"
         @click="toggleInfoWindow(tree, index)">
       </GmapMarker>
 
@@ -82,8 +83,7 @@
             :icon="{ url: require('../assets/customTreeMyTreeSmall.png')}" 
             :position="tree.coordinates"
             :clickable="true"
-            :draggable="false"
-            @dragend="getDraggedMarkerPosition($event)"
+            :draggable="true"
             @click="toggleInfoWindow(tree, index)">
         </GmapMarker>
 
@@ -97,14 +97,17 @@
       </gmap-info-window>
        </div>
       </GmapMap>
+
     </div>
+    
+
   </div>
 </template>
 
 <script>
 import { mapStyle } from "../constants/mapStyle.js";
 import db from "@/main.js";
-// import firebase from 'firebase/app';
+import firebase from 'firebase/app';
 import "firebase/auth";
 
 const allTreesMarker = require("../assets/customTreeSmall.png");
@@ -115,10 +118,7 @@ export default {
   name: "Home",
   props: {
     handleFormSubmit: Function,
-    allTrees: Array,
-    currentUserID: String,
-    currentUser: Object,
-    myCoordinates: Object
+    allTrees: Array
   },
   components: {},
 
@@ -153,10 +153,10 @@ export default {
       styles: mapStyle,
       map: null,
       
-      // myCoordinates: {
-      //   lat: 0,
-      //   lng: 0
-      // },
+      myCoordinates: {
+        lat: 0,
+        lng: 0
+      },
       // postDragCoords: {},
       treeIcon: null
 
@@ -229,15 +229,10 @@ export default {
     },
 
     getInfoWindowContent: function(marker) {
-      console.log("marker",marker)
       return `<div class="windowCard">
         <div class="windowTop">
           <h6 class="windowTopText">${marker.treeType}</h6>
         </div>
-        <div class="contributorDiv">
-           <p class="contributorText"><strong>Contributed by: </strong> ${marker.contributorName}</p>
-        </div>
-      
         <div class="windowBottom">
           <h6 class="windowBottomText">${marker.description}</h6>
         </div>
@@ -245,9 +240,32 @@ export default {
     }
   },
   created() {
+    navigator.geolocation.getCurrentPosition(position => {
+      this.myCoordinates.lat = position.coords.latitude;
+      this.myCoordinates.lng = position.coords.longitude;
+    }),
+      db.collection("locations").onSnapshot(res => {
+        const changes = res.docChanges();
+        console.log("changes", changes);
+        changes.forEach(change => {
+          this.allTrees.push({
+            ...change.doc.data(),
+            id: change.doc.id,
+            visible: true
+          });
+        });
+      });
   },
- 
+
   computed: {
+    currentUserID() {
+      if (firebase.auth().currentUser) {
+        return firebase.auth().currentUser.uid
+      } else {
+        return null
+      }
+    },
+
     userTrees() {
       return this.allTrees.filter(tree => tree.userID !== this.currentUserID)
     },
@@ -355,8 +373,6 @@ background-color: $primary;
 .windowTopText {
   padding: 2px;
   font-size: .9rem;
-  // line-height: .9;
-  margin-bottom: 0px;
 }
 
 .windowBottomText {
@@ -368,12 +384,4 @@ background-color: $primary;
 .windowBottom {
 
 }
-
-.contributorText {
-  font-size: 10px;
-  color: black;
-  margin-bottom: 0;
-  line-height: 1.5;
-}
-
 </style>

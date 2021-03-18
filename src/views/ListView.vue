@@ -1,17 +1,5 @@
 <template>
   <div class="listViewWrapper">
-    <div class="homeSubheader">
-      <h5 class="homeText">Browse the Map for Fruit Trees near you</h5>
-    </div>
-    <div class="mapListButtonWrapper">
-      <router-link class="viewButton" to="/"
-        ><button class="mapListButton">Map View</button></router-link
-      >
-      <router-link class="viewButton" to="/listview"
-        ><button class="mapListButton">List View</button></router-link
-      >
-    </div>
-
     <div class="treeCardWrapper" v-for="tree in allTrees" :key="tree.id">
       <div class="treeCardTop__wrapper">
         <div class="treeCardTop__logoWrapper">
@@ -24,24 +12,26 @@
 
         <div class="treeCardTop__typeTextWrapper">
           <h6 class="treeCardTop__typeText">{{ tree.treeType }}</h6>
-          <h6 class="treeCardTop__distanceText">30 yards away</h6>
-          <!-- <h6>{{  tree.id }}</h6> -->
+          <h6 class="treeCardTop__distanceText">{{ calculateDistanceFromTree(tree.coordinates.lat, tree.coordinates.lng)}}</h6>
         </div>
 
         <div class="treeCardTop__buttonWrapper">
-          <div
-            class="treeTopCard__deleteButton"
-            @click="areYouSure(tree.id)"
-          >
-            <p class="treeTopCard__deleteButtonText">Delete</p>
-          </div>
-
           <div
             class="treeTopCard__detailsButton"
             @click="tree.visible = !tree.visible"
           >
             <p class="treeTopCard__detailsButtonText">Details</p>
           </div>
+
+          <div 
+          class="deleteXWrapper"
+          v-if="tree.userID === currentUserID"
+          @click="areYouSure(tree.id)">
+            <font-awesome-icon id="deleteX" icon="times" size="md"/>
+          </div>
+
+          <div class="emptyDiv" v-if="tree.userID !== currentUserID"></div>
+
         </div>
       </div>
 
@@ -59,18 +49,24 @@
 
 <script>
 import db from "@/main.js";
+import {  convertDistance } from 'geolib';
+import getDistance from 'geolib/es/getPreciseDistance';
 // import firebase from "firebase/app";
 // import "firebase/auth";
 
 export default {
+  name: "ListView",
+  props: {
+    allTrees: Array,
+    currentUserID: String,
+    myCoordinates: Object
+  },
   data() {
     return {
-      allTrees: [],
-      isBottomOpen: false
+      isBottomOpen: false,
     };
   },
   mounted() {
-    // this.allTrees && console.log("db on List View", this.allTrees);
   },
 
   methods: {
@@ -81,41 +77,44 @@ export default {
         type: "warning",
         timer: 3000
       }).then(r => {
-        this.allTrees.map(tree => {
-          if (tree.id === treeIDInput) {
-            console.log("tree.ID", tree.id);
-            console.log("treeINPUT", treeIDInput);
-            console.log(r.value);
-          }
-        });
+            console.log(r);
+            db.collection("locations").doc(treeIDInput).delete().then(() => {
+                console.log("Document successfully deleted!");
+            }).catch((error) => {
+                console.error("Error removing document: ", error);
+            });
       });
-    }
+    },
+    calculateDistanceFromTree(treeLat, treeLng) {
+        let distance = getDistance( 
+          { latitude: treeLat, longitude: treeLng },
+          { latitude: this.myCoordinates.lat, longitude: this.myCoordinates.lng },
+        )
+        let distanceInMilesOrYards = this.milesOrYards(distance)
+        // console.log("tree dis", distance)
+        return distanceInMilesOrYards;
+    },
+    milesOrYards(distance) {
+      if (distance < 1609.34) {
+        let dist = Math.round(convertDistance(distance, "yd"));
+        if (dist === 1) {
+          return (dist + " yard away");
+        } else {
+          return(dist + " yards away");
+        }
+      } else {
+        let dist = Math.round(convertDistance(distance, "mi"));
+        if (dist === 1) {
+          return (dist + " mile away");
+        } else { 
+          return(dist + " miles away");
+        }
+      }
+    },
   },
 
-  //   userTrees() {
-  //     return this.allTrees.filter(tree => tree.userID !== firebase.auth().currentUser.uid)
-  //   },
-  //   myTrees() {
-  //       return this.allTrees.filter(tree => tree.userID === firebase.auth().currentUser.uid)
-  //   },
-  // },
-
   created() {
-    // Listens for changes in DB
-    db.collection("locations").onSnapshot(res => {
-      const changes = res.docChanges();
-      console.log("changes", changes);
-
-      changes.forEach(change => {
-        // if (change.type === "added" || change.type == "") {
-        this.allTrees.push({
-          ...change.doc.data(),
-          id: change.doc.id,
-          visible: true
-        });
-        // }
-      });
-    });
+    this.allTrees && console.log("allTrees on List View", this.allTrees);
   }
 };
 </script>
@@ -127,16 +126,16 @@ export default {
   background-color: $primary;
   display: flex;
   flex-flow: column;
-  height: 100%;
-  justify-content: center;
+  // justify-content: center;
   align-items: center;
   flex-direction: column;
+  overflow: scroll;
 }
 
 .treeCardWrapper {
   width: 90%;
   border: 1px solid white;
-  margin-top: 15px;
+  margin: 7px 0;
   border-radius: 5px;
 }
 
@@ -144,6 +143,11 @@ export default {
   display: flex;
   border: 1px solid white;
   align-items: center;
+}
+
+.treeCardBottom__Wrapper {
+  background-color: white;
+  padding: 10px;
 }
 
 .treeCardTop__logoWrapper {
@@ -197,11 +201,6 @@ export default {
   color: $primary;
 }
 
-.treeCardBottom__Wrapper {
-  background-color: white;
-  padding: 10px;
-}
-
 .treeCardBottom__typeText {
   color: $primary;
   text-align: left;
@@ -210,6 +209,26 @@ export default {
 .treeCardBottom__distanceText {
   color: $primary;
   text-align: left;
+}
+
+.deleteXWrapper{
+  position: relative;
+ height: 55px;
+ width: 3px;
+ margin-left: 5px;
+  cursor: pointer;
+}
+
+.deleteX {
+  position: absolute;
+  display: inline-block;
+  color: #ffffff;
+  cursor: pointer;
+  width: 25px;
+}
+
+.emptyDiv {
+  width: 10px;
 }
 
 // :style="{backgroundImage:'url(~@/assets/maroonGradient.png)'}"

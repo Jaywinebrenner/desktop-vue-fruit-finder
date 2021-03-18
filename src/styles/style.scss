@@ -3,9 +3,10 @@
 
 $primary: #8D1F40;
 $text: white;
+$hover: #edd3db;
 $secondary: lightgreen;
-
 $thirdly: lightblue;
+$warning: #5b45ba;
 
 @mixin flexCenter {
   display: flex;

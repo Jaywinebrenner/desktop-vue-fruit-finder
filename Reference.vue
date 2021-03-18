@@ -30,9 +30,31 @@
         @click="center-myCoordinates"
       />
     </div>
+  
+     <!-- :icon="(tree.userID === this.currentUserID) ? allTreesMarker : myTreesMarker"  -->
+      <GmapMarker
+        v-for="(tree, index) in allTrees" 
+        :key="tree.coords"
+        :icon="myTreesMarker" 
+        :position="tree.coordinates"
+        :clickable="true"
+        :draggable="false"
+        @click="toggleInfoWindow(tree, index)">
+      </GmapMarker>
+
+    <gmap-info-window
+        :options="infoOptions"
+        :position="infoWindowPos"
+        :opened="infoWinOpen"
+        @closeclick="infoWinOpen=false"
+      >
+        <div v-html="infoContent"></div>
+      </gmap-info-window>
+
+   
 
   <!-- RENDER ALL TREES IF NO ONE IS SIGNED IN -->
-  <div v-if="!currentUserID">
+  <!-- <div v-if="!currentUserID">
       <GmapMarker
         v-for="(tree, index) in allTrees" 
         :key="tree.coords"
@@ -52,16 +74,17 @@
         <div v-html="infoContent"></div>
       </gmap-info-window>
 
-    </div>
+    </div> -->
       
       <!-- RENDER USER SUBMITTED TREES -->
-      <GmapMarker
+      <!-- <GmapMarker
         v-for="(tree, index) in userTrees" 
         :key="tree.coords"
         :icon="{ url: require('../assets/customTreeSmall.png')}" 
         :position="tree.coordinates"
         :clickable="true"
-        :draggable="false"
+        :draggable="true"
+        @dragend="getDraggedMarkerPosition($event)"
         @click="toggleInfoWindow(tree, index)">
       </GmapMarker>
 
@@ -72,18 +95,17 @@
         @closeclick="infoWinOpen=false"
       >
         <div v-html="infoContent"></div>
-      </gmap-info-window>
+      </gmap-info-window> -->
 
       <!-- RENDER MY TREES -->
-      <div v-if="allTrees.length > 0">
+      <!-- <div v-if="allTrees.length > 0">
           <GmapMarker
             v-for="(tree, index) in myTrees" 
             :key="index"
             :icon="{ url: require('../assets/customTreeMyTreeSmall.png')}" 
             :position="tree.coordinates"
             :clickable="true"
-            :draggable="false"
-            @dragend="getDraggedMarkerPosition($event)"
+            :draggable="true"
             @click="toggleInfoWindow(tree, index)">
         </GmapMarker>
 
@@ -95,16 +117,19 @@
         >
           <div v-html="infoContent"></div>
       </gmap-info-window>
-       </div>
+       </div> -->
       </GmapMap>
+
     </div>
+    
+
   </div>
 </template>
 
 <script>
 import { mapStyle } from "../constants/mapStyle.js";
 import db from "@/main.js";
-// import firebase from 'firebase/app';
+import firebase from 'firebase/app';
 import "firebase/auth";
 
 const allTreesMarker = require("../assets/customTreeSmall.png");
@@ -115,10 +140,7 @@ export default {
   name: "Home",
   props: {
     handleFormSubmit: Function,
-    allTrees: Array,
-    currentUserID: String,
-    currentUser: Object,
-    myCoordinates: Object
+    allTrees: Array
   },
   components: {},
 
@@ -153,12 +175,12 @@ export default {
       styles: mapStyle,
       map: null,
       
-      // myCoordinates: {
-      //   lat: 0,
-      //   lng: 0
-      // },
-      // postDragCoords: {},
-      treeIcon: null
+      myCoordinates: {
+        lat: 0,
+        lng: 0
+      },
+      allTreesMarker: require("../assets/customTreeSmall.png"),
+      myTreesMarker: require("../assets/customTreeMyTreeSmall.png")
 
     };
   },
@@ -189,15 +211,17 @@ export default {
             // The document probably doesn't exist.
             console.error("Error updating document: ", error);
         });
+      },
+    treeIcon() {
+      // this.allTrees.forEach((tree) => {
+      //   if (tree.userID === this.currentUserID) {
+      //     return myTreesMarker
+      //   }
+      //   if (tree.userID !== this.currentUserID) {
+      //     return allTreesMarker
+      //   }
+      // })
     },
-    // treeIcon() {
-    //   if (tree.userID === this.currentUserID) {
-    //     return allTreesMarker
-    //   }
-    //   if (tree.userID !== this.currentUserID) {
-    //     return 
-    //   }
-    // },
     openWindow() {
       this.window_open = true;
     },
@@ -229,15 +253,10 @@ export default {
     },
 
     getInfoWindowContent: function(marker) {
-      console.log("marker",marker)
       return `<div class="windowCard">
         <div class="windowTop">
           <h6 class="windowTopText">${marker.treeType}</h6>
         </div>
-        <div class="contributorDiv">
-           <p class="contributorText"><strong>Contributed by: </strong> ${marker.contributorName}</p>
-        </div>
-      
         <div class="windowBottom">
           <h6 class="windowBottomText">${marker.description}</h6>
         </div>
@@ -245,9 +264,33 @@ export default {
     }
   },
   created() {
+    navigator.geolocation.getCurrentPosition(position => {
+      this.myCoordinates.lat = position.coords.latitude;
+      this.myCoordinates.lng = position.coords.longitude;
+    })
+    
+    // db.collection("locations").onSnapshot(res => {
+    //   const changes = res.docChanges();
+    //   console.log("changes", changes);
+    //   changes.forEach(change => {
+    //     this.allTrees.push({
+    //       ...change.doc.data(),
+    //       id: change.doc.id,
+    //       visible: true
+    //     });
+    //   });
+    // });
   },
- 
+
   computed: {
+    currentUserID() {
+      if (firebase.auth().currentUser) {
+        return firebase.auth().currentUser.uid
+      } else {
+        return null
+      }
+    },
+
     userTrees() {
       return this.allTrees.filter(tree => tree.userID !== this.currentUserID)
     },
@@ -255,16 +298,7 @@ export default {
         return this.allTrees.filter(tree => tree.userID === this.currentUserID)
     },
 
-    // treeIcon() {
-    //   this.allTrees && this.allTrees.forEach((tree) => {
-    //     if(tree.userID === this.currentUserID) {
-    //       return "My Tree"
-    //     }
-    //     if(tree.userID !== this.currentUserID) {
-    //       return "User Tree"
-    //     }
-    //   })
-    // },
+
 
     mapCoordinates() {
       if (!this.map) {
@@ -355,8 +389,6 @@ background-color: $primary;
 .windowTopText {
   padding: 2px;
   font-size: .9rem;
-  // line-height: .9;
-  margin-bottom: 0px;
 }
 
 .windowBottomText {
@@ -368,12 +400,4 @@ background-color: $primary;
 .windowBottom {
 
 }
-
-.contributorText {
-  font-size: 10px;
-  color: black;
-  margin-bottom: 0;
-  line-height: 1.5;
-}
-
 </style>

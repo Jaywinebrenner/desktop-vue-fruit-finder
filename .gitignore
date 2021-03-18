@@ -3,6 +3,7 @@ node_modules
 /dist
 firebase.js
 geocoder.js
+X-Old-React-Project
 
 
 # local env files
@@ -24,3 +25,11 @@ pnpm-debug.log*
 *.njsproj
 *.sln
 *.sw?
+
+package-lock.json
+
+package.json
+
+X-Old-React-Project/.expo-shared/assets.json
+
+X-Old-React-Project/actions/sessions.js

@@ -4,14 +4,17 @@
     <div class="topNavbarWrapper">
 
         <div id="navbarLeft">
-            <router-link class="routerLinksLeft" to="/">Home</router-link> 
-            <router-link class="routerLinksLeft" to="/about">About</router-link>
+          <!-- <button @click="test()">TEST</button> -->
+            <!-- <router-link class="routerLinksLeft" to="/">Home</router-link> 
+            <router-link class="routerLinksLeft" to="/about">About</router-link> -->
+            <h5 @click="showView('Map')" class="routerLinkLeftOne">Home</h5>
+            <h5 @click="showView('About')" class="routerLinkLeftTwo">About</h5>
         </div>
 
         <div  id="navbarRight">
-            <router-link v-if="!isLoggedIn" class="routerLinkRight" to="/signUp">Sign Up</router-link>
-            <router-link v-if="!isLoggedIn" class="routerLinkRight" to="/login">Login </router-link>
-            <h5 v-else @click="logout" class="logoutText">Logout</h5>
+            <h5 @click="showView('SignUp')" v-if="!isLoggedIn" class="routerLinkRight">Sign Up</h5>
+            <h5 @click="showView('Login')" v-if="!isLoggedIn" class="routerLinkRight">Login</h5>
+            <h5 v-if="isLoggedIn" @click="logout" class="logoutText">Logout</h5>
         </div>
 
     </div>
@@ -33,32 +36,35 @@ import "firebase/auth";
 
 export default {
   name:"navbar",
-  props: ['hideAddTreeModal', 'showAddTreeModal', 'formData', 'treeType', 'description', 'street', 'city', 'zip'],
-  created() {
-    firebase.auth().onAuthStateChanged(user => {
-        if(user) {
-          this.isLoggedIn = true;
-          console.log("Are you logged in?", this.isLoggedIn)
-        } else {
-          this.isLoggedIn = false;
-          console.log("Are you logged in?", this.isLoggedIn)
-        }
-    })
+  props: {
+    showView: Function,
+    showAddTreeModal: Function,
+    isLoggedIn: Boolean,
+    getCurrentUser: Function,
+    getCurrentUserID: Function
   },
   data() {
     return {
-      isLoggedIn: null,
     }
   },
   methods: {
+    test() {
+      console.log("ROOT", this.$root.spinLoading)
+    },
 
     async logout() {
       try {
         const data = await firebase.auth().signOut();
         console.log("logout data", data);
-        this.$router.push('/')
+        this.getCurrentUser();
+        this.getCurrentUserID();
+        this.$toastr.e(
+            "You have successfully logged out of the Fruit Finder. See you soon!"
+          );
       } catch (err) {
-        console.log(err);
+        this.$toastr.e(
+            err
+          );
       }
     },
     
@@ -86,26 +92,34 @@ export default {
 
 .topNavbarWrapper {
    display: flex;
-
-   background-color: #8D1F40;
+   background-color: $primary;
    justify-content: space-between;
    align-items: center;
    height: 40px;
 }
 
 .routerLinksLeft {
+  cursor: pointer;
   margin-left: 5px;
-  font-size: 19px;
+  // font-size: 19px;
+}
+
+.wholeNavbarWrapper {
+  h5:hover {
+    color: $hover;
+  }
+
 }
 
 .routerLinkRight {
+  cursor: pointer;
   margin-right: 40px;
-  font-size: 14px;
+  // font-size: 14px;
 }
 
 #navbarLeft,  #navbarMiddle, #navbarRight {
   display: flex;
-    margin-left: 10px;
+    // margin-left: 40px;
     font-weight: bold;
 
   a {
@@ -121,6 +135,7 @@ export default {
 .navbarLeft {
   color: white;
   font-weight: bold;
+  padding-right: 40px;
 }
 
 .navbarMiddle {
@@ -136,7 +151,6 @@ export default {
 
 
 .navbarLeft {
-
   a {
     font-weight: bold;
     color: #2c3e50;
@@ -145,19 +159,25 @@ export default {
     }
   }
 }
-    .logoWrapper {
-      background-color: white;
-      display: flex;
-      position: sticky;
-      position: -webkit-sticky; 
-      align-self: flex-start; 
-      top: 0;
-      align-items: center;
-    }
-  
-    .splashLogo {
-    width: 150px;
-  }
+
+.routerLinkLeftTwo, .routerLinkLeftOne {
+  margin-left: 20px;
+  margin-top: 5px;
+  cursor: pointer;
+}
+.logoWrapper {
+  background-color: white;
+  display: flex;
+  position: sticky;
+  position: -webkit-sticky; 
+  align-self: flex-start; 
+  top: 0;
+  align-items: center;
+}
+
+.splashLogo {
+  width: 150px;
+}
 
   .addTreeButtonWrapper {
     margin-left: auto;
@@ -173,8 +193,5 @@ export default {
   margin-right: 20px;
   }
 
-  .modalWrapper {
-    
-  }
 
 </style>

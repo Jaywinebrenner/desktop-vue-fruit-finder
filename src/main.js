@@ -13,6 +13,21 @@ import VModal from "vue-js-modal/dist/index.nocss.js";
 import "vue-js-modal/dist/styles.css";
 import UUID from "vue-uuid";
 import VueSimpleAlert from "vue-simple-alert";
+import VueToastr from "vue-toastr";
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faUserSecret } from '@fortawesome/free-solid-svg-icons'
+import { faTimes } from '@fortawesome/free-solid-svg-icons'
+import { faTree } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+
+library.add(faUserSecret)
+library.add(faTimes)
+library.add(faTree)
+Vue.component('font-awesome-icon', FontAwesomeIcon)
+
+Vue.use(VueToastr, {
+  /* OverWrite Plugin Options if you need */
+});
 
 Vue.use(VueSimpleAlert);
 
@@ -40,7 +55,18 @@ const db = firebase.firestore();
 
 export default db;
 
+  // Alternate syntax for rendering Vue
+// new Vue({
+//   router,
+//   render: h => h(App)
+// }).$mount('#app')
+
 new Vue({
-  router,
-  render: h => h(App)
-}).$mount('#app')
+  render: h => h(App),
+  mounted() {
+    router;
+    this.$toastr.defaultPosition = "toast-top-center";
+    this.$toastr.defaultClassNames = ["animated", "zoomInUp"];
+    this.$toastr.defaultStyle = { "background-color": "#5b45ba", "margin-top": "3.5rem"};
+  },
+}).$mount("#app");

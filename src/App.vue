@@ -1,19 +1,55 @@
 <template>
   <div id="appWrapper">
-		<button style="background-color: white;" @click="getCurrentUserButton()">Get Current User</button>
     <Navbar
+			:showView="showView"
+      :isLoggedIn="isLoggedIn"
       :showAddTreeModal="showAddTreeModal"
       :hideAddTreeModal="hideAddTreeModal"
       :formData="formData"
+      :getCurrentUser="getCurrentUser"
+      :getCurrentUserID="getCurrentUserID"
     />
-    <div class="appPage">
-      <router-view 
-      :handleFormSubmit="handleFormSubmit"
-      :userID="userID"
-      />
-    </div>
 
-    <modal name="addTreeModal" :width="'90%'" :height="'75%'">
+    <Subheader
+      :toggleMapAndListButton="toggleMapAndListButton"
+      :isActive="isActive"
+      :whichView="whichView"
+    />
+
+		<Home
+			v-if="whichView === 'Map'"
+      :allTrees="allTrees"
+      :currentUser="currentUser"
+      :currentUserID="currentUserID"
+      :myCoordinates="myCoordinates"
+		/>
+		<ListView
+			v-if="whichView === 'List'"
+      :allTrees="allTrees"
+      :currentUserID="currentUserID"
+      :myCoordinates="myCoordinates"
+		/>
+
+		<About 
+			v-if="whichView === 'About'"
+		/>
+
+		<Login
+			v-if="whichView === 'Login'"
+      :showView="showView"
+      :getCurrentUser="getCurrentUser"
+		/>
+
+		<SignUp
+			v-if="whichView === 'SignUp'"
+      :showView="showView"
+		/>
+
+    <modal class="modalWrapper" name="addTreeModal" :width="'90%'" :height="'75%'">
+      <div class="xIconWrapper">
+         <font-awesome-icon @click="hideAddTreeModal()" class="xIcon" icon="times" size="lg"/>
+      </div>
+ 
       <h5 class="modalHeader">Enter Tree Information</h5>
 
       <div class="formWrapper container mt-6">
@@ -29,6 +65,31 @@
               ></b-form-input>
             </b-form-group>
           </b-row>
+
+          <div>
+          <b-dropdown id="dropdown-1" v-model="formData.treeTypeDropdown" text="Select Tree Type" class="m-md-2">
+            <b-dropdown-item 
+              id="dropdown-item"
+  
+            >Cherry Tree</b-dropdown-item>
+            <b-dropdown-item id="dropdown-item">Apple Tree</b-dropdown-item>
+            <b-dropdown-item id="dropdown-item">Pear Tree</b-dropdown-item>
+            <b-dropdown-item id="dropdown-item">Plum Tree</b-dropdown-item>
+            <b-dropdown-item id="dropdown-item">Fig Tree</b-dropdown-item>
+            <b-dropdown-item id="dropdown-item">Lemon Tree</b-dropdown-item>
+            <b-dropdown-item id="dropdown-item">Avocado Tree</b-dropdown-item>
+            <b-dropdown-item id="dropdown-item">Orange Tree</b-dropdown-item>
+            <b-dropdown-item id="dropdown-item">Nectarine Tree</b-dropdown-item>
+            <b-dropdown-item id="dropdown-item">Peach Tree</b-dropdown-item>
+            <b-dropdown-item id="dropdown-item">Mandarin Tree</b-dropdown-item>
+            <b-dropdown-item id="dropdown-item">Grapefruit Tree</b-dropdown-item>
+            <b-dropdown-item id="dropdown-item">Mandarin</b-dropdown-item>
+            <b-dropdown-item id="dropdown-item">Mandarin</b-dropdown-item>
+            <b-dropdown-item id="dropdown-item">Mandarin</b-dropdown-item>
+            <b-dropdown-item id="dropdown-item">Mandarin</b-dropdown-item>
+            <b-dropdown-item id="dropdown-item">Mandarin</b-dropdown-item>
+          </b-dropdown>
+        </div>
 
           <b-row md="1">
             <b-form-group>
@@ -55,13 +116,13 @@
             </b-form-group>
           </b-row>
 
-
           <b-row class="buttonRow" md="1">
 						
             <button type="submit" id="submitTreeButton">
               <b-spinner small v-if="spinLoading" label="Spinning"></b-spinner
               ><span v-if="!spinLoading">Submit Tree</span>
             </button>
+
           </b-row>
         </b-form>
       </div>
@@ -72,21 +133,46 @@
 
 <script>
 import Navbar from "./components/Navbar";
+import Subheader from "./components/Subheader";
+import Home from "./views/Home";
+import ListView from "./views/ListView";
+import About from "./views/About";
+import Login from "./views/Login";
+import SignUp from "./views/SignUp";
 import db from "./main.js";
 import axios from 'axios';
 import firebase from 'firebase/app';
 import "firebase/auth";
-// import API_KEY from '@/geocoder.js'
+import getDistance from 'geolib/es/getPreciseDistance';
+
 
 export default {
 	name:"App",
-  data() {
+	components: {
+		Home, 
+		Navbar,
+		ListView,
+		About,
+		Login,
+		SignUp,
+    Subheader
+	},
+
+data() {
     return {
+      allTrees: [],
+      currentUser: null,
+      currentUserID: null,
+			whichView: "Map",
+			isMapViewVisible: true,
       API_KEY: process.env.API_KEY_GEOCODE,
       spinLoading: false,
       savedLocations: [],
+      isLoggedIn: null,
+      isActive: true,
       formData: {
         treeType: "",
+        treeTypeDropdown: "",
         description: "",
         address: {
           street: "",
@@ -98,39 +184,47 @@ export default {
           lat: "",
           lng: ""
         }
-      }
+      },
+      myCoordinates: {
+        lat: 0,
+        lng: 0
+      },
     };
   },
   mounted() {
 		this.getCurrentUser()
   },
 
-  computed: {
-    userID() {
-      if (firebase.auth().currentUser) {
-        return firebase.auth().currentUser.uid
-      } else {
-        return "No User ID Available"
-      }
-    }
-  },
-
   methods: {
     async getCurrentUser() {
-      let id = null
-      id = await firebase.auth().currentUser.uid
-      console.log("currentUserID", id);
+      this.currentUser = await firebase.auth().currentUser;
     },
-		getCurrentUserButton() {
-			console.log("CURRENT USER: ", firebase.auth().currentUser)
-		},
-    makeToast(append = false) {
-        this.$bvToast.toast("You have successfully uploaded your tree.", {
-          title: 'Well done, friend!',
-          autoHideDelay: 3000,
-          appendToast: append
-        })
-      },
+    async getCurrentUserID() {
+      if (firebase.auth().currentUser) {
+        this.currentUserID = await firebase.auth().currentUser.uid;
+      } else {
+        this.currentUserID = null;
+      }
+    },
+    toggleMapAndListButton(view) {
+      if (view === 'showMap') {
+        this.isActive = true
+        this.showView('Map');
+      } else {
+        this.isActive = false
+        this.showView('List');
+      }
+
+
+    },
+    // makeToast(append = false) {
+    //     this.$bvToast.toast("You have successfully uploaded your tree.", {
+    //       title: 'Well done, friend!',
+    //       autoHideDelay: 3000,
+    //       appendToast: append
+    //     })
+    //   },
+
    
     showAddTreeModal() {
       this.$modal.show("addTreeModal");
@@ -141,6 +235,11 @@ export default {
       this.description = "";
       this.street = "";
     },
+		showView(view){
+			this.whichView = view;
+			console.log("Which View? ", this.whichView)
+		},
+    
     async handleFormSubmit() {
       this.spinLoading = true;
       if (
@@ -148,22 +247,20 @@ export default {
         !this.formData.description ||
         !this.formData.street 
       ) {
-        alert("You didn't fill out the form properly. Give it another shot!");
+        this.$toastr.e(
+              "You didn't fill out the form properly. Give it another shot!"
+            );
         this.spinLoading = false;
         return;
       }
-
       let coordObject = {
         lat: '',
         lng: ''
       }
-
       const addressObject = {
           street: this.formData.street,
         };
-
-    let formattedAddress = '';
-
+      let formattedAddress = '';
       await axios.get('https://maps.googleapis.com/maps/api/geocode/json', {
         params:{
           address: addressObject,
@@ -175,23 +272,27 @@ export default {
           coordObject = response.data.results[0].geometry.location;
           formattedAddress = response.data.results[0].formatted_address;
         } else {
-          alert("Sorry. The address you entered was wonky. Please try again.")
+          this.$toastr.e(
+              "Sorry, the address or cross street you entered was wonky... Give it another shot!"
+            );
           return;
         }
       })
       .catch((error)=> {
-        alert(error)
+        this.$toastr.e(
+              error
+            );
         return;
       });
       
-  
       let submittedTreeData = {
         userID: firebase.auth().currentUser.uid,
         treeType: this.formData.treeType,
         description: this.formData.description,
         address: addressObject,
         formattedAddress: formattedAddress,
-        coordinates: coordObject
+        coordinates: coordObject,
+        contributorName: this.currentUser.displayName
       }
 
       await db
@@ -207,13 +308,88 @@ export default {
       this.formData.street = "";
       this.hideAddTreeModal();
       this.spinLoading = false;
-      this.makeToast();
+      // this.makeToast();
+      this.$toastr.s(
+          "You have successfully uploaded your tree!"
+        );
     },
 
+    sortAllTrees() {
+    this.allTrees.forEach((tree) => {
+      console.log(tree)
+      let distance = getDistance(
+      { latitude: tree.coordinates.lat, longitude: tree.coordinates.lng },
+      { latitude: this.myCoordinates.lat, longitude: this.myCoordinates.lng },
+      );
+      tree.distance = distance;
+    });
+    this.allTrees.sort((a, b) =>
+    a.distance > b.distance ? 1 : -1,)
   },
-  components: {
-    Navbar
-  }
+    
+  },
+  created() {
+    
+    firebase.auth().onAuthStateChanged(user => {
+        if(user) {
+          this.isLoggedIn = true;
+          this.getCurrentUser()
+          this.getCurrentUserID()
+          console.log("Are you logged in?", this.isLoggedIn)
+        } else {
+          this.isLoggedIn = false;
+          this.getCurrentUser()
+          this.getCurrentUserID()
+          console.log("Are you logged in?", this.isLoggedIn)
+        }
+    })      
+      
+    db.collection("locations").onSnapshot(snapshot => {
+        const changes = snapshot.docChanges();
+        changes.forEach(change => {
+          let newTrees = [];
+          if (change.type === "added") {
+              const changedData = change.doc.data();
+              // console.log("Added: ", change.doc.data());
+              newTrees.push(changedData);
+
+              this.allTrees.push({
+                ...change.doc.data(),
+                id: change.doc.id, 
+                visible: true
+              });
+            }
+            if (change.type === "modified") {
+              console.log("Modified: ", change.doc.data());
+            }
+            if (change.type === "removed") {
+              // Find index of removed tree and remove it from UI
+              var removeIndex = this.allTrees.map(function(item) { return item.id; }).indexOf(change.doc.id);
+              this.allTrees.splice(removeIndex, 1);
+              console.log("allTrees DELETE", this.allTrees);
+              console.log("Removed: ", change.doc.data());
+            }
+
+            // Sort trees by distance
+              this.allTrees.forEach((tree) => {
+                console.log(tree)
+                let distance = getDistance(
+                { latitude: tree.coordinates.lat, longitude: tree.coordinates.lng },
+                { latitude: this.myCoordinates.lat, longitude: this.myCoordinates.lng },
+                );
+                tree.distance = distance;
+                console.log("distance in computed", tree)
+              });
+              this.sortedTrees = this.allTrees.sort((a, b) =>
+              a.distance > b.distance ? 1 : -1,)
+        });
+      });
+
+      navigator.geolocation.getCurrentPosition(position => {
+        this.myCoordinates.lat = position.coords.latitude;
+        this.myCoordinates.lng = position.coords.longitude;
+      })
+  },
 };
 </script>
 
@@ -234,8 +410,6 @@ body {
 }
 
 #appPage {
-  // display: flex;
-  // height: 100%;
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -261,6 +435,8 @@ body {
   color: $primary;
 }
 
+
+
 .formWrapper {
   display: flex;
   justify-content: center;
@@ -280,6 +456,30 @@ body {
   @include maroonButton;
 }
 
+.dropdown {
+
+} 
+//  #dropdown-1 {
+//    @include maroonButton;
+//    padding: 3px 10px;
+//    width: 290px;
+//    margin: 0 0 15px 0;
+//  }
+
+ #dropdown-1__BV_toggle_{
+      @include maroonButton;
+   padding: 3px 10px;
+   width: 290px;
+   margin: 0 0 15px 0;
+ }
+
+ .dropdown-menu {
+   height: auto;
+   max-height: 200px;
+   overflow-x: hidden;
+   width: 290px;
+ }
+
 #textArea {
   width: 290px;
   max-height: 200px;
@@ -293,7 +493,6 @@ body {
 .input {
   margin: 0;
   max-height: 27px;
-  background-color: red;
 }
 
 #treeTypeInput,
@@ -326,5 +525,23 @@ body {
   border: 2px black solid;
   border-radius: 5px;
 }
+
+.xIcon {
+  display: inline-block;
+  color: $primary;
+  cursor: pointer;
+  width: 30px;
+}
+
+// .treeIcon {
+//   color: $hover;
+//   padding: 20px;
+// }
+
+.xIconWrapper {
+  padding: 10px;
+}
+
+
 
 </style>
