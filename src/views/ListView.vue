@@ -16,13 +16,13 @@
         </div>
 
         <div class="treeCardTop__buttonWrapper">
-          <div
+          <!-- <div
             class="treeTopCard__deleteButton"
             v-if="tree.userID === currentUserID"
             @click="areYouSure(tree.id)"
           >
             <p class="treeTopCard__deleteButtonText">Delete</p>
-          </div>
+          </div>  -->
 
           <div
             class="treeTopCard__detailsButton"
@@ -30,6 +30,16 @@
           >
             <p class="treeTopCard__detailsButtonText">Details</p>
           </div>
+
+          <div 
+          class="deleteXWrapper"
+          v-if="tree.userID === currentUserID"
+          @click="areYouSure(tree.id)">
+            <font-awesome-icon id="deleteX" icon="times" size="lg"/>
+          </div>
+
+          <div class="emptyDiv" v-if="tree.userID !== currentUserID"></div>
+
         </div>
       </div>
 
@@ -124,15 +134,16 @@ export default {
   background-color: $primary;
   display: flex;
   flex-flow: column;
-  justify-content: center;
+  // justify-content: center;
   align-items: center;
   flex-direction: column;
+  overflow: scroll;
 }
 
 .treeCardWrapper {
   width: 90%;
   border: 1px solid white;
-  margin-top: 15px;
+  margin: 7px 0;
   border-radius: 5px;
 }
 
@@ -206,6 +217,25 @@ export default {
 .treeCardBottom__distanceText {
   color: $primary;
   text-align: left;
+}
+
+.deleteXWrapper{
+  position: relative;
+ height: 55px;
+ width: 5px;
+ margin-left: 5px;
+}
+
+.deleteX {
+  position: absolute;
+  display: inline-block;
+  color: #ffffff;
+  cursor: pointer;
+  width: 30px;
+}
+
+.emptyDiv {
+  width: 10px;
 }
 
 // :style="{backgroundImage:'url(~@/assets/maroonGradient.png)'}"

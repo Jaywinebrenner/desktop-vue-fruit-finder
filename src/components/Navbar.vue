@@ -7,8 +7,8 @@
           <!-- <button @click="test()">TEST</button> -->
             <!-- <router-link class="routerLinksLeft" to="/">Home</router-link> 
             <router-link class="routerLinksLeft" to="/about">About</router-link> -->
-            <h5 @click="showView('Map')" class="routerLinksLeft">Home</h5>
-            <h5 @click="showView('About')" class="routerLinksLeft">About</h5>
+            <h5 @click="showView('Map')" class="routerLinkLeftOne">Home</h5>
+            <h5 @click="showView('About')" class="routerLinkLeftTwo">About</h5>
         </div>
 
         <div  id="navbarRight">
@@ -119,7 +119,7 @@ export default {
 
 #navbarLeft,  #navbarMiddle, #navbarRight {
   display: flex;
-    margin-left: 10px;
+    // margin-left: 40px;
     font-weight: bold;
 
   a {
@@ -135,6 +135,7 @@ export default {
 .navbarLeft {
   color: white;
   font-weight: bold;
+  padding-right: 40px;
 }
 
 .navbarMiddle {
@@ -150,7 +151,6 @@ export default {
 
 
 .navbarLeft {
-
   a {
     font-weight: bold;
     color: #2c3e50;
@@ -159,19 +159,25 @@ export default {
     }
   }
 }
-    .logoWrapper {
-      background-color: white;
-      display: flex;
-      position: sticky;
-      position: -webkit-sticky; 
-      align-self: flex-start; 
-      top: 0;
-      align-items: center;
-    }
-  
-    .splashLogo {
-    width: 150px;
-  }
+
+.routerLinkLeftTwo, .routerLinkLeftOne {
+  margin-left: 20px;
+  margin-top: 5px;
+  cursor: pointer;
+}
+.logoWrapper {
+  background-color: white;
+  display: flex;
+  position: sticky;
+  position: -webkit-sticky; 
+  align-self: flex-start; 
+  top: 0;
+  align-items: center;
+}
+
+.splashLogo {
+  width: 150px;
+}
 
   .addTreeButtonWrapper {
     margin-left: auto;
@@ -187,8 +193,5 @@ export default {
   margin-right: 20px;
   }
 
-  .modalWrapper {
-    
-  }
 
 </style>

@@ -9,19 +9,35 @@
       :getCurrentUser="getCurrentUser"
       :getCurrentUserID="getCurrentUserID"
     />
+
+
 		<!-- SUBHEADER -->
-		<div v-if="whichView === 'Map'" class="homeSubheader">
-      <h5 class="homeText">Browse the Map for Fruit Trees Near You</h5>
-      <!-- <p>{{allTrees[0].userID}}</p> -->
-    </div>
-    <div v-if="whichView === 'List'" class="homeSubheader">
-      <h5 class="homeText">Peruse the list for Fruit Trees Near You</h5>
-    </div>
-    <div v-if="whichView === 'Map' || whichView === 'List'" class="mapListButtonWrapper">
-       <button class="mapListButton" @click="showView('Map')">Map View</button>
-       <button class="mapListButton" @click="showView('List')">List View</button> 
-    </div>
+    <!-- <div v-if="whichView === 'Map'">
+        <h5 class="homeText">Browse the Map for Fruit Trees Near You</h5>
+        </div>
+        <div class="homeText" v-if="whichView === 'List'">
+        <h5>Peruse the list for Fruit Trees Near You</h5>
+        </div>
+        <div v-if="whichView === 'Map' || whichView === 'List'" class="mapListButtonWrapper">
+        <div class="mapListButton"  
+        :style="{
+            backgroundColor: (isActive ? '#ccc' : '#ffffff'), 
+            color: 'black', 
+            }" @click="toggleMapAndListButton('showMap')">Map View</div>
+        <div class="mapListButton" 
+        :style="{
+            backgroundColor: (isActive ? '#ffffff' : '#ccc'), 
+            color: 'black', 
+            }" 
+        @click="toggleMapAndListButton('showList')">List View</div> 
+      </div> -->
 		<!-- END SUBHEADER -->
+
+    <Subheader
+      :toggleMapAndListButton="toggleMapAndListButton"
+      :isActive="isActive"
+      :whichView="whichView"
+    />
 
 		<Home
 			v-if="whichView === 'Map'"
@@ -55,7 +71,6 @@
     <modal class="modalWrapper" name="addTreeModal" :width="'90%'" :height="'75%'">
       <div class="xIconWrapper">
          <font-awesome-icon @click="hideAddTreeModal()" class="xIcon" icon="times" size="lg"/>
-         <!-- <font-awesome-icon @click="hideAddTreeModal()" class="treeIcon" icon="tree" size="lg"/> -->
       </div>
  
       <h5 class="modalHeader">Enter Tree Information</h5>
@@ -116,6 +131,7 @@
 
 <script>
 import Navbar from "./components/Navbar";
+import Subheader from "./components/Subheader";
 import Home from "./views/Home";
 import ListView from "./views/ListView";
 import About from "./views/About";
@@ -136,7 +152,8 @@ export default {
 		ListView,
 		About,
 		Login,
-		SignUp
+		SignUp,
+    Subheader
 	},
 
 data() {
@@ -150,6 +167,7 @@ data() {
       spinLoading: false,
       savedLocations: [],
       isLoggedIn: null,
+      isActive: true,
       formData: {
         treeType: "",
         description: "",
@@ -184,6 +202,17 @@ data() {
       } else {
         this.currentUserID = null;
       }
+    },
+    toggleMapAndListButton(view) {
+      if (view === 'showMap') {
+        this.isActive = true
+        this.showView('Map');
+      } else {
+        this.isActive = false
+        this.showView('List');
+      }
+
+
     },
     // makeToast(append = false) {
     //     this.$bvToast.toast("You have successfully uploaded your tree.", {
@@ -437,7 +466,6 @@ body {
 .input {
   margin: 0;
   max-height: 27px;
-  background-color: red;
 }
 
 #treeTypeInput,
@@ -471,10 +499,48 @@ body {
   border-radius: 5px;
 }
 
-.mapListButtonWrapper {
-  padding: 10px;
-	margin: 0 auto;
-}
+// .mapListButtonWrapper {
+//     // overflow: hidden;
+//   border: 1px solid #ccc;
+//   background-color: #f1f1f1;
+//   margin: 0 auto 8px auto;
+//   padding: 0px;
+// }
+// .mapListButton {
+//   background-color: #ffffff;
+//   float: left;
+//   border: none;
+//   outline: none;
+//   cursor: pointer;
+//   transition: 0.3s;
+//   padding-top: 5px;
+//   font-size: 13px;
+//   margin: 0px;
+//   text-align: center;
+//   border-radius: 0;
+// }
+
+// .mapListButtonActive{
+//   background-color: inherit;
+//   float: left;
+//   border: none;
+//   outline: none;
+//   cursor: pointer;
+//   transition: 0.3s;
+//   padding-top: 5px;
+//   font-size: 13px;
+//   margin: 0px;
+//   text-align: center;
+// }
+
+// .mapListButton:hover {
+//   background-color: #ddd;
+// }
+
+/* Create an active/current tablink class */
+// .mapListButtonWrapper .mapListButtontonActive {
+//   background-color: #ccc;
+// 
 
 .xIcon {
   display: inline-block;
@@ -491,5 +557,7 @@ body {
 .xIconWrapper {
   padding: 10px;
 }
+
+
 
 </style>

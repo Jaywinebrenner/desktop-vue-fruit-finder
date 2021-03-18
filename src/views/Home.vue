@@ -97,10 +97,7 @@
       </gmap-info-window>
        </div>
       </GmapMap>
-
     </div>
-    
-
   </div>
 </template>
 
@@ -248,11 +245,6 @@ export default {
     }
   },
   created() {
-    
-    // navigator.geolocation.getCurrentPosition(position => {
-    //   this.myCoordinates.lat = position.coords.latitude;
-    //   this.myCoordinates.lng = position.coords.longitude;
-    // })
   },
  
   computed: {
