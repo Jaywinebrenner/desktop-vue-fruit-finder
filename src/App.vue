@@ -14,6 +14,8 @@
       :toggleMapAndListButton="toggleMapAndListButton"
       :isActive="isActive"
       :whichView="whichView"
+      :filteredTrees="filteredTrees"
+      :selectedFilter="selectedFilter"
     />
 
 		<Home
@@ -28,6 +30,7 @@
       :allTrees="allTrees"
       :currentUserID="currentUserID"
       :myCoordinates="myCoordinates"
+      :orderedTrees="orderedTrees"
 		/>
 
 		<About 
@@ -50,11 +53,11 @@
          <font-awesome-icon @click="hideAddTreeModal()" class="xIcon" icon="times" size="lg"/>
       </div>
  
-      <h5 class="modalHeader">Enter Tree Information</h5>
+      <h5 class="modalHeader">{{ formData.treeType ? formData.treeType  : "Enter Tree Information" }}</h5>
 
       <div class="formWrapper container mt-6">
         <b-form class="formWrapper" @submit.prevent="handleFormSubmit">
-          <b-row>
+          <!-- <b-row>
             <b-form-group>
               <b-form-input
                 id="treeTypeInput"
@@ -64,30 +67,17 @@
                 size="sm"
               ></b-form-input>
             </b-form-group>
-          </b-row>
+          </b-row> -->
 
-          <div>
-          <b-dropdown id="dropdown-1" v-model="formData.treeTypeDropdown" text="Select Tree Type" class="m-md-2">
-            <b-dropdown-item 
-              id="dropdown-item"
-  
-            >Cherry Tree</b-dropdown-item>
-            <b-dropdown-item id="dropdown-item">Apple Tree</b-dropdown-item>
-            <b-dropdown-item id="dropdown-item">Pear Tree</b-dropdown-item>
-            <b-dropdown-item id="dropdown-item">Plum Tree</b-dropdown-item>
-            <b-dropdown-item id="dropdown-item">Fig Tree</b-dropdown-item>
-            <b-dropdown-item id="dropdown-item">Lemon Tree</b-dropdown-item>
-            <b-dropdown-item id="dropdown-item">Avocado Tree</b-dropdown-item>
-            <b-dropdown-item id="dropdown-item">Orange Tree</b-dropdown-item>
-            <b-dropdown-item id="dropdown-item">Nectarine Tree</b-dropdown-item>
-            <b-dropdown-item id="dropdown-item">Peach Tree</b-dropdown-item>
-            <b-dropdown-item id="dropdown-item">Mandarin Tree</b-dropdown-item>
-            <b-dropdown-item id="dropdown-item">Grapefruit Tree</b-dropdown-item>
-            <b-dropdown-item id="dropdown-item">Mandarin</b-dropdown-item>
-            <b-dropdown-item id="dropdown-item">Mandarin</b-dropdown-item>
-            <b-dropdown-item id="dropdown-item">Mandarin</b-dropdown-item>
-            <b-dropdown-item id="dropdown-item">Mandarin</b-dropdown-item>
-            <b-dropdown-item id="dropdown-item">Mandarin</b-dropdown-item>
+        <div>
+          <b-dropdown id="dropdown-1" v-model="formData.treeType" text="Select Tree Type" class="m-md-2">
+            <b-dropdown-item disabled value="0">{{ formData.treeType ? "Select a tree type" : formData.treeType }}</b-dropdown-item>
+            <b-dropdown-item v-for="option in dropdown.treeDropdownOptions" 
+                  :key="option.text" 
+                  :value="option.text"
+                  @click="formData.treeType = option.text">
+              {{option.text}}
+            </b-dropdown-item>  
           </b-dropdown>
         </div>
 
@@ -144,6 +134,7 @@ import axios from 'axios';
 import firebase from 'firebase/app';
 import "firebase/auth";
 import getDistance from 'geolib/es/getPreciseDistance';
+import treeDropdownOptions from './constants/treeDropdownOptions.js'
 
 
 export default {
@@ -161,6 +152,8 @@ export default {
 data() {
     return {
       allTrees: [],
+      orderedTrees: [],
+      selectedFilter: null,
       currentUser: null,
       currentUserID: null,
 			whichView: "Map",
@@ -170,9 +163,14 @@ data() {
       savedLocations: [],
       isLoggedIn: null,
       isActive: true,
+      dropdown: {
+        visible: true,
+        treeDropdownOptions: treeDropdownOptions,
+        selectedTreeOption: null,
+
+      },
       formData: {
         treeType: "",
-        treeTypeDropdown: "",
         description: "",
         address: {
           street: "",
@@ -231,9 +229,9 @@ data() {
     },
     hideAddTreeModal() {
       this.$modal.hide("addTreeModal");
-      this.treeType = "";
-      this.description = "";
-      this.street = "";
+      this.formData.treeType = null;
+      this.formData.description = null;
+      this.formData.street = null;
     },
 		showView(view){
 			this.whichView = view;
@@ -314,19 +312,48 @@ data() {
         );
     },
 
-    sortAllTrees() {
-    this.allTrees.forEach((tree) => {
-      console.log(tree)
-      let distance = getDistance(
-      { latitude: tree.coordinates.lat, longitude: tree.coordinates.lng },
-      { latitude: this.myCoordinates.lat, longitude: this.myCoordinates.lng },
-      );
-      tree.distance = distance;
-    });
-    this.allTrees.sort((a, b) =>
-    a.distance > b.distance ? 1 : -1,)
-  },
+    orderTrees() {
+      this.allTrees.forEach((tree) => {
+        console.log(tree)
+        let distance = getDistance(
+        { latitude: tree.coordinates.lat, longitude: tree.coordinates.lng },
+        { latitude: this.myCoordinates.lat, longitude: this.myCoordinates.lng },
+        );
+        tree.distance = distance;
+      });
+      this.orderedTrees = this.allTrees.sort((a, b) =>
+      a.distance > b.distance ? 1 : -1,)
+    },
     
+  },
+  computed: {
+    // orderedTrees() {
+    //   let orderedTrees = []
+    //   this.allTrees.forEach((tree) => {
+    //     console.log(tree)
+    //     let distance = getDistance(
+    //     { latitude: tree.coordinates.lat, longitude: tree.coordinates.lng },
+    //     { latitude: this.myCoordinates.lat, longitude: this.myCoordinates.lng },
+    //     );
+    //     tree.distance = distance;
+    //     console.log("distance in computed", tree)
+    //   });
+  
+    //   orderedTrees = this.allTrees.sort((a, b) =>
+    //   a.distance > b.distance ? 1 : -1,)
+    //   return orderedTrees
+    // },
+
+    filteredTrees() {
+      let filteredTrees = []
+			return this.allTrees && this.allTrees.filter((treeType) => {
+        if(treeType.treeType === "Pear Tree" ) {
+          filteredTrees.push(treeType)
+        return filteredTrees
+        }
+			});
+		}
+
   },
   created() {
     
@@ -370,18 +397,8 @@ data() {
               console.log("Removed: ", change.doc.data());
             }
 
-            // Sort trees by distance
-              this.allTrees.forEach((tree) => {
-                console.log(tree)
-                let distance = getDistance(
-                { latitude: tree.coordinates.lat, longitude: tree.coordinates.lng },
-                { latitude: this.myCoordinates.lat, longitude: this.myCoordinates.lng },
-                );
-                tree.distance = distance;
-                console.log("distance in computed", tree)
-              });
-              this.sortedTrees = this.allTrees.sort((a, b) =>
-              a.distance > b.distance ? 1 : -1,)
+            this.orderTrees()
+
         });
       });
 
@@ -540,6 +557,10 @@ body {
 
 .xIconWrapper {
   padding: 10px;
+}
+
+.treeTypeDisplay {
+  color: $primary;
 }
 
 

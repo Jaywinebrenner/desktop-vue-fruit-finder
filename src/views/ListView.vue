@@ -1,6 +1,6 @@
 <template>
   <div class="listViewWrapper">
-    <div class="treeCardWrapper" v-for="tree in allTrees" :key="tree.id">
+    <div class="treeCardWrapper" v-for="tree in orderedTrees" :key="tree.id">
       <div class="treeCardTop__wrapper">
         <div class="treeCardTop__logoWrapper">
           <img
@@ -27,7 +27,7 @@
           class="deleteXWrapper"
           v-if="tree.userID === currentUserID"
           @click="areYouSure(tree.id)">
-            <font-awesome-icon id="deleteX" icon="times" size="md"/>
+            <font-awesome-icon id="deleteX" icon="times" size="sm"/>
           </div>
 
           <div class="emptyDiv" v-if="tree.userID !== currentUserID"></div>
@@ -58,6 +58,7 @@ export default {
   name: "ListView",
   props: {
     allTrees: Array,
+    orderedTrees: Array,
     currentUserID: String,
     myCoordinates: Object
   },
