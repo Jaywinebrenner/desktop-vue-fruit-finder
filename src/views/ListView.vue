@@ -42,8 +42,31 @@
             {{ tree.description }}
           </h6>
         </div>
+        <div class="comment__wrapper">
+          <hr>
+          <div class="comment__top"></div>
+          <h6 class="treeCardComment__typeText">Comments</h6>
+          <h6 @click="showAddCommentModal()" class="comment__button">Add Comment</h6>
+        </div>
+
+        <div v-for="comment in fakeComments" :key="comment.index" class="commentList__wrapper">
+          <h6 class="comment__item">
+            <b>Commenter ()</b>{{comment.comment}}
+          </h6>
+        </div>
       </div>
+
+      <modal class="modalWrapper" name="addCommentModal" :width="'90%'" :height="'75%'">
+        <div class="xIconWrapper">
+         <font-awesome-icon @click="hideAddCommentModal()" class="xIcon" icon="times" size="lg"/>
+      </div>
+      <div class="commentModal__header">
+        <h3>Add a comment to this {{ tree.treeType }}</h3>
+      </div>
+    </modal>
+
     </div>
+
   </div>
 </template>
 
@@ -51,8 +74,9 @@
 import db from "@/main.js";
 import {  convertDistance } from 'geolib';
 import getDistance from 'geolib/es/getPreciseDistance';
-// import firebase from "firebase/app";
-// import "firebase/auth";
+import fakeComments from '../constants/fakeComments';
+// import Comment from '../components/Comment.vue'
+// import CommentForm from '../components/Comment-Form.vue'
 
 export default {
   name: "ListView",
@@ -60,14 +84,21 @@ export default {
     allTrees: Array,
     orderedTrees: Array,
     currentUserID: String,
+    currentUser: String,
     myCoordinates: Object,
+  },
+  components: {
+    // Comment,
+    // CommentForm
   },
   data() {
     return {
       isBottomOpen: false,
+      fakeComments: this.fakeComments
     };
   },
   mounted() {
+    this.fakeComments = fakeComments
   },
 
   methods: {
@@ -112,6 +143,15 @@ export default {
         }
       }
     },
+    showAddCommentModal() {
+      this.$modal.show("addCommentModal");
+    },
+    hideAddCommentModal() {
+      this.$modal.hide("addCommentModal");
+      // this.formData.CommentType = null;
+      // this.formData.description = null;
+      // this.formData.street = null;
+    },
   },
 
   created() {
@@ -131,6 +171,9 @@ export default {
   flex-direction: column;
   overflow: scroll;
   height: 100vh;
+  // h6 {
+  //   color: #333333;
+  // }
 }
 
 .treeCardWrapper {
@@ -232,5 +275,31 @@ export default {
   width: 10px;
 }
 
+.treeCardComment__typeText {
+  color: $primary;
+  text-align: left;
+  font-weight: 230;
+  display: inline-block;
+}
+
+.comment__button {
+    cursor: pointer;
+    padding: 3px;
+    border-radius: 5px;
+    background-color: $primary;
+    display: inline-block;
+    margin-left: 20px;
+    font-size: .6rem;
+}
+
+.commentList__wrapper {
+  padding: 5px 20px;
+}
+
+.comment__item {
+  color: #333333;
+  text-align: left;
+  font-weight: 300;
+}
 // :style="{backgroundImage:'url(~@/assets/maroonGradient.png)'}"
 </style>

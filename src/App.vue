@@ -32,6 +32,7 @@
 			v-if="whichView === 'List'"
       :allTrees="allTrees"
       :currentUserID="currentUserID"
+      :currentUser="currentUser"
       :myCoordinates="myCoordinates"
       :orderedTrees="orderedTrees"
 		/>
@@ -525,9 +526,6 @@ body {
   @include maroonButton;
 }
 
-.dropdown {
-
-} 
 //  #dropdown-1 {
 //    @include maroonButton;
 //    padding: 3px 10px;

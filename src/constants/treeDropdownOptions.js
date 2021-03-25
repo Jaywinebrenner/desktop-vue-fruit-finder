@@ -4,6 +4,10 @@ const treeDropdownOptions = [
         "text": "All Trees"
     },
     {
+        "value": "custom",
+        "text": "Custom Trees"
+    },
+    {
         "value": "my",
         "text": "My Trees"
     },
@@ -67,10 +71,7 @@ const treeDropdownOptions = [
         "value": "blackberry",
         "text": "Blackberry Bush"
     },
-    {
-        "value": "custom",
-        "text": "Custom Trees"
-    },
+
 
 ]
 
