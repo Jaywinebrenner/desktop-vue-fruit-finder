@@ -23,6 +23,7 @@
       :currentUser="currentUser"
       :currentUserID="currentUserID"
       :myCoordinates="myCoordinates"
+      :orderedTrees="orderedTrees"
 		/>
 		<ListView
 			v-if="whichView === 'List'"
@@ -152,7 +153,6 @@ data() {
     return {
       allTrees: [],
       orderedTrees: [],
-      orderedAndFilteredTrees: [],
       selectedFilter: null,
       currentUser: null,
       currentUserID: null,
@@ -331,60 +331,26 @@ data() {
     },
 
     orderAndFilteredTrees(filterType) {
-      this.orderedAndFilteredTrees = []
-      if (!filterType) {
-        console.log("HERE")
-        this.orderedAndFilteredTrees = this.orderedTrees;
-        console.log("OAFTrees",this.orderedTrees)
-      }
-      this.orderedTrees.forEach((tree) => {
-        if(filterType === tree.treeType) {
-          this.orderedAndFilteredTrees.push(tree);
+      this.orderTrees();
+       let orderedAndFilteredTrees = [];
+        if (!filterType) {
+          return;
         }
-      console.log("OAFTrees", this.orderedAndFilteredTrees)
-    })
-      // if ( filterType === "Pear Tree") {
-      //   console.log("ORderTrees in Fun", this.orderedTrees)
-      //   this.orderedTrees.forEach((tree) => {
-      //     this.orderedAndFilteredTrees.push(tree)
-      //   })
-      //   console.log("Ordered and FIltered Trees", this.orderedAndFilteredTrees)
-      //   return this.orderedAndFilteredTrees
-      // }
+        if(filterType === "All Trees") {
+          console.log("HERE")
+          return this.orderTrees();
+        }
+        this.orderedTrees.forEach((tree) => {
+          if(filterType === tree.treeType) {
+            orderedAndFilteredTrees.push(tree);
+          }
+          this.orderedTrees = orderedAndFilteredTrees;
+        console.log("OAFTrees", orderedAndFilteredTrees)
+      })
+    }  
 
-
-
-    }
-    
   },
   computed: {
-    // orderedTrees() {
-    //   let orderedTrees = []
-    //   this.allTrees.forEach((tree) => {
-    //     console.log(tree)
-    //     let distance = getDistance(
-    //     { latitude: tree.coordinates.lat, longitude: tree.coordinates.lng },
-    //     { latitude: this.myCoordinates.lat, longitude: this.myCoordinates.lng },
-    //     );
-    //     tree.distance = distance;
-    //     console.log("distance in computed", tree)
-    //   });
-  
-    //   orderedTrees = this.allTrees.sort((a, b) =>
-    //   a.distance > b.distance ? 1 : -1,)
-    //   return orderedTrees
-    // },
-
-    // filteredTrees() {
-    //   let filteredTrees = []
-		// 	return this.allTrees && this.allTrees.filter((treeType) => {
-    //     if(treeType.treeType === "Pear Tree" ) {
-    //       filteredTrees.push(treeType)
-    //     return filteredTrees
-    //     }
-		// 	});
-		// }
-
   },
 
   created() {
@@ -433,8 +399,6 @@ data() {
 
         });
       });
-
-      this.orderAndFilteredTrees(this.selectedFilter)
 
       navigator.geolocation.getCurrentPosition(position => {
         this.myCoordinates.lat = position.coords.latitude;

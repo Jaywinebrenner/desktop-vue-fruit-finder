@@ -1,5 +1,9 @@
 const treeDropdownOptions = [
     {
+        "value": "all",
+        "text": "All Trees"
+    },
+    {
         "value": "apple",
         "text": "Apple Tree"
     },

@@ -34,7 +34,7 @@
   <!-- RENDER ALL TREES IF NO ONE IS SIGNED IN -->
   <div v-if="!currentUserID">
       <GmapMarker
-        v-for="(tree, index) in allTrees" 
+        v-for="(tree, index) in orderedTrees" 
         :key="tree.coords"
         :icon="{ url: require('../assets/customTreeSmall.png')}" 
         :position="tree.coordinates"
@@ -118,7 +118,8 @@ export default {
     allTrees: Array,
     currentUserID: String,
     currentUser: Object,
-    myCoordinates: Object
+    myCoordinates: Object,
+    orderedTrees: Array
   },
   components: {},
 
@@ -249,10 +250,10 @@ export default {
  
   computed: {
     userTrees() {
-      return this.allTrees.filter(tree => tree.userID !== this.currentUserID)
+      return this.orderedTrees.filter(tree => tree.userID !== this.currentUserID)
     },
     myTrees() {
-        return this.allTrees.filter(tree => tree.userID === this.currentUserID)
+        return this.orderedTrees.filter(tree => tree.userID === this.currentUserID)
     },
 
     // treeIcon() {

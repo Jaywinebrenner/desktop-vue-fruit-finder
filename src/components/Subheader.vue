@@ -24,6 +24,7 @@
       </div>
       <div class="dropdownWrapper">
         <b-dropdown id="dropdown-2" text="Filter Trees" class="m-md-2">
+          <!-- <b-dropdown-item active>All Trees</b-dropdown-item> -->
           <b-dropdown-item v-for="option in treeDropdownOptions" 
                 :key="option.text" 
                 :value="option.text"

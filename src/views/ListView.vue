@@ -60,7 +60,7 @@ export default {
     allTrees: Array,
     orderedTrees: Array,
     currentUserID: String,
-    myCoordinates: Object
+    myCoordinates: Object,
   },
   data() {
     return {
@@ -115,7 +115,6 @@ export default {
   },
 
   created() {
-    this.allTrees && console.log("allTrees on List View", this.allTrees);
   }
 };
 </script>
@@ -131,6 +130,7 @@ export default {
   align-items: center;
   flex-direction: column;
   overflow: scroll;
+  height: 100vh;
 }
 
 .treeCardWrapper {
