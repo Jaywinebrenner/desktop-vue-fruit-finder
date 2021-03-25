@@ -76,7 +76,7 @@
           <b-form-group>
             <b-form-input
               id="treeTypeInput"
-              placeholder="Type of Custom Tree"
+              placeholder="Enter Custom Tree"
               class="input"
               v-model="formData.treeType"
               size="sm"
@@ -389,8 +389,7 @@ data() {
           }
           this.orderedTrees = orderedAndFilteredTrees;
       })
-    }  
-
+    },
   },
   computed: {
     userTrees() {
@@ -399,6 +398,13 @@ data() {
     myTrees() {
         return this.orderedTrees.filter(tree => tree.userID === this.currentUserID)
     },
+    isMobile() {
+      if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
+        return true;
+      }else{
+        return false;
+      }
+    }
   },
 
   created() {
