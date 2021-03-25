@@ -189,7 +189,8 @@ data() {
         coordinates: {
           lat: "",
           lng: ""
-        }
+        },
+        isCustomTree: false
       },
       myCoordinates: {
         lat: 0,
@@ -303,6 +304,12 @@ data() {
             );
         return;
       });
+
+      if(this.modalButtonTitle === "Custom Tree") {
+        this.formData.isCustomTree = true;
+      } else {
+        this.formData.isCustomTree = false;
+      }
       
       let submittedTreeData = {
         userID: firebase.auth().currentUser.uid,
@@ -311,7 +318,8 @@ data() {
         address: addressObject,
         formattedAddress: formattedAddress,
         coordinates: coordObject,
-        contributorName: this.currentUser.displayName
+        contributorName: this.currentUser.displayName,
+        isCustomTree: this.formData.isCustomTree
       }
 
       await db
@@ -366,6 +374,14 @@ data() {
         if(filterType === "My Trees") {
           this.orderedTrees = this.myTrees
           return this.orderedTrees
+        }
+        if(filterType === "Custom Trees") {
+          this.orderedTrees.forEach((tree) =>{
+            if(tree.isCustomTree) {
+              orderedAndFilteredTrees.push(tree)
+            }
+            this.orderedTrees = orderedAndFilteredTrees;
+          })
         }
         this.orderedTrees.forEach((tree) => {
           if(filterType === tree.treeType) {
