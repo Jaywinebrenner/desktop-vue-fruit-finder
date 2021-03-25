@@ -46,7 +46,7 @@
           <hr>
           <div class="comment__top"></div>
           <h6 class="treeCardComment__typeText">Comments</h6>
-          <h6 @click="showAddCommentModal()" class="comment__button">Add Comment</h6>
+          <h6 @click="showAddCommentModal(tree)" class="comment__button">Add Comment</h6>
         </div>
 
         <div v-for="comment in fakeComments" :key="comment.index" class="commentList__wrapper">
@@ -56,16 +56,43 @@
         </div>
       </div>
 
-      <modal class="modalWrapper" name="addCommentModal" :width="'90%'" :height="'75%'">
+    </div>
+
+    <modal class="modalWrapper" name="addCommentModal" :width="'90%'" :height="'75%'">
         <div class="xIconWrapper">
          <font-awesome-icon @click="hideAddCommentModal()" class="xIcon" icon="times" size="lg"/>
       </div>
       <div class="commentModal__header">
-        <h3>Add a comment to this {{ tree.treeType }}</h3>
+        <!-- <h3>Add a comment to this {{ tree.treeType }}</h3> -->
+        <h5 class="modalHeader">Add a comment</h5>
       </div>
-    </modal>
+      
+      <div class="formWrapper container mt-6">
+        <b-form class="formWrapper" @submit.prevent="handleSubmitComment">
 
-    </div>
+          <b-row md="1">
+            <b-form-group>
+              <b-form-textarea
+                id="textArea"
+                size="sm"
+                v-model="comment"
+                placeholder="Description"
+                rows="5"
+                max-rows="4"
+              ></b-form-textarea>
+            </b-form-group>
+          </b-row>
+
+          <button type="submit" id="submitTreeButton">
+            <b-spinner small v-if="spinLoading" label="Spinning"></b-spinner
+            ><span v-if="!spinLoading">Submit Comment</span>
+          </button>
+
+
+        </b-form>
+      </div>
+
+    </modal>
 
   </div>
 </template>
@@ -84,7 +111,7 @@ export default {
     allTrees: Array,
     orderedTrees: Array,
     currentUserID: String,
-    currentUser: String,
+    currentUser: Object,
     myCoordinates: Object,
   },
   components: {
@@ -94,7 +121,11 @@ export default {
   data() {
     return {
       isBottomOpen: false,
-      fakeComments: this.fakeComments
+      fakeComments: this.fakeComments,
+      comment: null,
+      spinLoading: false,
+      idOfCommentedTree: null,
+      allComments: []
     };
   },
   mounted() {
@@ -143,18 +174,82 @@ export default {
         }
       }
     },
-    showAddCommentModal() {
+    showAddCommentModal(tree) {
+      console.log("tree in modal", tree)
+      this.idOfCommentedTree = tree.id
+      console.log("idOfCommentTree", this.idOfCommentedTree)
       this.$modal.show("addCommentModal");
     },
     hideAddCommentModal() {
       this.$modal.hide("addCommentModal");
-      // this.formData.CommentType = null;
-      // this.formData.description = null;
-      // this.formData.street = null;
+      this.comment = null;
+      this.idOfCommentedTree = null;
+    },
+    async handleSubmitComment() {
+     
+      this.spinLoading = true;
+      if (!this.comment) {
+        this.$toastr.e(
+              "You didn't fill out the form properly. Give it another shot!"
+            );
+        this.spinLoading = false;
+        return;
+      }
+
+      let commentData = {
+        commenterName: this.currentUser.displayName,
+        comment: this.comment,
+        idOfCommentedTree: this.idOfCommentedTree
+      }
+
+      await db
+        .collection("comments")
+        .add(commentData)
+        .then(() => {
+          console.log("upload successful!");
+        });
+
+      // Clean up 
+      this.comment = "";
+      this.hideAddCommentModal();
+      this.spinLoading = false;
+      this.$toastr.s(
+          "You have successfully left a comment!"
+        );
     },
   },
 
   created() {
+
+      db.collection("comments").onSnapshot(snapshot => {
+      const changes = snapshot.docChanges();
+      changes.forEach(change => {
+        let newComments = [];
+        if (change.type === "added") {
+            const changedData = change.doc.data();
+            // console.log("Added: ", change.doc.data());
+            newComments.push(changedData);
+
+            this.allComments.push({
+              ...change.doc.data(),
+              id: change.doc.id, 
+              visible: true
+            });
+          }
+          if (change.type === "modified") {
+            console.log("Modified: ", change.doc.data());
+          }
+          if (change.type === "removed") {
+            // Find index of removed comment and remove it from UI
+            var removeIndex = this.allCOmments.map(function(item) { return item.id; }).indexOf(change.doc.id);
+            this.allComments.splice(removeIndex, 1);
+          }
+
+          // this.orderTrees()
+      
+      });
+    });
+
   }
 };
 </script>
