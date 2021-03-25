@@ -56,33 +56,33 @@
          <font-awesome-icon @click="hideAddTreeModal()" class="xIcon" icon="times" size="lg"/>
       </div>
  
-      <h5 class="modalHeader">{{ formData.treeType ? formData.treeType  : "Enter Tree Information" }}</h5>
+      <h5 class="modalHeader">Enter Tree Information</h5>
 
       <div class="formWrapper container mt-6">
         <b-form class="formWrapper" @submit.prevent="handleFormSubmit">
-          <!-- <b-row>
-            <b-form-group>
-              <b-form-input
-                id="treeTypeInput"
-                placeholder="Type of Tree"
-                class="input"
-                v-model="formData.treeType"
-                size="sm"
-              ></b-form-input>
-            </b-form-group>
-          </b-row> -->
-
         <div>
-          <b-dropdown id="dropdown-1" v-model="formData.treeType" text="Select Tree Type" class="m-md-2">
+          <b-dropdown id="dropdown-1" v-model="formData.treeType" :text="modalButtonTitle" class="m-md-2">
             <b-dropdown-item disabled value="0">{{ formData.treeType ? "Select a tree type" : formData.treeType }}</b-dropdown-item>
-            <b-dropdown-item v-for="option in dropdown.treeDropdownOptions" 
+            <b-dropdown-item v-for="option in dropdown.modalDropdownOptions" 
                   :key="option.text" 
                   :value="option.text"
-                  @click="formData.treeType = option.text">
+                  @click="selectModalTreeType(option.text)">
               {{option.text}}
             </b-dropdown-item>  
           </b-dropdown>
         </div>
+
+        <b-row v-if="isCustomTreeVisible">
+          <b-form-group>
+            <b-form-input
+              id="treeTypeInput"
+              placeholder="Type of Custom Tree"
+              class="input"
+              v-model="formData.treeType"
+              size="sm"
+            ></b-form-input>
+          </b-form-group>
+        </b-row>
 
           <b-row md="1">
             <b-form-group>
@@ -138,6 +138,7 @@ import firebase from 'firebase/app';
 import "firebase/auth";
 import getDistance from 'geolib/es/getPreciseDistance';
 import treeDropdownOptions from './constants/treeDropdownOptions.js'
+import modalDropdownOptions from './constants/modalDropdownOptions';
 
 
 export default {
@@ -157,7 +158,9 @@ data() {
       allTrees: [],
       orderedTrees: [],
       buttonTitle: "Filter Trees",
+      modalButtonTitle: "Select Tree Type",
       selectedFilter: null,
+      isCustomTreeVisible: false,
       currentUser: null,
       currentUserID: null,
 			whichView: "Map",
@@ -170,6 +173,7 @@ data() {
       dropdown: {
         visible: true,
         treeDropdownOptions: treeDropdownOptions,
+        modalDropdownOptions: modalDropdownOptions,
         selectedTreeOption: null,
 
       },
@@ -216,8 +220,21 @@ data() {
         this.isActive = false
         this.showView('List');
       }
-
-
+    },
+    selectTreeType(treeOption) {
+        this.isCustomTreeVisible = false;
+        this.formData.treeType = treeOption;
+    },
+    selectModalTreeType(treeOption) {
+      if (treeOption === "Custom Tree") {
+        this.formData.treeType = '';
+        this.isCustomTreeVisible = true;
+        this.modalButtonTitle = "Custom Tree"
+      } else {
+        this.isCustomTreeVisible = false;
+        this.formData.treeType = treeOption;
+        this.modalButtonTitle = treeOption;
+      }
     },
     // makeToast(append = false) {
     //     this.$bvToast.toast("You have successfully uploaded your tree.", {
