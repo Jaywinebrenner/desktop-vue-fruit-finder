@@ -17,7 +17,7 @@ const treeDropdownOptions = [
     },
     {
         "value": "fig",
-        "text": "Value2Text"
+        "text": "Fig Tree"
     },
     {
         "value": "lemon",

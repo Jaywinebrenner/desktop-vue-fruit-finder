@@ -14,8 +14,7 @@
       :toggleMapAndListButton="toggleMapAndListButton"
       :isActive="isActive"
       :whichView="whichView"
-      :filteredTrees="filteredTrees"
-      :selectedFilter="selectedFilter"
+      :selectFilter="selectFilter"
     />
 
 		<Home
@@ -153,6 +152,7 @@ data() {
     return {
       allTrees: [],
       orderedTrees: [],
+      orderedAndFilteredTrees: [],
       selectedFilter: null,
       currentUser: null,
       currentUserID: null,
@@ -312,6 +312,11 @@ data() {
         );
     },
 
+    selectFilter(filterType) {
+      this.selectedFilter = filterType;
+      this.orderAndFilteredTrees(filterType)
+    },
+
     orderTrees() {
       this.allTrees.forEach((tree) => {
         console.log(tree)
@@ -324,6 +329,32 @@ data() {
       this.orderedTrees = this.allTrees.sort((a, b) =>
       a.distance > b.distance ? 1 : -1,)
     },
+
+    orderAndFilteredTrees(filterType) {
+      this.orderedAndFilteredTrees = []
+      if (!filterType) {
+        console.log("HERE")
+        this.orderedAndFilteredTrees = this.orderedTrees;
+        console.log("OAFTrees",this.orderedTrees)
+      }
+      this.orderedTrees.forEach((tree) => {
+        if(filterType === tree.treeType) {
+          this.orderedAndFilteredTrees.push(tree);
+        }
+      console.log("OAFTrees", this.orderedAndFilteredTrees)
+    })
+      // if ( filterType === "Pear Tree") {
+      //   console.log("ORderTrees in Fun", this.orderedTrees)
+      //   this.orderedTrees.forEach((tree) => {
+      //     this.orderedAndFilteredTrees.push(tree)
+      //   })
+      //   console.log("Ordered and FIltered Trees", this.orderedAndFilteredTrees)
+      //   return this.orderedAndFilteredTrees
+      // }
+
+
+
+    }
     
   },
   computed: {
@@ -344,19 +375,19 @@ data() {
     //   return orderedTrees
     // },
 
-    filteredTrees() {
-      let filteredTrees = []
-			return this.allTrees && this.allTrees.filter((treeType) => {
-        if(treeType.treeType === "Pear Tree" ) {
-          filteredTrees.push(treeType)
-        return filteredTrees
-        }
-			});
-		}
+    // filteredTrees() {
+    //   let filteredTrees = []
+		// 	return this.allTrees && this.allTrees.filter((treeType) => {
+    //     if(treeType.treeType === "Pear Tree" ) {
+    //       filteredTrees.push(treeType)
+    //     return filteredTrees
+    //     }
+		// 	});
+		// }
 
   },
+
   created() {
-    
     firebase.auth().onAuthStateChanged(user => {
         if(user) {
           this.isLoggedIn = true;
@@ -398,9 +429,12 @@ data() {
             }
 
             this.orderTrees()
+        
 
         });
       });
+
+      this.orderAndFilteredTrees(this.selectedFilter)
 
       navigator.geolocation.getCurrentPosition(position => {
         this.myCoordinates.lat = position.coords.latitude;

@@ -23,7 +23,7 @@
         </div> 
       </div>
       <div class="dropdownWrapper">
-        <b-dropdown id="dropdown-2" v-model="selectedFilter" text="Filter Trees" class="m-md-2">
+        <b-dropdown id="dropdown-2" text="Filter Trees" class="m-md-2">
           <b-dropdown-item v-for="option in treeDropdownOptions" 
                 :key="option.text" 
                 :value="option.text"
@@ -48,6 +48,7 @@ export default {
         toggleMapAndListButton: Function,
         whichView: String,
         filteredTrees: Array,
+        selectFilter: Function
         // selectedFilter: String
     },
     data() {
@@ -58,9 +59,9 @@ export default {
         }
     },
 methods: {
-  selectFilter(filterType) {
-    this.$parent.selectedFilter = filterType
-    }
+  // selectFilter(filterType) {
+  //   this.$parent.selectedFilter = filterType
+  //   }
   }
 }
 
