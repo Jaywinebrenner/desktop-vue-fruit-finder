@@ -15,6 +15,7 @@
       :isActive="isActive"
       :whichView="whichView"
       :selectFilter="selectFilter"
+      :buttonTitle="buttonTitle"
     />
 
 		<Home
@@ -24,6 +25,8 @@
       :currentUserID="currentUserID"
       :myCoordinates="myCoordinates"
       :orderedTrees="orderedTrees"
+      :userTrees="userTrees"
+      :myTrees="myTrees"
 		/>
 		<ListView
 			v-if="whichView === 'List'"
@@ -153,6 +156,7 @@ data() {
     return {
       allTrees: [],
       orderedTrees: [],
+      buttonTitle: "Filter Trees",
       selectedFilter: null,
       currentUser: null,
       currentUserID: null,
@@ -314,6 +318,7 @@ data() {
 
     selectFilter(filterType) {
       this.selectedFilter = filterType;
+      this.buttonTitle = filterType;
       this.orderAndFilteredTrees(filterType)
     },
 
@@ -332,6 +337,7 @@ data() {
 
     orderAndFilteredTrees(filterType) {
       this.orderTrees();
+
        let orderedAndFilteredTrees = [];
         if (!filterType) {
           return;
@@ -340,17 +346,26 @@ data() {
           console.log("HERE")
           return this.orderTrees();
         }
+        if(filterType === "My Trees") {
+          this.orderedTrees = this.myTrees
+          return this.orderedTrees
+        }
         this.orderedTrees.forEach((tree) => {
           if(filterType === tree.treeType) {
             orderedAndFilteredTrees.push(tree);
           }
           this.orderedTrees = orderedAndFilteredTrees;
-        console.log("OAFTrees", orderedAndFilteredTrees)
       })
     }  
 
   },
   computed: {
+    userTrees() {
+      return this.orderedTrees.filter(tree => tree.userID !== this.currentUserID)
+    },
+    myTrees() {
+        return this.orderedTrees.filter(tree => tree.userID === this.currentUserID)
+    },
   },
 
   created() {

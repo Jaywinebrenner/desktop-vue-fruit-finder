@@ -119,7 +119,9 @@ export default {
     currentUserID: String,
     currentUser: Object,
     myCoordinates: Object,
-    orderedTrees: Array
+    orderedTrees: Array,
+    userTrees: Array,
+    myTrees: Array
   },
   components: {},
 
@@ -249,12 +251,12 @@ export default {
   },
  
   computed: {
-    userTrees() {
-      return this.orderedTrees.filter(tree => tree.userID !== this.currentUserID)
-    },
-    myTrees() {
-        return this.orderedTrees.filter(tree => tree.userID === this.currentUserID)
-    },
+    // userTrees() {
+    //   return this.orderedTrees.filter(tree => tree.userID !== this.currentUserID)
+    // },
+    // myTrees() {
+    //     return this.orderedTrees.filter(tree => tree.userID === this.currentUserID)
+    // },
 
     // treeIcon() {
     //   this.allTrees && this.allTrees.forEach((tree) => {

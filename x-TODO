@@ -11,8 +11,6 @@ animate a list item evaporating upon deletion
 
 animate opening list item
 
-Add filtering on map / list: My Trees / 
-
 Error handle - no two trees at same location... PROBLEM- GEOCODER ASSIGNS DIFFERENT COORDS FOR SAME LOCATION.  HUH?
 
 Search by tree type in top Search Field. Make sure map as well as Drawer List is updated upon searching

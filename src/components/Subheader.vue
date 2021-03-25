@@ -23,7 +23,7 @@
         </div> 
       </div>
       <div class="dropdownWrapper">
-        <b-dropdown id="dropdown-2" text="Filter Trees" class="m-md-2">
+        <b-dropdown :text="buttonTitle" id="dropdown-2" class="m-md-2">
           <!-- <b-dropdown-item active>All Trees</b-dropdown-item> -->
           <b-dropdown-item v-for="option in treeDropdownOptions" 
                 :key="option.text" 
@@ -49,7 +49,8 @@ export default {
         toggleMapAndListButton: Function,
         whichView: String,
         filteredTrees: Array,
-        selectFilter: Function
+        selectFilter: Function,
+        buttonTitle: String
         // selectedFilter: String
     },
     data() {
