@@ -19,16 +19,20 @@ import { faUserSecret } from '@fortawesome/free-solid-svg-icons'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import { faTree } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import moment from 'moment'
+
+
 
 library.add(faUserSecret)
 library.add(faTimes)
 library.add(faTree)
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 
+
 Vue.use(VueToastr, {
   /* OverWrite Plugin Options if you need */
 });
-
+Vue.use(moment)
 Vue.use(VueSimpleAlert);
 
 Vue.use(UUID);

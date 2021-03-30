@@ -49,11 +49,21 @@
           <h6 @click="showAddCommentModal(tree)" class="comment__button">Add Comment</h6>
         </div>
 
-        <div v-for="comment in fakeComments" :key="comment.index" class="commentList__wrapper">
-          <h6 class="comment__item">
-            <b>Commenter ()</b>{{comment.comment}}
+        <!-- <div v-for="comment in allComments" :key="comment.index" class="commentList__wrapper">
+          <h6 v-if="comment.idOfCommentedTree === tree.id" class="comment__item">
+            <b>{{comment.commenterName}}  </b>{{comment.comment}}
           </h6>
-        </div>
+          <h6 v-else class="comment__item">
+          </h6>
+        </div> -->
+
+        <ul v-for="comment in allComments" :key="comment.index">
+          <li v-if="comment.idOfCommentedTree === tree.id" :key="comment.index">
+             <span class="bold">{{comment.commenterName}}</span>  {{comment.comment}} {{comment.dateTime}}
+          </li>
+        </ul>
+     
+
       </div>
 
     </div>
@@ -101,27 +111,24 @@
 import db from "@/main.js";
 import {  convertDistance } from 'geolib';
 import getDistance from 'geolib/es/getPreciseDistance';
-import fakeComments from '../constants/fakeComments';
-// import Comment from '../components/Comment.vue'
-// import CommentForm from '../components/Comment-Form.vue'
+// import fakeComments from '../constants/fakeComments';
+import moment from 'moment';
 
 export default {
   name: "ListView",
   props: {
     allTrees: Array,
     orderedTrees: Array,
+    orderedComments: Array,
     currentUserID: String,
     currentUser: Object,
     myCoordinates: Object,
   },
   components: {
-    // Comment,
-    // CommentForm
   },
   data() {
     return {
       isBottomOpen: false,
-      fakeComments: this.fakeComments,
       comment: null,
       spinLoading: false,
       idOfCommentedTree: null,
@@ -129,10 +136,26 @@ export default {
     };
   },
   mounted() {
-    this.fakeComments = fakeComments
+    // this.fakeComments = fakeComments
   },
 
+      //   this.orderedTrees = this.allTrees.sort((a, b) =>
+      // a.distance > b.distance ? 1 : -1,)
+  computed: {
+    // orderComments() {
+    //   this.orderedComments = this.allComments.sort((a, b) =>
+    //   a.dateTime > b.dateTime ? 1 : -1,)
+    //   return this.orderedComments
+    // }
+
+  },
+
+
   methods: {
+    orderComments() {
+      this.orderedComments = this.allComments.sort((a, b) =>
+      a.dateTime > b.dateTime ? 1 : -1,)
+    },
     areYouSure(treeIDInput) {
       this.$fire({
         title: "Warning",
@@ -199,7 +222,8 @@ export default {
       let commentData = {
         commenterName: this.currentUser.displayName,
         comment: this.comment,
-        idOfCommentedTree: this.idOfCommentedTree
+        idOfCommentedTree: this.idOfCommentedTree,
+        dateTime: moment(new Date()).format('LLL')
       }
 
       await db
@@ -208,6 +232,17 @@ export default {
         .then(() => {
           console.log("upload successful!");
         });
+
+
+  // Subcollection syntax to upload to a locations subcollection
+  // await db 
+  //   .collection("locations")
+  //   .doc(this.idOfCommentedTree)
+  //   .collection("comments")
+  //   .add(commentData)
+  //   .then(() => {
+  //     console.log("uploadData", commentData)
+  //   })
 
       // Clean up 
       this.comment = "";
@@ -220,7 +255,7 @@ export default {
   },
 
   created() {
-
+    // this works for using a new "comments" collections
       db.collection("comments").onSnapshot(snapshot => {
       const changes = snapshot.docChanges();
       changes.forEach(change => {
@@ -235,20 +270,22 @@ export default {
               id: change.doc.id, 
               visible: true
             });
+            this.orderComments()
           }
           if (change.type === "modified") {
             console.log("Modified: ", change.doc.data());
           }
           if (change.type === "removed") {
             // Find index of removed comment and remove it from UI
-            var removeIndex = this.allCOmments.map(function(item) { return item.id; }).indexOf(change.doc.id);
+            var removeIndex = this.allComments.map(function(item) { return item.id; }).indexOf(change.doc.id);
             this.allComments.splice(removeIndex, 1);
           }
-
           // this.orderTrees()
-      
       });
     });
+
+
+    
 
   }
 };
@@ -392,9 +429,23 @@ export default {
 }
 
 .comment__item {
+  font-size: .7rem;
   color: #333333;
   text-align: left;
   font-weight: 300;
+}
+ul {
+  list-style-type: none; /* Remove bullets */
+  padding: 0; /* Remove padding */
+  margin: 0 0 0 20px; /* Remove margins */
+}
+
+li {
+      line-height: .5;
+}
+
+.bold {
+  font-weight: 700;
 }
 // :style="{backgroundImage:'url(~@/assets/maroonGradient.png)'}"
 </style>

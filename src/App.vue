@@ -425,11 +425,12 @@ data() {
       
     db.collection("locations").onSnapshot(snapshot => {
         const changes = snapshot.docChanges();
+        console.log("Changes", changes)
         changes.forEach(change => {
           let newTrees = [];
           if (change.type === "added") {
               const changedData = change.doc.data();
-              // console.log("Added: ", change.doc.data());
+              console.log("Added: ", change.doc.data());
               newTrees.push(changedData);
 
               this.allTrees.push({

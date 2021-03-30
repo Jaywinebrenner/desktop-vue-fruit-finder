@@ -7,6 +7,8 @@ Deal with Admin. Admin will be able to add a verified tree.
 
 Animate growing trees.
 
+make add comment button only visible to logged in user
+
 animate a list item evaporating upon deletion
 
 animate opening list item
