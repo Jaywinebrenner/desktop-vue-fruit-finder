@@ -46,7 +46,9 @@
           <hr>
           <div class="comment__top"></div>
           <h6 class="treeCardComment__typeText">Comments</h6>
-          <h6 @click="showAddCommentModal(tree)" class="comment__button">Add Comment</h6>
+          <h6 v-if="$parent.isLoggedIn" @click="showAddCommentModal(tree)" class="comment__button">Add Comment</h6>
+          <h6 v-if="!$parent.isLoggedIn" class="comment__button">Login to Add Comment</h6>
+ 
         </div>
 
         <!-- <div v-for="comment in allComments" :key="comment.index" class="commentList__wrapper">
@@ -59,7 +61,7 @@
 
         <ul v-for="comment in allComments" :key="comment.index">
           <li v-if="comment.idOfCommentedTree === tree.id" :key="comment.index">
-             <span class="bold">{{comment.commenterName}}</span>  {{comment.comment}} {{comment.dateTime}}
+             <span class="bold">{{comment.commenterName}}  </span>  {{comment.comment}} <span class="comment__date">{{comment.dateTime}}</span>
           </li>
         </ul>
      
@@ -137,6 +139,7 @@ export default {
   },
   mounted() {
     // this.fakeComments = fakeComments
+
   },
 
       //   this.orderedTrees = this.allTrees.sort((a, b) =>
@@ -248,9 +251,9 @@ export default {
       this.comment = "";
       this.hideAddCommentModal();
       this.spinLoading = false;
-      this.$toastr.s(
-          "You have successfully left a comment!"
-        );
+      // this.$toastr.s(
+      //     "You have successfully left a comment!"
+      //   );
     },
   },
 
@@ -441,11 +444,17 @@ ul {
 }
 
 li {
-      line-height: .5;
+  font-size: .85rem;
+  line-height: .5;
+  color: #6a6a6a;
 }
 
 .bold {
   font-weight: 700;
+}
+
+.comment__date {
+  font-size: .5rem;
 }
 // :style="{backgroundImage:'url(~@/assets/maroonGradient.png)'}"
 </style>
