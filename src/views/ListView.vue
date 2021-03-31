@@ -48,23 +48,14 @@
           <h6 class="treeCardComment__typeText">Comments</h6>
           <h6 v-if="$parent.isLoggedIn" @click="showAddCommentModal(tree)" class="comment__button">Add Comment</h6>
           <h6 v-if="!$parent.isLoggedIn" class="comment__button">Login to Add Comment</h6>
- 
         </div>
-
-        <!-- <div v-for="comment in allComments" :key="comment.index" class="commentList__wrapper">
-          <h6 v-if="comment.idOfCommentedTree === tree.id" class="comment__item">
-            <b>{{comment.commenterName}}  </b>{{comment.comment}}
-          </h6>
-          <h6 v-else class="comment__item">
-          </h6>
-        </div> -->
 
         <ul v-for="comment in allComments" :key="comment.index">
           <li v-if="comment.idOfCommentedTree === tree.id" :key="comment.index">
-             <span class="bold">{{comment.commenterName}}  </span>  {{comment.comment}} <span class="comment__date">{{comment.dateTime}}</span>
+             <font-awesome-icon v-if="comment.idOfCommenter === currentUserID" @click="areYouSureDeleteComment(comment.id)" class="xIcon" icon="trash-alt" size="sm"/> 
+             <span class="bold">    {{comment.commenterName}}  </span>  {{comment.comment}} <span class="comment__date">{{comment.dateTime}}</span>
           </li>
         </ul>
-     
 
       </div>
 
@@ -174,6 +165,21 @@ export default {
             });
       });
     },
+    areYouSureDeleteComment(commentId) {
+      this.$fire({
+        title: "Warning",
+        text: "Are you sure you want to delete this comment?",
+        type: "warning",
+        timer: 3000
+      }).then(r => {
+            console.log(r);
+            db.collection("comments").doc(commentId).delete().then(() => {
+                console.log("Document successfully deleted!");
+            }).catch((error) => {
+                console.error("Error removing document: ", error);
+            });
+      });
+    },
     calculateDistanceFromTree(treeLat, treeLng) {
         let distance = getDistance( 
           { latitude: treeLat, longitude: treeLng },
@@ -226,6 +232,7 @@ export default {
         commenterName: this.currentUser.displayName,
         comment: this.comment,
         idOfCommentedTree: this.idOfCommentedTree,
+        idOfCommenter: this.currentUserID,
         dateTime: moment(new Date()).format('LLL')
       }
 
@@ -445,7 +452,7 @@ ul {
 
 li {
   font-size: .85rem;
-  line-height: .5;
+  // line-height: .5;
   color: #6a6a6a;
 }
 
