@@ -1,18 +1,7 @@
 <template>
   <div class="listViewWrapper">
-
-    <div v-if="orderedTrees.length == 0">
-      <div class="sadWrapper">
-        <h6>Hmmm, looks like this type of tree isn't near you.</h6>
-        <p>Perhaps you should find one and add it to the Fruit Finder!</p>
-        <img class="sadTree" src="../assets/sadtree.jpg" alt="">
-      </div>
-    </div>
-
-
-   <div class="treeCardWrapper" v-else v-for="tree in orderedTrees" :key="tree.id">
-      
-      <div class="treeCardTop__wrapper" @click="tree.visible = !tree.visible">
+    <!-- <div class="treeCardWrapper" v-for="tree in orderedTrees" :key="tree.id">
+      <div class="treeCardTop__wrapper">
         <div class="treeCardTop__logoWrapper">
           <img
             class="treeCardTop__logo"
@@ -26,12 +15,19 @@
           <h6 class="treeCardTop__distanceText">{{ calculateDistanceFromTree(tree.coordinates.lat, tree.coordinates.lng)}}</h6>
         </div>
 
-        <div class='treeCardTop__buttonWrapper'>
+        <div class="treeCardTop__buttonWrapper">
+          <div
+            class="treeTopCard__detailsButton"
+            @click="tree.visible = !tree.visible"
+          >
+            <p class="treeTopCard__detailsButtonText">Details</p>
+          </div>
+
           <div 
             class="deleteXWrapper"
             v-if="tree.userID === currentUserID"
             @click="areYouSure(tree.id)">
-            <font-awesome-icon id="deleteX" icon="trash-alt" size="sm"/>
+            <font-awesome-icon id="deleteX" icon="times" size="sm"/>
           </div>
 
           <div class="emptyDiv" v-if="tree.userID !== currentUserID"></div>
@@ -39,7 +35,7 @@
         </div>
       </div>
 
-      <div v-bind:class="[!tree.visible ? 'accordianOpen' : 'treeCardBottom__Wrapper']">
+      <div v-show="!tree.visible" class="treeCardBottom__Wrapper">
         <div>
           <h6 class="treeCardBottom__typeText">{{ tree.formattedAddress }}</h6>
           <h6 class="treeCardBottom__distanceText">
@@ -62,9 +58,44 @@
         </ul>
 
       </div>
-    </div> 
 
+    </div> -->
+  <div v-for="tree in orderedTrees" :key="tree.id">
+    <button @click="toggleAccordian(tree.visible)" class="accordion">
+      <img
+            class="treeCardTop__logo"
+            alt="Vue logo"
+            src="../assets/newLogo.png"
+          />
+      <div class="treeCardTop__typeTextWrapper">
+        <h6 class="panel__treeType">{{ tree.treeType }}</h6>
+        <h6 class="panel__distance">{{ calculateDistanceFromTree(tree.coordinates.lat, tree.coordinates.lng)}}</h6>
+      </div>
+      <font-awesome-icon id="deleteX" icon="plus" size="sm"/>
+    </button>
+    <!-- <div v-bind:class="[isAccoridanOpen ? 'panel__open' : 'panel']"> -->
+      <div v-bind:class="[isAccoridanOpen ? 'panel__open' : 'panel']">
+          <h6 class="treeCardBottom__typeText">{{ tree.formattedAddress }}</h6>
+          <h6 class="treeCardBottom__distanceText">
+            {{ tree.description }}
+          </h6>
+        <div class="comment__wrapper">
+          <hr>
+          <div class="comment__top"></div>
+          <h6 class="treeCardComment__typeText">Comments</h6>
+          <h6 v-if="$parent.isLoggedIn" @click="showAddCommentModal(tree)" class="comment__button">Add Comment</h6>
+          <h6 v-if="!$parent.isLoggedIn" class="comment__button">Login to Add Comment</h6>
+        </div>
 
+        <ul v-for="comment in allComments" :key="comment.index">
+          <li v-if="comment.idOfCommentedTree === tree.id" :key="comment.index">
+             <font-awesome-icon v-if="comment.idOfCommenter === currentUserID" @click="areYouSureDeleteComment(comment.id)" class="xIcon" icon="trash-alt" size="sm"/> 
+             <span class="bold">    {{comment.commenterName}}  </span>  {{comment.comment}} <span class="comment__date">{{comment.dateTime}}</span>
+          </li>
+        </ul>
+      </div>
+    <!-- </div> -->
+  </div>
 
 
     <modal class="modalWrapper" name="addCommentModal" :width="'90%'" :height="'75%'">
@@ -72,6 +103,7 @@
          <font-awesome-icon @click="hideAddCommentModal()" class="xIcon" icon="times" size="lg"/>
       </div>
       <div class="commentModal__header">
+
         <h5 class="modalHeader">Add a comment</h5>
       </div>
       
@@ -90,7 +122,7 @@
               ></b-form-textarea>
             </b-form-group>
           </b-row>
-
+        
           <button type="submit" id="submitTreeButton">
             <b-spinner small v-if="spinLoading" label="Spinning"></b-spinner
             ><span v-if="!spinLoading">Submit Comment</span>
@@ -125,7 +157,7 @@ export default {
   },
   data() {
     return {
-      isBottomOpen: false,
+      isAccoridanOpen: false,
       comment: null,
       spinLoading: false,
       idOfCommentedTree: null,
@@ -141,11 +173,12 @@ export default {
       
   computed: {
     orderComments() {
-      // return this.orderedComments.slice().sort((a, b) =>
-      // a.dateTime > b.dateTime ? 1 : -1,)
-
       return this.orderedComments.slice().sort((a, b) =>
-      a.dateTime > b.dateTime ? 1 : +1,)
+      a.dateTime > b.dateTime ? 1 : -1,)
+
+      // this.orderedComments = this.allComments.sort((a, b) =>
+      // a.dateTime > b.dateTime ? 1 : -1,)
+      // return this.orderedComments
     }
 
   }, 
@@ -156,8 +189,11 @@ export default {
     //   this.orderedComments = this.allComments.sort((a, b) =>
     //   a.dateTime > b.dateTime ? 1 : -1,)
     // },
-    openAccordian() {
+    toggleAccordian(isTreeVisible) {
       // tree.visible = !tree.visible
+      if(isTreeVisible) {
+        this.isAccoridanOpen = !this.isAccoridanOpen;
+      }
     },
     areYouSure(treeIDInput) {
       this.$fire({
@@ -273,7 +309,6 @@ export default {
   },
 
   created() {
-
       db.collection("comments").onSnapshot(snapshot => {
       const changes = snapshot.docChanges();
       changes.forEach(change => {
@@ -302,8 +337,6 @@ export default {
     });
 
 
-    
-
   }
 };
 </script>
@@ -313,11 +346,11 @@ export default {
 
 .listViewWrapper {
   background-color: $primary;
-  display: flex;
-  flex-flow: column;
+  // display: flex;
+  // flex-flow: column;
   // justify-content: center;
   align-items: center;
-  flex-direction: column;
+  // flex-direction: column;
   // overflow: scroll;
   height: 100vh;
   // h6 {
@@ -330,38 +363,17 @@ export default {
   border: 1px solid white;
   margin: 7px 0;
   border-radius: 5px;
-
-   transition: 0.4s;
 }
 
 .treeCardTop__wrapper {
   display: flex;
   border: 1px solid white;
   align-items: center;
-  cursor: pointer;
-
-   transition:max-height 0.3s ease-out; // note that we're transitioning max-height, not height!
-  height:auto;
-  max-height:600px;
-
-
 }
 
 .treeCardBottom__Wrapper {
   background-color: white;
   padding: 10px;
-  display: none;
-  overflow: hidden;  
-
-}
-
-.accordianOpen {
-  background-color: white;
-  padding: 10px;
-
-
-
-
 }
 
 .treeCardTop__logoWrapper {
@@ -492,13 +504,50 @@ li {
   font-size: .5rem;
 }
 
-.sadTree {
-  width: 200px;
+.accordion {
+    background-color: #eee;
+    color: #444;
+    cursor: pointer;
+    padding: 18px;
+    width: 100%;
+    border: none;
+    text-align: left;
+    outline: none;
+    font-size: 15px;
+    transition: 0.4s;
+    max-height: 100px;
 }
 
-.sadWrapper {
-  text-align: center;
+.accordion.active, button.accordion:hover {
+    background-color: #ddd;
 }
+
+.panel {
+    padding: 0 18px;
+    background-color: white;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.2s ease-out;
+}
+
+.panel__open {
+  padding: 0 18px;
+  background-color: white;
+  max-height: 20rem;
+  overflow: hidden;
+  transition: max-height 0.2s ease-out;
+}
+
+.panel__treeType {
+  display: inline-block;
+  color: $primary;
+}
+
+.panel__distance {
+   display: inline-block;
+    color: $primary;
+}
+
 
 // :style="{backgroundImage:'url(~@/assets/maroonGradient.png)'}"
 </style>

@@ -14,6 +14,7 @@
         <div  id="navbarRight">
             <h5 @click="showView('SignUp')" v-if="!isLoggedIn" class="routerLinkRight">Sign Up</h5>
             <h5 @click="showView('Login')" v-if="!isLoggedIn" class="routerLinkRight">Login</h5>
+            <!-- <h5 v-if="isLoggedIn" class="welcomeText">Welcome {{ currentUser ? currentUser.displayName : '' }}</h5> -->
             <h5 v-if="isLoggedIn" @click="logout" class="logoutText">Logout</h5>
         </div>
 
@@ -21,6 +22,7 @@
 
       <div class="logoWrapper">
           <img class='splashLogo' alt="Vue logo" src="../assets/newLogo.png">
+            <h5 v-if="isLoggedIn" class="welcomeText">Welcome {{ currentUser ? currentUser.displayName : '' }}</h5>
           <div v-if="isLoggedIn" class="addTreeButtonWrapper">
             <button @click="showAddTreeModal" class="addTreeButton">Add Tree</button>
           </div>
@@ -41,7 +43,8 @@ export default {
     showAddTreeModal: Function,
     isLoggedIn: Boolean,
     getCurrentUser: Function,
-    getCurrentUserID: Function
+    getCurrentUserID: Function,
+    currentUser: Object
   },
   data() {
     return {
@@ -106,7 +109,7 @@ export default {
 
 .wholeNavbarWrapper {
   h5:hover {
-    color: $hover;
+    // color: $hover;
   }
 
 }
@@ -180,7 +183,7 @@ export default {
 }
 
   .addTreeButtonWrapper {
-    margin-left: auto;
+    // margin-left: auto;
     padding: 0;
   
   }
@@ -191,6 +194,18 @@ export default {
   padding: 10px;
   border-radius: 5px;
   margin-right: 20px;
+  }
+
+  .welcomeText {
+    color: $primary;
+    padding: 6px 6px 70px 0;
+    font-size: .8rem;
+    margin: 0 auto;
+  }
+  .welcomeText:hover {
+    // color: green!important;
+    cursor: pointer;
+ 
   }
 
 

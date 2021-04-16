@@ -8,13 +8,13 @@
     </div>
     <div id="mapListFilterWrapper" v-if="whichView === 'Map' || whichView === 'List'" >
       <div class="mapListButtonsWrapper">
-        <div id="mapListButton"  
+        <div class="mapListButton"  
         :style="{
             backgroundColor: (isActive ? '#ccc' : '#ffffff'), 
             color: 'black', 
             }" @click="toggleMapAndListButton('showMap')">Map View
         </div>
-        <div id="mapListButton" 
+        <div class="mapListButton" 
             :style="{
                 backgroundColor: (isActive ? '#ffffff' : '#ccc'), 
                 color: 'black', 
@@ -98,7 +98,7 @@ methods: {
       margin-left: 220px
 }
 
-#mapListButton {
+.mapListButton {
   background-color: #ffffff;
   float: left;
   border: none;
@@ -110,6 +110,12 @@ methods: {
   margin: 0px;
   text-align: center;
   border-radius: 0;
+  margin-right: 10px;
+}
+
+#mapListButtons:hover{
+  // filter: drop-shadow(30px 10px 4px #4444dd);
+  color: pink;
 }
 
 .dropdownWrapper {
@@ -120,9 +126,7 @@ methods: {
     font-size: 2.4rem;
 }
 
-#mapListButton:hover {
-  // background-color: red;
-}
+
 
 @media screen and (max-width: 600px) {
   .browseText {

@@ -8,6 +8,7 @@
       :formData="formData"
       :getCurrentUser="getCurrentUser"
       :getCurrentUserID="getCurrentUserID"
+      :currentUser="currentUser"
     />
 
     <Subheader
