@@ -1,71 +1,84 @@
 <template>
   <div class="listViewWrapper">
 
-    <div v-if="orderedTrees.length == 0">
+    <div v-if="selectedFilter === 'My Trees'">
       <div class="sadWrapper">
-        <h6>Hmmm, looks like this type of tree isn't near you.</h6>
-        <p>Perhaps you should find one and add it to the Fruit Finder!</p>
-        <img class="sadTree" src="../assets/sadtree.jpg" alt="">
+        <h6>You haven't contributed any trees to the Fruit Finder.</h6>
+        <p>If you know of a fruiting tree or bush, just push Add Tree in the upper right hand corner. </p>
+        <img class="sadTree" src="../assets/customTreeBox.png" alt="SadTreePicture">
       </div>
     </div>
 
+    <div v-else-if="selectedFilter === 'Custom Trees'">
+      <div class="sadWrapper">
+        <h6>You haven't created any Custom Trees. A custom tree is a Tree you add to The Fruit Finder that has it's own Custom Title. "Fred's Fruitful Italian Plum Tree", for example.</h6>
+        <p>To create a Custom Tree, simply click "Add a Tree" in the upper right hand corner. After hitting the Select Tree Type dropdown, choose Custom Tree. A text input will be revealed where you can name your Custom Tree.</p>
+        <img class="sadTree" src="../assets/customTreeBox.png" alt="SadTreePicture">
+      </div>
+    </div>
 
-   <div class="treeCardWrapper" v-else v-for="tree in orderedTrees" :key="tree.id">
-      
-      <div class="treeCardTop__wrapper" @click="tree.visible = !tree.visible">
-        <div class="treeCardTop__logoWrapper">
-          <img
-            class="treeCardTop__logo"
-            alt="Vue logo"
-            src="../assets/newLogoWhite.png"
-          />
-        </div>
+    <div v-else-if="orderedTrees.length == 0">
+      <div class="sadWrapper">
+        <h6>Hmmm, looks like this type of tree isn't near you.</h6>
+        <p>Perhaps you should find one and add it to the Fruit Finder!</p>
+        <img class="sadTree" src="../assets/sadtree.jpg" alt="SadTreePicture">
+      </div>
+    </div>
 
-        <div class="treeCardTop__typeTextWrapper">
-          <h6 class="treeCardTop__typeText">{{ tree.treeType }}</h6>
-          <h6 class="treeCardTop__distanceText">{{ calculateDistanceFromTree(tree.coordinates.lat, tree.coordinates.lng)}}</h6>
-        </div>
-
-        <div class='treeCardTop__buttonWrapper'>
-          <div 
-            class="deleteXWrapper"
-            v-if="tree.userID === currentUserID"
-            @click="areYouSure(tree.id)">
-            <font-awesome-icon id="deleteX" icon="trash-alt" size="sm"/>
+    <div class="treeCardWrapper" v-else v-for="tree in orderedTrees" :key="tree.id">
+        
+        <div class="treeCardTop__wrapper" @click="tree.visible = !tree.visible">
+          <div class="treeCardTop__logoWrapper">
+            <img
+              class="treeCardTop__logo"
+              alt="Vue logo"
+              src="../assets/newLogoWhite.png"
+            />
           </div>
 
-          <div class="emptyDiv" v-if="tree.userID !== currentUserID"></div>
+          <div class="treeCardTop__typeTextWrapper">
+            <h6 class="treeCardTop__typeText">{{ tree.treeType }}</h6>
+            <h6 class="treeCardTop__distanceText">{{ calculateDistanceFromTree(tree.coordinates.lat, tree.coordinates.lng)}}</h6>
+          </div>
+
+          <div class='treeCardTop__buttonWrapper'>
+            <img class="userSubImage" src="../assets/sadtree.jpg" alt="">
+            <div 
+              class="deleteXWrapper"
+              v-if="tree.userID === currentUserID"
+              @click="areYouSure(tree.id)">
+              <font-awesome-icon id="deleteX" icon="trash-alt" size="sm"/>
+            </div>
+
+            <div class="emptyDiv" v-if="tree.userID !== currentUserID"></div>
+
+          </div>
+        </div>
+
+        <div v-bind:class="[!tree.visible ? 'accordianOpen' : 'treeCardBottom__Wrapper']">
+          <div>
+            <h6 class="treeCardBottom__typeText">{{ tree.formattedAddress }}</h6>
+            <h6 class="treeCardBottom__distanceText">
+              {{ tree.description }}
+            </h6>
+          </div>
+          <div class="comment__wrapper">
+            <hr>
+            <div class="comment__top"></div>
+            <h6 class="treeCardComment__typeText">Comments</h6>
+            <h6 v-if="$parent.isLoggedIn" @click="showAddCommentModal(tree)" class="comment__button">Add Comment</h6>
+            <h6 v-if="!$parent.isLoggedIn" class="comment__button">Login to Add Comment</h6>
+          </div>
+
+          <ul v-for="comment in allComments" :key="comment.index">
+            <li v-if="comment.idOfCommentedTree === tree.id" :key="comment.index">
+              <font-awesome-icon v-if="comment.idOfCommenter === currentUserID" @click="areYouSureDeleteComment(comment.id)" class="xIcon" icon="trash-alt" size="sm"/> 
+              <span class="bold">    {{comment.commenterName}}  </span>  {{comment.comment}} <span class="comment__date">{{comment.dateTime}}</span>
+            </li>
+          </ul>
 
         </div>
-      </div>
-
-      <div v-bind:class="[!tree.visible ? 'accordianOpen' : 'treeCardBottom__Wrapper']">
-        <div>
-          <h6 class="treeCardBottom__typeText">{{ tree.formattedAddress }}</h6>
-          <h6 class="treeCardBottom__distanceText">
-            {{ tree.description }}
-          </h6>
-        </div>
-        <div class="comment__wrapper">
-          <hr>
-          <div class="comment__top"></div>
-          <h6 class="treeCardComment__typeText">Comments</h6>
-          <h6 v-if="$parent.isLoggedIn" @click="showAddCommentModal(tree)" class="comment__button">Add Comment</h6>
-          <h6 v-if="!$parent.isLoggedIn" class="comment__button">Login to Add Comment</h6>
-        </div>
-
-        <ul v-for="comment in allComments" :key="comment.index">
-          <li v-if="comment.idOfCommentedTree === tree.id" :key="comment.index">
-             <font-awesome-icon v-if="comment.idOfCommenter === currentUserID" @click="areYouSureDeleteComment(comment.id)" class="xIcon" icon="trash-alt" size="sm"/> 
-             <span class="bold">    {{comment.commenterName}}  </span>  {{comment.comment}} <span class="comment__date">{{comment.dateTime}}</span>
-          </li>
-        </ul>
-
-      </div>
-    </div> 
-
-
-
+      </div> 
 
     <modal class="modalWrapper" name="addCommentModal" :width="'90%'" :height="'75%'">
         <div class="xIconWrapper">
@@ -120,6 +133,7 @@ export default {
     currentUserID: String,
     currentUser: Object,
     myCoordinates: Object,
+    selectedFilter: String
   },
   components: {
   },
@@ -300,10 +314,6 @@ export default {
           }
       });
     });
-
-
-    
-
   }
 };
 </script>
@@ -498,6 +508,12 @@ li {
 
 .sadWrapper {
   text-align: center;
+  width: 70vw;
+}
+
+.userSubImage {
+  height: 40px;
+  margin-right: 20px;
 }
 
 // :style="{backgroundImage:'url(~@/assets/maroonGradient.png)'}"

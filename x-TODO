@@ -19,8 +19,6 @@ Search by tree type in top Search Field. Make sure map as well as Drawer List is
 
 Add a way to deal with Verified Trees. Likely through an admin account on the app itself. 
 
-If the user has not made any trees- make a rendered <View> saying "There are no trees" or something along those lines on MyTrees
-
 Ensure the geolocator tracks location- i THINK it simply finds initial location.
 
 Add error handling for Tree Location input. Primarily, ensure the inputted Tree is within a certain radius from user location. This is to ensure the Google Maps API didn't put the tree in some insanse spot as it's prone to do sometimes...

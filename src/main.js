@@ -24,7 +24,6 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import moment from 'moment'
 
 
-
 library.add(faUserSecret)
 library.add(faTimes)
 library.add(faTrashAlt)

@@ -36,6 +36,7 @@
       :currentUser="currentUser"
       :myCoordinates="myCoordinates"
       :orderedTrees="orderedTrees"
+      :selectedFilter="selectedFilter"
 		/>
 
 		<About 
@@ -64,7 +65,7 @@
         <b-form class="formWrapper" @submit.prevent="handleFormSubmit">
         <div>
           <b-dropdown id="dropdown-1" v-model="formData.treeType" :text="modalButtonTitle" class="m-md-2">
-            <b-dropdown-item disabled value="0">{{ formData.treeType ? "Select a tree type" : formData.treeType }}</b-dropdown-item>
+            <b-dropdown-item disabled value="0">{{ !formData.treeType ? "Select a tree type" : formData.treeType }}</b-dropdown-item>
             <b-dropdown-item v-for="option in dropdown.modalDropdownOptions" 
                   :key="option.text" 
                   :value="option.text"
@@ -85,6 +86,19 @@
             ></b-form-input>
           </b-form-group>
         </b-row>
+
+          <b-row md="1">
+            <b-form-group>
+              <b-form-textarea
+                id="textArea"
+                size="sm"
+                v-model="formData.description"
+                placeholder="Description"
+                rows="5"
+                max-rows="4"
+              ></b-form-textarea>
+            </b-form-group>
+          </b-row>
 
           <b-row md="1">
             <b-form-group>
