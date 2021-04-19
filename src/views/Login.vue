@@ -33,7 +33,8 @@ export default {
   name:"Login",
   props: {
     showView: Function,
-    getCurrentUser: Function
+    getCurrentUser: Function,
+    toggleMapAndListButton: Function
   },
   data() {
     return {
@@ -50,6 +51,7 @@ export default {
       try {
         const value = await firebase.auth().signInWithEmailAndPassword(this.email, this.password);
         this.showView("Map")
+        this.toggleMapAndListButton("showMap")
         console.log("value after pressing login", value);
         this.spinLoading = false;
         this.getCurrentUser()

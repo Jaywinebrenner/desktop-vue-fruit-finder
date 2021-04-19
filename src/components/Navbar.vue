@@ -7,8 +7,8 @@
           <!-- <button @click="test()">TEST</button> -->
             <!-- <router-link class="routerLinksLeft" to="/">Home</router-link> 
             <router-link class="routerLinksLeft" to="/about">About</router-link> -->
-            <h5 @click="showView('Map')" class="routerLinkLeftOne">Home</h5>
-            <h5 @click="showView('About')" class="routerLinkLeftTwo">About</h5>
+            <h5 @click="clickHomeButton()" class="routerLinkLeftOne">Home</h5>
+            <h5 @click="showView('About'); " class="routerLinkLeftTwo">About</h5>
         </div>
 
         <div  id="navbarRight">
@@ -44,7 +44,8 @@ export default {
     isLoggedIn: Boolean,
     getCurrentUser: Function,
     getCurrentUserID: Function,
-    currentUser: Object
+    currentUser: Object,
+    toggleMapAndListButton: Function
   },
   data() {
     return {
@@ -54,11 +55,17 @@ export default {
     test() {
       console.log("ROOT", this.$root.spinLoading)
     },
+    clickHomeButton(){
+        this.showView('Map'); 
+        this.toggleMapAndListButton("showMap");
+    },
 
     async logout() {
-      try {
+      try { 
         const data = await firebase.auth().signOut();
         console.log("logout data", data);
+        this.showView("Map")
+        this.toggleMapAndListButton("showMap")
         this.getCurrentUser();
         this.getCurrentUserID();
         this.$toastr.e(

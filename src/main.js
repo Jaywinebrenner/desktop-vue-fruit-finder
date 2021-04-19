@@ -3,10 +3,12 @@ import App from './App.vue'
 import router from './router'
 import { BootstrapVue, IconsPlugin } from "bootstrap-vue";
 import "./styles/style.scss";
-import axios from 'axios';
+import axios from 'axios'
 import './firebaseApp'
+import 'firebase/firestore';
 import firebase from "firebase/app";
-import 'firebase/firestore'
+import 'firebase/firestore';
+import 'firebase/storage';
 import VueGeolocation from "vue-browser-geolocation";
 import * as VueGoogleMaps from 'vue2-google-maps';
 import VModal from "vue-js-modal/dist/index.nocss.js";
@@ -59,8 +61,14 @@ Vue.use(IconsPlugin)
 Vue.config.productionTip = false
 
 const db = firebase.firestore();
+var storage = firebase.storage();
 
-export default db;
+// export default db;
+
+export {db, storage};
+
+
+
 
   // Alternate syntax for rendering Vue
 // new Vue({

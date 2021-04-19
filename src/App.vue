@@ -9,6 +9,7 @@
       :getCurrentUser="getCurrentUser"
       :getCurrentUserID="getCurrentUserID"
       :currentUser="currentUser"
+      :toggleMapAndListButton="toggleMapAndListButton"
     />
 
     <Subheader
@@ -47,6 +48,7 @@
 			v-if="whichView === 'Login'"
       :showView="showView"
       :getCurrentUser="getCurrentUser"
+      :toggleMapAndListButton="toggleMapAndListButton"
 		/>
 
 		<SignUp
@@ -100,16 +102,19 @@
             </b-form-group>
           </b-row>
 
+      
+          <p class="imageInputSubheader">You can always upload the image later if you'd like</p>
+          <progress value="0" max="100" id="uploader"></progress>
           <b-row md="1">
-            <b-form-group>
-              <b-form-textarea
-                id="textArea"
+            <b-form-group class="imageInput">
+              <b-form-file
+                accept=".jpg, .png, .gif, .jpeg"
                 size="sm"
-                v-model="formData.description"
-                placeholder="Description"
-                rows="5"
-                max-rows="4"
-              ></b-form-textarea>
+                v-model="treeImage"
+                placeholder="Upload an image of your tree"
+                drop-placeholder="Drop file here..."
+              ></b-form-file>
+
             </b-form-group>
           </b-row>
 
@@ -148,7 +153,7 @@ import ListView from "./views/ListView";
 import About from "./views/About";
 import Login from "./views/Login";
 import SignUp from "./views/SignUp";
-import db from "./main.js";
+import {db, storage} from "./main.js";
 import axios from 'axios';
 import firebase from 'firebase/app';
 import "firebase/auth";
@@ -212,6 +217,9 @@ data() {
         lat: 0,
         lng: 0
       },
+      treeImage: null,
+      
+
     };
   },
   mounted() {
@@ -277,6 +285,7 @@ data() {
 		},
     
     async handleFormSubmit() {
+      // console.log(JSON.stringify(firebase.storage))
       this.spinLoading = true;
       if (
         !this.formData.treeType ||
@@ -338,11 +347,39 @@ data() {
         isCustomTree: this.formData.isCustomTree
       }
 
+
+      // Upload Image to Firebase Storage
+      let uploader = document.getElementById('uploader');
+      console.log("this TreeImage", this.treeImage)
+
+      let storageRef = firebase.storage().ref('treeImage/' + this.treeImage);
+
+      console.log("storage ref?", storageRef)
+
+      storageRef.put(this.treeImage);
+
+      let task = storageRef.put(this.treeImage);
+
+      task.on('state_changed', 
+        function progress(snapshot) {
+          console.log("what?")
+            let percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            uploader.value = percentage;
+        },
+        function error(err) {
+          console.log("ERROR??", err)
+        },
+        function complete() {
+
+        }
+      )
+
+
       await db
         .collection("locations")
         .add(submittedTreeData)
         .then(() => {
-          console.log("upload successful!");
+          // console.log("upload successful!");
         });
 
       // Clean up 
@@ -365,7 +402,7 @@ data() {
 
     orderTrees() {
       this.allTrees.forEach((tree) => {
-        console.log(tree)
+        // console.log(tree)
         let distance = getDistance(
         { latitude: tree.coordinates.lat, longitude: tree.coordinates.lng },
         { latitude: this.myCoordinates.lat, longitude: this.myCoordinates.lng },
@@ -384,7 +421,7 @@ data() {
           return;
         }
         if(filterType === "All Trees") {
-          console.log("HERE")
+          // console.log("HERE")
           return this.orderTrees();
         }
         if(filterType === "My Trees") {
@@ -424,28 +461,30 @@ data() {
   },
 
   created() {
+
+    console.log("storage", storage)
     firebase.auth().onAuthStateChanged(user => {
         if(user) {
           this.isLoggedIn = true;
           this.getCurrentUser()
           this.getCurrentUserID()
-          console.log("Are you logged in?", this.isLoggedIn)
+          // console.log("Are you logged in?", this.isLoggedIn)
         } else {
           this.isLoggedIn = false;
           this.getCurrentUser()
           this.getCurrentUserID()
-          console.log("Are you logged in?", this.isLoggedIn)
+          // console.log("Are you logged in?", this.isLoggedIn)
         }
     })      
       
     db.collection("locations").onSnapshot(snapshot => {
         const changes = snapshot.docChanges();
-        console.log("Changes", changes)
+        // console.log("Changes", changes)
         changes.forEach(change => {
           let newTrees = [];
           if (change.type === "added") {
               const changedData = change.doc.data();
-              console.log("Added: ", change.doc.data());
+              // console.log("Added: ", change.doc.data());
               newTrees.push(changedData);
 
               this.allTrees.push({
@@ -455,14 +494,14 @@ data() {
               });
             }
             if (change.type === "modified") {
-              console.log("Modified: ", change.doc.data());
+              // console.log("Modified: ", change.doc.data());
             }
             if (change.type === "removed") {
               // Find index of removed tree and remove it from UI
               var removeIndex = this.allTrees.map(function(item) { return item.id; }).indexOf(change.doc.id);
               this.allTrees.splice(removeIndex, 1);
-              console.log("allTrees DELETE", this.allTrees);
-              console.log("Removed: ", change.doc.data());
+              // console.log("allTrees DELETE", this.allTrees);
+              // console.log("Removed: ", change.doc.data());
             }
 
             this.orderTrees()
@@ -517,7 +556,6 @@ body {
 }
 
 .modalHeader {
-  margin: 20px 0;
   color: $primary;
 }
 
@@ -622,13 +660,41 @@ body {
 // }
 
 .xIconWrapper {
-  padding: 10px;
+  padding: 10px 10px 0 10px;
 }
 
 .treeTypeDisplay {
   color: $primary;
 }
 
+.custom-file-label {
+  width: 290px;
+}
+
+.imageInput {
+    margin-right: 33px;
+}
+
+.imageInputHeader {
+  color: $primary;
+  font-size: 12px;
+  font-weight: bold;
+  margin-bottom: 0;
+  line-height: .6;
+}
+
+.imageInputSubheader {
+  color: $primary;
+  font-size: 12px;
+  margin-bottom: 0;
+}
+
+#dropdown-1 {
+      margin-bottom: 0px !important;
+}
+#uploader {
+  width: 50%;
+}
 
 
 </style>

@@ -103,7 +103,7 @@
 
 <script>
 import { mapStyle } from "../constants/mapStyle.js";
-import db from "@/main.js";
+import {db} from "@/main.js";
 // import firebase from 'firebase/app';
 import "firebase/auth";
 

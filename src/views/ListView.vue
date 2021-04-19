@@ -1,7 +1,7 @@
 <template>
   <div class="listViewWrapper">
 
-    <div v-if="selectedFilter === 'My Trees'">
+    <div v-if="selectedFilter === 'My Trees' && orderedTrees.length == 0">
       <div class="sadWrapper">
         <h6>You haven't contributed any trees to the Fruit Finder.</h6>
         <p>If you know of a fruiting tree or bush, just push Add Tree in the upper right hand corner. </p>
@@ -9,7 +9,7 @@
       </div>
     </div>
 
-    <div v-else-if="selectedFilter === 'Custom Trees'">
+    <div v-else-if="selectedFilter === 'Custom Trees' && orderedTrees.length == 0">
       <div class="sadWrapper">
         <h6>You haven't created any Custom Trees. A custom tree is a Tree you add to The Fruit Finder that has it's own Custom Title. "Fred's Fruitful Italian Plum Tree", for example.</h6>
         <p>To create a Custom Tree, simply click "Add a Tree" in the upper right hand corner. After hitting the Select Tree Type dropdown, choose Custom Tree. A text input will be revealed where you can name your Custom Tree.</p>
@@ -119,7 +119,7 @@
 </template>
 
 <script>
-import db from "@/main.js";
+import {db} from "@/main.js";
 import {  convertDistance } from 'geolib';
 import getDistance from 'geolib/es/getPreciseDistance';
 import moment from 'moment';
@@ -514,6 +514,15 @@ li {
 .userSubImage {
   height: 40px;
   margin-right: 20px;
+}
+
+@media screen and (max-width: 600px) {
+  .userSubImage {
+    margin-right: 0px;
+  }
+  .treeCardTop__logo {
+    width: 60px;
+  }
 }
 
 // :style="{backgroundImage:'url(~@/assets/maroonGradient.png)'}"

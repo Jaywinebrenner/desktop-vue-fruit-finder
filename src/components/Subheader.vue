@@ -1,12 +1,12 @@
 <template>
   <div class="subheaderWrapper">    
-    <div v-if="whichView === 'Map'">
+    <div v-if="this.$parent.whichView === 'Map'">
         <h5 class="browseText">Browse the Map for Fruit Trees Near You</h5>
     </div>
-    <div v-if="whichView === 'List'">
+    <div v-if="this.$parent.whichView === 'List'">
         <h5 class="browseText">Peruse the list for Fruit Trees Near You</h5>
     </div>
-    <div id="mapListFilterWrapper" v-if="whichView === 'Map' || whichView === 'List'" >
+    <div id="mapListFilterWrapper" v-if="this.$parent.whichView === 'Map' || this.$parent.whichView === 'List'" >
       <div class="mapListButtonsWrapper">
         <div class="mapListButton"  
         :style="{
@@ -47,7 +47,7 @@ export default {
     props: {
         isActive: Boolean,
         toggleMapAndListButton: Function,
-        whichView: String,
+        // whichView: String,
         filteredTrees: Array,
         selectFilter: Function,
         buttonTitle: String
@@ -135,7 +135,29 @@ methods: {
   .mapListButtonsWrapper {
     display: block;
     margin: 0 auto;
-}
+  }
+  #dropdown-2 {
+
+    margin: 10px 7px 0px 0px;
+  }
+  #dropdown-2__BV_toggle_{
+    margin-bottom: 0px !important;
+  }
+  .dropdown-menu {
+    left: -40px !important;
+  }
+  .welcomeText {
+    padding: 0;
+  }
+  .splashLogo {
+    width: 100px;
+  }
+  .deleteXWrapper {
+    height: 44px !important;
+  }
+  .browseText {
+    font-size: 1.6rem;
+  }
 }
 
 #dropdown-2__BV_toggle_{
@@ -143,6 +165,8 @@ methods: {
    padding: 4px 10px;
    width: 190px;
    margin: 0 0 27px 0;
+   
  }
+
 
 </style>
