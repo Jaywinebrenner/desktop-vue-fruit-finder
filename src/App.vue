@@ -213,6 +213,7 @@ data() {
         },
         isCustomTree: false
       },
+      userUploadedImage: null,
       myCoordinates: {
         lat: 0,
         lng: 0
@@ -227,6 +228,34 @@ data() {
   },
 
   methods: {
+    getImageUrl(img) {
+
+    let storageRef = firebase.storage().ref();
+    let imgRef = storageRef.child('treeImage/' + img);
+
+  // Get the download URL
+    imgRef.getDownloadURL()
+    .then((url) => {
+      console.log("DOWNLOAD URL", url)
+    })
+    .catch((error) => {
+
+    switch (error.code) {
+        case 'storage/object-not-found':
+          // File doesn't exist
+          break;
+        case 'storage/unauthorized':
+          // User doesn't have permission to access the object
+          break;
+        case 'storage/canceled':
+          // User canceled the upload
+          break;
+        case 'storage/unknown':
+          // Unknown error occurred, inspect the server response
+        break;
+      }
+     });
+    },
     async getCurrentUser() {
       this.currentUser = await firebase.auth().currentUser;
     },
@@ -285,8 +314,9 @@ data() {
 		},
     
     async handleFormSubmit() {
-      // console.log(JSON.stringify(firebase.storage))
+
       this.spinLoading = true;
+
       if (
         !this.formData.treeType ||
         !this.formData.description ||
@@ -352,17 +382,16 @@ data() {
       let uploader = document.getElementById('uploader');
       console.log("this TreeImage", this.treeImage)
 
-      let storageRef = firebase.storage().ref('treeImage/' + this.treeImage);
+      let file = this.treeImage;
 
-      console.log("storage ref?", storageRef)
+      let storageRef = firebase.storage().ref('treeImage/' + file.name);
 
-      storageRef.put(this.treeImage);
+      await storageRef.put(file);
 
-      let task = storageRef.put(this.treeImage);
+      let task = storageRef.put(file);
 
       task.on('state_changed', 
         function progress(snapshot) {
-          console.log("what?")
             let percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
             uploader.value = percentage;
         },
@@ -372,8 +401,10 @@ data() {
         function complete() {
 
         }
-      )
+      );
 
+      // GET URL OF UPLOADED IMAGE
+      this.getImageUrl(file.name)
 
       await db
         .collection("locations")
@@ -462,6 +493,7 @@ data() {
 
   created() {
 
+    // this.getImageUrl()
     console.log("storage", storage)
     firebase.auth().onAuthStateChanged(user => {
         if(user) {
