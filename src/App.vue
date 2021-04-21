@@ -211,9 +211,9 @@ data() {
           lat: "",
           lng: ""
         },
-        isCustomTree: false
+        isCustomTree: false,
+        userUploadedImage: null,
       },
-      userUploadedImage: null,
       myCoordinates: {
         lat: 0,
         lng: 0
@@ -228,15 +228,17 @@ data() {
   },
 
   methods: {
-    getImageUrl(img) {
+    async getImageUrl(img) {
 
     let storageRef = firebase.storage().ref();
     let imgRef = storageRef.child('treeImage/' + img);
 
   // Get the download URL
-    imgRef.getDownloadURL()
+    await imgRef.getDownloadURL()
     .then((url) => {
       console.log("DOWNLOAD URL", url)
+      this.formData.userUploadedImage = url;
+      return this.formData.userUploadedImage ;
     })
     .catch((error) => {
 
@@ -365,20 +367,8 @@ data() {
       } else {
         this.formData.isCustomTree = false;
       }
-      
-      let submittedTreeData = {
-        userID: firebase.auth().currentUser.uid,
-        treeType: this.formData.treeType,
-        description: this.formData.description,
-        address: addressObject,
-        formattedAddress: formattedAddress,
-        coordinates: coordObject,
-        contributorName: this.currentUser.displayName,
-        isCustomTree: this.formData.isCustomTree
-      }
 
-
-      // Upload Image to Firebase Storage
+            // Upload Image to Firebase Storage
       let uploader = document.getElementById('uploader');
       console.log("this TreeImage", this.treeImage)
 
@@ -404,7 +394,23 @@ data() {
       );
 
       // GET URL OF UPLOADED IMAGE
-      this.getImageUrl(file.name)
+      await this.getImageUrl(file.name);
+      console.log("URL IN SUMBIT", this.formData.userUploadedImage )
+      
+      let submittedTreeData = {
+        userID: firebase.auth().currentUser.uid,
+        treeType: this.formData.treeType,
+        description: this.formData.description,
+        address: addressObject,
+        formattedAddress: formattedAddress,
+        coordinates: coordObject,
+        contributorName: this.currentUser.displayName,
+        isCustomTree: this.formData.isCustomTree,
+        urlOfTreeImage: this.formData.userUploadedImage
+      }
+
+
+
 
       await db
         .collection("locations")
@@ -417,6 +423,7 @@ data() {
       this.formData.treeType = "";
       this.formData.description = "";
       this.formData.street = "";
+      this.formData.userUploadedImage = null;
       this.hideAddTreeModal();
       this.spinLoading = false;
       // this.makeToast();

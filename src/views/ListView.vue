@@ -42,7 +42,8 @@
           </div>
 
           <div class='treeCardTop__buttonWrapper'>
-            <img class="userSubImage" src="../assets/sadtree.jpg" alt="">
+            <!-- <img class="userSubImage" src="../assets/sadtree.jpg" alt=""> -->
+            <img class="userSubImage" :src="tree.urlOfTreeImage" alt="Picture of Tree">
             <div 
               class="deleteXWrapper"
               v-if="tree.userID === currentUserID"
