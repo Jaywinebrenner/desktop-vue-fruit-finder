@@ -97,6 +97,7 @@ export default {
   position: -webkit-sticky; 
   top: 0;
   padding-bottom: 5px;
+  z-index: 2;
 
 }
 

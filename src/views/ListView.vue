@@ -513,8 +513,12 @@ li {
 }
 
 .userSubImage {
-  height: 40px;
+  // height: 40px;
   margin-right: 20px;
+  object-fit: cover;
+  border-radius:50%;
+  width: 40px;
+  height: 40px;
 }
 
 @media screen and (max-width: 600px) {

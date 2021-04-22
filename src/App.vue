@@ -104,7 +104,7 @@
 
       
           <p class="imageInputSubheader">You can always upload the image later if you'd like</p>
-          <progress value="0" max="100" id="uploader"></progress>
+          <progress v-if="uploading === true" value="0" max="100" id="uploader"></progress>
           <b-row md="1">
             <b-form-group class="imageInput">
               <b-form-file
@@ -219,6 +219,7 @@ data() {
         lng: 0
       },
       treeImage: null,
+      uploading: false
       
 
     };
@@ -317,6 +318,8 @@ data() {
     
     async handleFormSubmit() {
 
+       
+      this.uploading = true;
       this.spinLoading = true;
 
       if (
@@ -335,8 +338,8 @@ data() {
         lng: ''
       }
       const addressObject = {
-          street: this.formData.street,
-        };
+        street: this.formData.street,
+      };
       let formattedAddress = '';
       await axios.get('https://maps.googleapis.com/maps/api/geocode/json', {
         params:{
@@ -372,26 +375,39 @@ data() {
       let uploader = document.getElementById('uploader');
       console.log("this TreeImage", this.treeImage)
 
+
+
+      // var defaultTreeImage = document.createElement("img");
+      // defaultTreeImage.src = "src/assets/customTree.png";
+      // console.log("defaultTree", defaultTreeImage)
+
       let file = this.treeImage;
+      if(this.treeImage) {
+        let storageRef = firebase.storage().ref('treeImage/' + file.name);
+        await storageRef.put(file);
+        let task = storageRef.put(file);
+  
+        task.on('state_changed', 
+          function progress(snapshot) {
+              let percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+              uploader.value = percentage;
+          },
+          function error(err) {
+            console.log("ERROR??", err)
+          },
+          function complete() {
+  
+          }
+        );
 
-      let storageRef = firebase.storage().ref('treeImage/' + file.name);
+      } else {
+        //Upload Default Image here
+        
+        // var defaultImage = new File("src/assets/customTree.png") 
+        // console.log("defaultImage", defaultImage)
 
-      await storageRef.put(file);
 
-      let task = storageRef.put(file);
-
-      task.on('state_changed', 
-        function progress(snapshot) {
-            let percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            uploader.value = percentage;
-        },
-        function error(err) {
-          console.log("ERROR??", err)
-        },
-        function complete() {
-
-        }
-      );
+      }
 
       // GET URL OF UPLOADED IMAGE
       await this.getImageUrl(file.name);
@@ -424,8 +440,10 @@ data() {
       this.formData.description = "";
       this.formData.street = "";
       this.formData.userUploadedImage = null;
+      this.treeImage = null;
       this.hideAddTreeModal();
       this.spinLoading = false;
+      this.uploading = false;
       // this.makeToast();
       this.$toastr.s(
           "You have successfully uploaded your tree!"
@@ -732,7 +750,7 @@ body {
       margin-bottom: 0px !important;
 }
 #uploader {
-  width: 50%;
+  width: 95%;
 }
 
 
