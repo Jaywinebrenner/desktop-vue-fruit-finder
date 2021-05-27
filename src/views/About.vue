@@ -37,12 +37,18 @@ margin-bottom: 4vh;
 
 
 .aboutWrapper {
-  margin: 10px 10vh;
+  margin: 10px 40vh;
   display: flex;
   flex-direction: column;
   background-color: $primary;
   align-items: center;
   justify-content: center;
+}
+
+@media only screen and (max-width: 600px) {
+.aboutWrapper {
+  margin: 10px 5vh;
+}
 }
 
 

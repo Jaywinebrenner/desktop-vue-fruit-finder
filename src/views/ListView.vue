@@ -1,4 +1,14 @@
 <template>
+
+<div>
+
+  <ListItem
+    v-for="tree in orderedTrees" :key="tree.id"
+    :orderedTrees="orderedTrees"
+    :tree="tree"
+
+  />
+              
   <div class="listViewWrapper">
 
     <div v-if="selectedFilter === 'My Trees' && orderedTrees.length == 0">
@@ -44,12 +54,12 @@
           <div class='treeCardTop__buttonWrapper'>
             <!-- <img class="userSubImage" src="../assets/sadtree.jpg" alt=""> -->
             <img class="userSubImage" :src="tree.urlOfTreeImage" alt="Picture of Tree">
-            <div 
-              class="deleteXWrapper"
-              v-if="tree.userID === currentUserID"
-              @click="areYouSure(tree.id)">
-              <font-awesome-icon id="deleteX" icon="trash-alt" size="sm"/>
+
+            <div class="deleteEditIconWrapper">
+              <font-awesome-icon v-if="tree.userID === currentUserID" @click="areYouSure(tree.id)" id="deleteX" icon="trash-alt" size="sm"/>
+              <font-awesome-icon v-if="tree.userID === currentUserID" @click="getTreeIdForEditing(tree.id)" id="editIcon" icon="edit" size="sm"/>
             </div>
+
 
             <div class="emptyDiv" v-if="tree.userID !== currentUserID"></div>
 
@@ -117,13 +127,17 @@
     </modal>
 
   </div>
+
+</div>
+
 </template>
 
 <script>
 import {db} from "@/main.js";
-import {  convertDistance } from 'geolib';
+import { convertDistance } from 'geolib';
 import getDistance from 'geolib/es/getPreciseDistance';
 import moment from 'moment';
+import ListItem from '../components/ListItem.vue'
 
 export default {
   name: "ListView",
@@ -134,13 +148,16 @@ export default {
     currentUserID: String,
     currentUser: Object,
     myCoordinates: Object,
-    selectedFilter: String
+    selectedFilter: String,
+    showEditTreeModal: Function,
+    hideEditTreeModal: Function,
+    getTreeIdForEditing: Function
   },
   components: {
+    ListItem
   },
   data() {
     return {
-      isBottomOpen: false,
       comment: null,
       spinLoading: false,
       idOfCommentedTree: null,
@@ -393,7 +410,7 @@ export default {
   line-height: 8px;
 }
 
-.treeCardTop__logo {
+.treeCardTop__logo { 
   width: 80px;
 }
 
@@ -405,6 +422,7 @@ export default {
   margin-right: 1rem;
   color: white;
   border-radius: 5px;
+
 }
 
 .treeTopCard__detailsButton {
@@ -437,20 +455,49 @@ export default {
 }
 
 .deleteXWrapper{
-  position: relative;
- height: 55px;
- width: 3px;
- margin-left: 5px;
-  cursor: pointer;
+//   position: relative;
+//  height: 55px;
+//  width: 3px;
+//  margin-left: 5px;
+//   cursor: pointer;
+position: absolute;
 }
 
-.deleteX {
-  position: absolute;
-  display: inline-block;
-  color: #ffffff;
-  cursor: pointer;
-  width: 25px;
+
+
+
+
+
+
+
+.deleteEditIconWrapper {
+  position: relative;
+  // width: 9px;
+      padding-right: 15px;
 }
+
+#deleteX {
+  position: absolute;
+  // position: absolute;
+  top: 5px;
+  // display: inline-block;
+  // color: #ffffff;
+  // cursor: pointer;
+  // width: 25px;
+}
+
+#editIcon {
+  position: absolute;
+    // position: absolute;
+    bottom: 8px;
+    // right: .5px;
+}
+
+
+
+
+
+
 
 .emptyDiv {
   width: 10px;

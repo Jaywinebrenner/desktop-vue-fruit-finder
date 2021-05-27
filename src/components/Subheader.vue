@@ -89,7 +89,7 @@ methods: {
 //   border: 1px solid #ccc;
   background-color: #f1f1f1;
   background-color: $primary;
-  margin: 0 auto 8px auto;
+  // margin: 0 auto 8px auto;
   display: inline-block;
 }
 
@@ -126,9 +126,15 @@ methods: {
     font-size: 2.4rem;
 }
 
+.dropdown-menu {
+  z-index: 0;
+}
 
 
 @media screen and (max-width: 600px) {
+  #mapListFilterWrapper {
+    margin: 0 auto 12px auto;
+  }
   .browseText {
     font-size: 1.8rem;
   }
@@ -148,6 +154,7 @@ methods: {
   }
   .welcomeText {
     padding: 0;
+    cursor: none;
   }
   .splashLogo {
     width: 100px;

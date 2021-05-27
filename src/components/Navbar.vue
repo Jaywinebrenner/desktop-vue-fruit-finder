@@ -92,6 +92,11 @@ export default {
   margin-right: 20px;
 }
 
+.logoutText:hover {
+    color: rgb(197, 191, 191);
+    transition: .3s;
+} 
+
 .wholeNavbarWrapper {
   position: sticky;
   position: -webkit-sticky; 
@@ -127,6 +132,11 @@ export default {
   margin-right: 40px;
   // font-size: 14px;
 }
+
+.routerLinkRight:hover {
+    color: rgb(197, 191, 191);
+    transition: .3s;
+} 
 
 #navbarLeft,  #navbarMiddle, #navbarRight {
   display: flex;
@@ -176,6 +186,12 @@ export default {
   margin-top: 5px;
   cursor: pointer;
 }
+
+.routerLinkLeftTwo:hover, .routerLinkLeftOne:hover {
+  transition: .3s;
+  color: rgb(197, 191, 191);
+}
+
 .logoWrapper {
   background-color: white;
   display: flex;
@@ -209,6 +225,7 @@ export default {
     padding: 6px 6px 70px 0;
     font-size: .8rem;
     margin: 0 auto;
+    cursor: none;
   }
   .welcomeText:hover {
     // color: green!important;

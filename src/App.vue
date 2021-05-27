@@ -38,6 +38,9 @@
       :myCoordinates="myCoordinates"
       :orderedTrees="orderedTrees"
       :selectedFilter="selectedFilter"
+      :showEditTreeModal="showEditTreeModal"
+      :hideEditTreeModal="hideEditTreeModal"
+      :getTreeIdForEditing="getTreeIdForEditing"
 		/>
 
 		<About 
@@ -55,6 +58,9 @@
 			v-if="whichView === 'SignUp'"
       :showView="showView"
 		/>
+
+
+    <!-- ADD TREE MODAL -->
 
     <modal class="modalWrapper" name="addTreeModal" :width="'90%'" :height="'75%'">
       <div class="xIconWrapper">
@@ -102,7 +108,6 @@
             </b-form-group>
           </b-row>
 
-      
           <p class="imageInputSubheader">You can always upload the image later if you'd like</p>
           <progress v-if="uploading === true" value="0" max="100" id="uploader"></progress>
           <b-row md="1">
@@ -141,6 +146,97 @@
         </b-form>
       </div>
     </modal>
+
+    <!-- EDIT TREE MODAL -->
+
+    <modal class="modalWrapper" name="editTreeModal" :width="'90%'" :height="'75%'">
+      <div class="xIconWrapper">
+         <font-awesome-icon @click="hideEditTreeModal()" class="xIcon" icon="times" size="lg"/>
+      </div>
+ 
+      <h5 class="modalHeader">Edit Tree Information</h5>
+      <p style="color: black;">*You don't have to edit everything, just the stuff you want.</p>
+
+      <div class="formWrapper container mt-6">
+        <b-form class="formWrapper" @submit.prevent="handleEditSubmit()">
+        <div>
+          <b-dropdown id="dropdown-1" v-model="formData.treeType" :text="modalButtonTitle" class="m-md-2">
+            <b-dropdown-item disabled value="0">{{ !formData.treeType ? "Select a tree type" : formData.treeType }}</b-dropdown-item>
+            <b-dropdown-item v-for="option in dropdown.modalDropdownOptions" 
+                  :key="option.text" 
+                  :value="option.text"
+                  @click="selectModalTreeType(option.text)">
+              {{option.text}}
+            </b-dropdown-item>  
+          </b-dropdown>
+        </div>
+
+        <b-row v-if="isCustomTreeVisible">
+          <b-form-group>
+            <b-form-input
+              id="treeTypeInput"
+              placeholder="Enter Custom Tree"
+              class="input"
+              v-model="formData.treeType"
+              size="sm"
+            ></b-form-input>
+          </b-form-group>
+        </b-row>
+
+          <b-row md="1">
+            <b-form-group>
+              <b-form-textarea
+                id="textArea"
+                size="sm"
+                v-model="formData.description"
+                placeholder="Edit Description"
+                rows="5"
+                max-rows="4"
+              ></b-form-textarea>
+            </b-form-group>
+          </b-row>
+
+      
+          <p class="imageInputSubheader">You can always upload the image later if you'd like</p>
+          <progress v-if="uploading === true" value="0" max="100" id="uploader"></progress>
+          <b-row md="1">
+            <b-form-group class="imageInput">
+              <b-form-file
+                accept=".jpg, .png, .gif, .jpeg"
+                size="sm"
+                v-model="treeImage"
+                placeholder="Upload an image of your tree"
+                drop-placeholder="Drop file here..."
+              ></b-form-file>
+
+            </b-form-group>
+          </b-row>
+
+          <b-row md="1">
+            <b-form-group>
+              <b-form-input
+                size="sm"
+                id="streetInput"
+                placeholder="Edit Address or Cross Street"
+                class="input"
+                v-model="formData.street"
+              ></b-form-input>
+            </b-form-group>
+          </b-row>
+
+          <b-row class="buttonRow" md="1">
+						
+            <button type="submit" id="submitTreeButton">
+              <b-spinner small v-if="spinLoading" label="Spinning"></b-spinner
+              ><span v-if="!spinLoading">Submit Edited Tree</span>
+            </button>
+
+          </b-row>
+        </b-form>
+      </div>
+    </modal>
+
+
   
   </div>
 </template>
@@ -219,9 +315,8 @@ data() {
         lng: 0
       },
       treeImage: null,
-      uploading: false
-      
-
+      uploading: false,
+      treeIdForEditing: null
     };
   },
   mounted() {
@@ -311,13 +406,33 @@ data() {
       this.formData.description = null;
       this.formData.street = null;
     },
+
+    showEditTreeModal() {
+      console.log("fart")
+      this.$modal.show("editTreeModal");
+    },
+    hideEditTreeModal() {
+      this.$modal.hide("editTreeModal");
+      this.formData.treeType = null;
+      this.formData.description = null;
+      this.formData.street = null;
+    },
+    getTreeIdForEditing(treeID) {
+      this.treeIdForEditing = treeID;
+      this.$modal.show("editTreeModal");
+    },
+
+
+
 		showView(view){
 			this.whichView = view;
 			console.log("Which View? ", this.whichView)
 		},
+
+
+    // SUBMIT ADD A TREE
     
     async handleFormSubmit() {
-
        
       this.uploading = true;
       this.spinLoading = true;
@@ -375,8 +490,6 @@ data() {
       let uploader = document.getElementById('uploader');
       console.log("this TreeImage", this.treeImage)
 
-
-
       // var defaultTreeImage = document.createElement("img");
       // defaultTreeImage.src = "src/assets/customTree.png";
       // console.log("defaultTree", defaultTreeImage)
@@ -405,8 +518,6 @@ data() {
         
         // var defaultImage = new File("src/assets/customTree.png") 
         // console.log("defaultImage", defaultImage)
-
-
       }
 
       // GET URL OF UPLOADED IMAGE
@@ -424,9 +535,6 @@ data() {
         isCustomTree: this.formData.isCustomTree,
         urlOfTreeImage: this.formData.userUploadedImage
       }
-
-
-
 
       await db
         .collection("locations")
@@ -449,6 +557,131 @@ data() {
           "You have successfully uploaded your tree!"
         );
     },
+
+    // SUBMIT EDIT A TREE
+
+      //     let submittedTreeData = {
+      //   userID: firebase.auth().currentUser.uid,
+      //   treeType: this.formData.treeType,
+      //   description: this.formData.description,
+      //   address: addressObject,
+      //   formattedAddress: formattedAddress,
+      //   coordinates: coordObject,
+      //   contributorName: this.currentUser.displayName,
+      //   isCustomTree: this.formData.isCustomTree,
+      //   urlOfTreeImage: this.formData.userUploadedImage
+      // }
+
+    async handleEditSubmit() {
+      console.log("formdata.description", this.formData.description)
+      console.log("Tree ID?", this.treeIdForEditing)
+
+      let coordObject = {
+        lat: '',
+        lng: ''
+      }
+      const addressObject = {
+        street: this.formData.street,
+      };
+      let formattedAddress = '';
+      console.log("Form Data Stree?", this.formData.steet)
+      if (this.formData.street) {
+        await axios.get('https://maps.googleapis.com/maps/api/geocode/json', {
+          params:{
+            address: addressObject,
+            key: process.env.VUE_APP_GEOCODE_KEY
+          }
+        })
+        .then((response)=> {
+          if (response !== "undefined") {
+            coordObject = response.data.results[0].geometry.location;
+            formattedAddress = response.data.results[0].formatted_address;
+          } else {
+            this.$toastr.e(
+                "Sorry, the address or cross street you entered was wonky... Give it another shot!"
+              );
+            return;
+          }
+        })
+      }
+
+      if(this.modalButtonTitle === "Custom Tree") {
+        this.formData.isCustomTree = true;
+      } else {
+        this.formData.isCustomTree = false;
+      }
+      
+      // EDIT FIREBASE DATA
+      if (this.formData.description) {
+        await db
+          .collection("locations").doc(this.treeIdForEditing)
+          .update(
+              {
+               description: this.formData.description
+              }
+          )
+      } 
+      if (this.formData.treeType) {
+        await db
+          .collection("locations").doc(this.formData.treeType)
+          .update(
+              {
+                description: this.formData.treeType
+              }
+          )
+      } 
+      if (addressObject) {
+        await db
+          .collection("locations").doc(addressObject)
+          .update(
+              {
+               address: addressObject
+              }
+          )
+      } 
+      if (formattedAddress) {
+        await db
+          .collection("locations").doc(formattedAddress)
+          .update(
+              {
+               formattedAddress: formattedAddress
+              }
+          )
+      } 
+      if (this.formData.treeType) {
+        await db
+          .collection("locations").doc(this.formData.treeType)
+          .update(
+              {
+                description: this.formData.treeType
+              }
+          )
+      } 
+      if (coordObject) {
+        await db
+          .collection("locations").doc(coordObject)
+          .update(
+              {
+                coordinates: coordObject
+              }
+          )
+      } 
+      if (coordObject) {
+        await db
+          .collection("locations").doc(coordObject)
+          .update(
+              {
+                coordinates: coordObject
+              }
+          )
+      } 
+
+
+
+    },
+
+
+        // END EDIT TREE
 
     selectFilter(filterType) {
       this.selectedFilter = filterType;
@@ -499,6 +732,10 @@ data() {
           this.orderedTrees = orderedAndFilteredTrees;
       })
     },
+
+
+
+
   },
   computed: {
     userTrees() {
@@ -551,7 +788,7 @@ data() {
               });
             }
             if (change.type === "modified") {
-              // console.log("Modified: ", change.doc.data());
+              console.log("Modified: ", change.doc.data());
             }
             if (change.type === "removed") {
               // Find index of removed tree and remove it from UI
