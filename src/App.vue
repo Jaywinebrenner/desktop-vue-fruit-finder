@@ -560,21 +560,23 @@ data() {
 
     // SUBMIT EDIT A TREE
 
-      //     let submittedTreeData = {
-      //   userID: firebase.auth().currentUser.uid,
-      //   treeType: this.formData.treeType,
-      //   description: this.formData.description,
-      //   address: addressObject,
-      //   formattedAddress: formattedAddress,
-      //   coordinates: coordObject,
-      //   contributorName: this.currentUser.displayName,
-      //   isCustomTree: this.formData.isCustomTree,
-      //   urlOfTreeImage: this.formData.userUploadedImage
-      // }
-
     async handleEditSubmit() {
-      console.log("formdata.description", this.formData.description)
-      console.log("Tree ID?", this.treeIdForEditing)
+
+      this.uploading = true;
+      this.spinLoading = true;
+
+      if (
+        !this.formData.treeType &&
+        !this.formData.description &&
+        !this.formData.street && 
+        !this.treeImage
+      ) {
+        this.$toastr.e(
+              "You didn't fill out the form properly. Give it another shot!"
+            );
+        this.spinLoading = false;
+        return;
+      }
 
       let coordObject = {
         lat: '',
@@ -610,7 +612,41 @@ data() {
       } else {
         this.formData.isCustomTree = false;
       }
-      
+
+        // Upload Image to Firebase Storage
+      let uploader = document.getElementById('uploader');
+      console.log("this TreeImage", this.treeImage)
+
+      // var defaultTreeImage = document.createElement("img");
+      // defaultTreeImage.src = "src/assets/customTree.png";
+      // console.log("defaultTree", defaultTreeImage)
+
+      let file = this.treeImage;
+      if(this.treeImage) {
+        let storageRef = firebase.storage().ref('treeImage/' + file.name);
+        await storageRef.put(file);
+        let task = storageRef.put(file);
+  
+        task.on('state_changed', 
+          function progress(snapshot) {
+              let percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+              uploader.value = percentage;
+          },
+          function error(err) {
+            console.log("ERROR??", err)
+          },
+          function complete() {
+  
+          }
+        );
+
+      }
+
+        // GET URL OF UPLOADED IMAGE
+      if(file) {
+        await this.getImageUrl(file.name);
+       console.log("URL IN SUMBIT", this.formData.userUploadedImage )
+      }
       // EDIT FIREBASE DATA
       if (this.formData.description) {
         await db
@@ -623,65 +659,53 @@ data() {
       } 
       if (this.formData.treeType) {
         await db
-          .collection("locations").doc(this.formData.treeType)
+          .collection("locations").doc(this.treeIdForEditing)
           .update(
               {
-                description: this.formData.treeType
+                treeType: this.formData.treeType
               }
           )
       } 
-      if (addressObject) {
+      if (addressObject.street) {
         await db
-          .collection("locations").doc(addressObject)
+          .collection("locations").doc(this.treeIdForEditing)
           .update(
               {
-               address: addressObject
-              }
-          )
-      } 
-      if (formattedAddress) {
-        await db
-          .collection("locations").doc(formattedAddress)
-          .update(
-              {
-               formattedAddress: formattedAddress
-              }
-          )
-      } 
-      if (this.formData.treeType) {
-        await db
-          .collection("locations").doc(this.formData.treeType)
-          .update(
-              {
-                description: this.formData.treeType
-              }
-          )
-      } 
-      if (coordObject) {
-        await db
-          .collection("locations").doc(coordObject)
-          .update(
-              {
-                coordinates: coordObject
-              }
-          )
-      } 
-      if (coordObject) {
-        await db
-          .collection("locations").doc(coordObject)
-          .update(
-              {
-                coordinates: coordObject
+               address: addressObject.street,
+               formattedAddress: formattedAddress,
+               isCustomTree: this.formData.isCustomTree,
+               coordinates: coordObject
               }
           )
       } 
 
+      if (this.formData.userUploadedImage) {
+        await db
+          .collection("locations").doc(this.treeIdForEditing)
+          .update(
+              {
+                urlOfTreeImage: this.formData.userUploadedImage
+              }
+          )
+      } 
 
+        // Clean up Edit Tree
+      this.formData.treeType = "";
+      this.formData.description = "";
+      this.formData.street = "";
+      this.formData.userUploadedImage = null;
+      this.treeImage = null;
+      this.hideEditTreeModal();
+      this.spinLoading = false;
+      this.uploading = false;
+      this.$toastr.s(
+          "You have successfully updated your tree!"
+        );
 
     },
 
 
-        // END EDIT TREE
+      // END EDIT TREE
 
     selectFilter(filterType) {
       this.selectedFilter = filterType;
@@ -786,9 +810,22 @@ data() {
                 id: change.doc.id, 
                 visible: true
               });
+
             }
             if (change.type === "modified") {
               console.log("Modified: ", change.doc.data());
+              var removeIndexOfUpdatedTree = this.allTrees.map(function(item) { return item.id; }).indexOf(change.doc.id);
+              this.allTrees.splice(removeIndexOfUpdatedTree, 1);
+              const changedData = change.doc.data();
+              // console.log("Added: ", change.doc.data());
+              newTrees.push(changedData);
+
+              this.allTrees.push({
+                ...change.doc.data(),
+                id: change.doc.id, 
+                visible: true
+              });
+
             }
             if (change.type === "removed") {
               // Find index of removed tree and remove it from UI
