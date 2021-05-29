@@ -82,8 +82,8 @@
             :icon="{ url: require('../assets/customTreeMyTreeSmall.png')}" 
             :position="tree.coordinates"
             :clickable="true"
-            :draggable="false"
-            @dragend="getDraggedMarkerPosition($event)"
+            :draggable="true"
+            @dragend="getDraggedMarkerPosition($event, tree)"
             @click="toggleInfoWindow(tree, index)">
         </GmapMarker>
 
@@ -106,6 +106,7 @@ import { mapStyle } from "../constants/mapStyle.js";
 import {db} from "@/main.js";
 // import firebase from 'firebase/app';
 import "firebase/auth";
+import axios from 'axios';
 
 const allTreesMarker = require("../assets/customTreeSmall.png");
 const myTreesMarker = require("../assets/customTreeMyTreeSmall.png");
@@ -167,21 +168,25 @@ export default {
   },
 
   methods: {
-     async getDraggedMarkerPosition(event) {
+     async getDraggedMarkerPosition(event, tree) {
         let postDragCoords = {
             lat: event.latLng.lat(),
             lng: event.latLng.lng(),
         };
-        // this gets all IDs of the document in firebase. Need to figure out a way to get the ID that corresponds to the dragged marker
-        // db.collection("locations").get()
-        // .then((querySnapshot) => {
-        //   querySnapshot.forEach((doc) => {
-        //     console.log(`${doc.id} => ${doc.data()}`);
-        //   })
-        // })
-        
-        console.log("Post Drag Coords", this.postDragCoords)
-        var newDragCoordsRef = db.collection("locations").doc("f3V3TbU1vZiAlyKj2jkp");
+
+      // GET ADDRESS FROM COORDS
+           
+      await axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${event.latLng.lat()},${event.latLng.lng()}&key=${process.env.VUE_APP_GEOCODE_KEY}`)
+      .then((res) => {
+        let updatedAddress = res.data.results[0].formatted_address
+        console.log("New Address", updatedAddress)
+        var newFormattedAddress = db.collection("locations").doc(tree.id);
+        return newFormattedAddress.update({
+          formattedAddress: updatedAddress,
+          street: updatedAddress
+        })
+      })
+        var newDragCoordsRef = db.collection("locations").doc(tree.id);
         return newDragCoordsRef.update({
           coordinates: postDragCoords
         })
@@ -248,6 +253,7 @@ export default {
     }
   },
   created() {
+    
   },
  
   computed: {

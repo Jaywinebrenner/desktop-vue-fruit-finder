@@ -282,7 +282,7 @@ data() {
       currentUserID: null,
 			whichView: "Map",
 			isMapViewVisible: true,
-      API_KEY: process.env.API_KEY_GEOCODE,
+      API_KEY: process.env.API_KEY_GEOCODE, 
       spinLoading: false,
       savedLocations: [],
       isLoggedIn: null,

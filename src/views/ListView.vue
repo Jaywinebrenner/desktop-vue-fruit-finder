@@ -201,6 +201,8 @@ export default {
             if(r.value) {
               db.collection("locations").doc(treeIDInput).delete().then(() => {
                   console.log("Document successfully deleted!");
+              
+              
               }).catch((error) => {
                   console.error("Error removing document: ", error);
               });
@@ -285,17 +287,6 @@ export default {
         .then(() => {
           console.log("upload successful!");
         });
-
-
-  // Subcollection syntax to upload to a locations subcollection
-  // await db 
-  //   .collection("locations")
-  //   .doc(this.idOfCommentedTree)
-  //   .collection("comments")
-  //   .add(commentData)
-  //   .then(() => {
-  //     console.log("uploadData", commentData)
-  //   })
 
       // Clean up 
       this.comment = "";

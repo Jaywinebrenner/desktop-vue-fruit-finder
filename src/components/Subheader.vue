@@ -147,6 +147,7 @@ methods: {
     margin: 10px 7px 0px 0px;
   }
   #dropdown-2__BV_toggle_{
+
     margin-bottom: 0px !important;
   }
   .dropdown-menu {
@@ -168,10 +169,12 @@ methods: {
 }
 
 #dropdown-2__BV_toggle_{
-  @include maroonButton;
+  // @include maroonButton;
    padding: 4px 10px;
    width: 190px;
    margin: 0 0 27px 0;
+   background-color: whitesmoke;
+   color: $primary;
    
  }
 

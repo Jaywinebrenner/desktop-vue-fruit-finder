@@ -22,7 +22,7 @@ export default {
 .aboutWrapper > h3, h5, h6, p {
   color: white;
   text-align: center;
-  line-height: 1.4rem;
+  line-height: 1.8rem;
 }
 .aboutWrapper > h3 {
 font-size: 4vh;

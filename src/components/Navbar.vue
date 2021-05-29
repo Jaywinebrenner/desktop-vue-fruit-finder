@@ -12,6 +12,13 @@
         </div>
 
         <div  id="navbarRight">
+
+            <img v-if="currentUser && !currentUser.photoURL" class="profileImage" src="../assets/emptyProfile.jpg" alt="userImage">
+            <img v-else-if="!currentUser" style="display: none;" class="profileImage" src="../assets/emptyProfile.jpg" alt="userImage">
+
+            <img v-else :src="currentUser.photoURL" class="profileImage" alt="User Image">
+
+
             <h5 @click="showView('SignUp')" v-if="!isLoggedIn" class="routerLinkRight">Sign Up</h5>
             <h5 @click="showView('Login')" v-if="!isLoggedIn" class="routerLinkRight">Login</h5>
             <!-- <h5 v-if="isLoggedIn" class="welcomeText">Welcome {{ currentUser ? currentUser.displayName : '' }}</h5> -->
@@ -220,6 +227,11 @@ export default {
   margin-right: 20px;
   }
 
+  .addTreeButton:hover {
+    transition: .3s;
+    background-color: lighten($primary, 5%);
+  }
+
   .welcomeText {
     color: $primary;
     padding: 6px 6px 70px 0;
@@ -229,9 +241,22 @@ export default {
   }
   .welcomeText:hover {
     // color: green!important;
-    cursor: pointer;
- 
+    cursor: default;
   }
 
+  .profileImage {
+    margin-right: 20px;
+    margin-top: 3px;
+    object-fit: cover;
+    border-radius:50%;
+    width: 25px;
+    height: 25px;
+  }
+
+.profileImage:hover {
+  opacity: .4;
+  cursor: pointer;
+  transition: .3s;
+}
 
 </style>
