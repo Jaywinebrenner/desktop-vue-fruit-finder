@@ -52,7 +52,8 @@ import "firebase/auth";
 export default {
   name:"SignUp",
   props: {
-    showView: Function
+    showView: Function,
+    
   },
   data() {
     return {
@@ -82,10 +83,12 @@ export default {
         //   displayName: this.name
         // });
 
+
+        // PUT PROFILE URL INTO CURRENT USER OBJECT 
         let uploader = document.getElementById('uploader');
         let file = this.profileImage;
         if(this.profileImage) {
-          let storageRef = firebase.storage().ref('profileImage/' + file.name);
+          let storageRef = await firebase.storage().ref('profileImage/' + file.name);
           await storageRef.put(file);
           let task = storageRef.put(file);
     
@@ -98,7 +101,6 @@ export default {
               console.log("ERROR??", err)
             },
           );
-
       } 
 
       // GET URL OF UPLOADED IMAGE
@@ -120,16 +122,18 @@ export default {
         this.spinLoading = false;
       }
     },
+
     async getImageUrl(img) {
 
-    let storageRef = firebase.storage().ref();
-    let imgRef = storageRef.child('profileImage/' + img);
+    let storageRef = await firebase.storage().ref();
+    let imgRef = await storageRef.child('profileImage/' + img);
 
   // Get the download URL
     await imgRef.getDownloadURL()
     .then((url) => {
       console.log("DOWNLOAD URL", url)
       this.userUploadedImage = url;
+      // this.putImageInNavbar(this.userUploadedImage)
       return this.userUploadedImage ;
     })
     .catch((error) => {
@@ -154,6 +158,7 @@ export default {
           displayName: this.name,
           photoURL: this.userUploadedImage
         });
+        this.$parent.userDisplayName = this.name
     },
   },
   

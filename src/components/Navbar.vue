@@ -13,15 +13,15 @@
 
         <div  id="navbarRight">
 
-            <img v-if="currentUser && !currentUser.photoURL" class="profileImage" src="../assets/emptyProfile.jpg" alt="userImage">
-            <img v-else-if="!currentUser" style="display: none;" class="profileImage" src="../assets/emptyProfile.jpg" alt="userImage">
+            <img @click="$parent.showProfileModal" v-if="currentUser && !currentUser.photoURL" class="profileImage" src="../assets/emptyProfile.jpg" alt="userImage">
+            <img @click="$parent.showProfileModal" v-else-if="!currentUser" style="display: none;" class="profileImage" src="../assets/emptyProfile.jpg" alt="userImage">
 
-            <img v-else :src="currentUser.photoURL" class="profileImage" alt="User Image">
+            <img @click="$parent.showProfileModal" v-else :src="currentUser.photoURL" class="profileImage" alt="User Image">
 
 
             <h5 @click="showView('SignUp')" v-if="!isLoggedIn" class="routerLinkRight">Sign Up</h5>
             <h5 @click="showView('Login')" v-if="!isLoggedIn" class="routerLinkRight">Login</h5>
-            <!-- <h5 v-if="isLoggedIn" class="welcomeText">Welcome {{ currentUser ? currentUser.displayName : '' }}</h5> -->
+
             <h5 v-if="isLoggedIn" @click="logout" class="logoutText">Logout</h5>
         </div>
 
@@ -29,7 +29,7 @@
 
       <div class="logoWrapper">
           <img class='splashLogo' alt="Vue logo" src="../assets/newLogo.png">
-            <h5 v-if="isLoggedIn" class="welcomeText">Welcome {{ currentUser ? currentUser.displayName : '' }}</h5>
+            <h5 v-if="isLoggedIn" class="welcomeText">Welcome {{ $parent.userDisplayName }}</h5>
           <div v-if="isLoggedIn" class="addTreeButtonWrapper">
             <button @click="showAddTreeModal" class="addTreeButton">Add Tree</button>
           </div>
@@ -56,8 +56,22 @@ export default {
   },
   data() {
     return {
+      displayNameState: null,
+      userPhotoURL: null,
     }
   },
+  // watcher: {
+  //   displayNameState: function () {
+
+  //         return this.currentUser.displayName
+
+  //   },
+  //   userPhotoURL: function () {
+
+  //         return this.currentUser.photoURL
+
+  //   }
+  // },
   methods: {
     test() {
       console.log("ROOT", this.$root.spinLoading)
@@ -75,6 +89,7 @@ export default {
         this.toggleMapAndListButton("showMap")
         this.getCurrentUser();
         this.getCurrentUserID();
+        this.$parent.userDisplayName = null;
         this.$toastr.e(
             "You have successfully logged out of the Fruit Finder. See you soon!"
           );
@@ -84,6 +99,12 @@ export default {
           );
       }
     },
+    // created() {
+    //   if(this.currentUser) {
+    //     this.displayNameState = this.currentUser.displayName;
+    //     this.userPhotoURL = this.currentUser.photoURL;
+    //   }
+    // }
     
   }
   

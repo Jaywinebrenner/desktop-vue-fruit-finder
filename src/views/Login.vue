@@ -34,7 +34,8 @@ export default {
   props: {
     showView: Function,
     getCurrentUser: Function,
-    toggleMapAndListButton: Function
+    toggleMapAndListButton: Function,
+    currentUser: Object
   },
   data() {
     return {
@@ -54,7 +55,8 @@ export default {
         this.toggleMapAndListButton("showMap")
         console.log("value after pressing login", value);
         this.spinLoading = false;
-        this.getCurrentUser()
+        await this.getCurrentUser();
+        // this.$parent.userDisplayName = this.currentUser.displayName;
       } catch (err) {
         this.$toastr.e(
             err

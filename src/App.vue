@@ -10,6 +10,7 @@
       :getCurrentUserID="getCurrentUserID"
       :currentUser="currentUser"
       :toggleMapAndListButton="toggleMapAndListButton"
+
     />
 
     <Subheader
@@ -52,6 +53,7 @@
       :showView="showView"
       :getCurrentUser="getCurrentUser"
       :toggleMapAndListButton="toggleMapAndListButton"
+      :currentUser="currentUser"
 		/>
 
 		<SignUp
@@ -236,6 +238,68 @@
       </div>
     </modal>
 
+    <!-- END EDIT TREE MODAL -->
+
+    <!-- PROFILE MODAL -->
+
+    <modal class="modalWrapper" name="editProfileModal" :width="'90%'" :height="'75%'">
+      <div class="xIconWrapper">
+         <font-awesome-icon @click="hideProfileModal()" class="xIcon" icon="times" size="lg"/>
+      </div>
+ 
+      <h5 class="modalHeader">Edit Profile</h5>
+      <p style="color: black;">*You don't have to edit everything, just the stuff you want.</p>
+
+      <div class="formWrapper container mt-6">
+        <b-form class="formWrapper" @submit.prevent="handleProfileSubmit()">
+  
+          <progress v-if="uploading === true" value="0" max="100" id="uploader"></progress>
+          <b-row md="1">
+            <b-form-group>
+              <b-form-input
+                id="input"
+                size="sm"
+                v-model="formData.description"
+                placeholder="Edit Profile Name"
+                rows="5"
+                max-rows="4"
+              ></b-form-input>
+            </b-form-group>
+          </b-row>
+
+
+      
+          <p class="imageInputSubheader">You can always upload the image later if you'd like</p>
+          <progress v-if="uploading === true" value="0" max="100" id="uploader"></progress>
+          <b-row md="1">
+            <b-form-group class="imageInput">
+              <b-form-file
+                accept=".jpg, .png, .gif, .jpeg"
+                size="sm"
+                v-model="treeImage"
+                placeholder="Upload an image of your tree"
+                drop-placeholder="Drop file here..."
+              ></b-form-file>
+
+            </b-form-group>
+          </b-row>
+
+
+          <b-row class="buttonRow" md="1">
+						
+            <button type="submit" id="submitTreeButton">
+              <b-spinner small v-if="spinLoading" label="Spinning"></b-spinner
+              ><span v-if="!spinLoading">Submit Edited Tree</span>
+            </button>
+
+          </b-row>
+        </b-form>
+      </div>
+    </modal>
+
+
+    <!-- PROFILE MODAL -->
+
 
   
   </div>
@@ -316,7 +380,8 @@ data() {
       },
       treeImage: null,
       uploading: false,
-      treeIdForEditing: null
+      treeIdForEditing: null,
+      userDisplayName: null
     };
   },
   mounted() {
@@ -356,6 +421,7 @@ data() {
     },
     async getCurrentUser() {
       this.currentUser = await firebase.auth().currentUser;
+      this.userDisplayName = this.currentUser.displayName;
     },
     async getCurrentUserID() {
       if (firebase.auth().currentUser) {
@@ -417,17 +483,28 @@ data() {
       this.formData.description = null;
       this.formData.street = null;
     },
+    showProfileModal() {
+      console.log("fart")
+      this.$modal.show("editProfileModal");
+    },
+    hideProfileModal() {
+      this.$modal.hide("editProfileModal");
+      // this.formData.treeType = null;
+      // this.formData.description = null;
+      // this.formData.street = null;
+    },
+
+
     getTreeIdForEditing(treeID) {
       this.treeIdForEditing = treeID;
       this.$modal.show("editTreeModal");
     },
 
-
-
 		showView(view){
 			this.whichView = view;
 			console.log("Which View? ", this.whichView)
 		},
+
 
 
     // SUBMIT ADD A TREE
@@ -1025,6 +1102,10 @@ body {
 }
 #uploader {
   width: 95%;
+}
+
+.form-control-sm {
+  width: 25vw!important;
 }
 
 
