@@ -12,11 +12,13 @@
         </div>
 
         <div  id="navbarRight">
+              <!-- FIX -->
+            <!-- <img @click="$parent.showProfileModal" v-if="currentUser &&  !currentUser.photoURL" class="profileImage" src="../assets/emptyProfile.jpg" alt="userImage">
+            <img @click="$parent.showProfileModal" v-else-if="!currentUser" style="display: none;" class="profileImage" src="../assets/emptyProfile.jpg" alt="userImage"> 
 
-            <img @click="$parent.showProfileModal" v-if="currentUser && !currentUser.photoURL" class="profileImage" src="../assets/emptyProfile.jpg" alt="userImage">
-            <img @click="$parent.showProfileModal" v-else-if="!currentUser" style="display: none;" class="profileImage" src="../assets/emptyProfile.jpg" alt="userImage">
+            <img @click="$parent.showProfileModal" v-else :src="currentUser.photoURL" class="profileImage" alt="User Image">    -->
 
-            <img @click="$parent.showProfileModal" v-else :src="currentUser.photoURL" class="profileImage" alt="User Image">
+        
 
 
             <h5 @click="showView('SignUp')" v-if="!isLoggedIn" class="routerLinkRight">Sign Up</h5>
@@ -29,7 +31,7 @@
 
       <div class="logoWrapper">
           <img class='splashLogo' alt="Vue logo" src="../assets/newLogo.png">
-            <h5 v-if="isLoggedIn" class="welcomeText">Welcome {{ $parent.userDisplayName }}</h5>
+          <h5 v-if="isLoggedIn" class="welcomeText">Welcome {{ $parent.userDisplayName }}</h5>
           <div v-if="isLoggedIn" class="addTreeButtonWrapper">
             <button @click="showAddTreeModal" class="addTreeButton">Add Tree</button>
           </div>
@@ -52,24 +54,26 @@ export default {
     getCurrentUser: Function,
     getCurrentUserID: Function,
     currentUser: Object,
-    toggleMapAndListButton: Function
+    toggleMapAndListButton: Function,
+    // addProfilePhotoToDom: Function
+
   },
   data() {
     return {
-      displayNameState: null,
-      userPhotoURL: null,
+      // displayNameState: null,
+      // userPhotoURL: null,
     }
   },
-  // watcher: {
+  // computed: {
   //   displayNameState: function () {
-
-  //         return this.currentUser.displayName
-
+  //         console.log(this.$parent.currentUser.displayName)
+  //         if(this.currentUser){
+  //           return this.$parent.currentUser.displayName
+  //         }
+  //         return null;
   //   },
   //   userPhotoURL: function () {
-
-  //         return this.currentUser.photoURL
-
+  //         return this.$parent.currentUser.photoURL
   //   }
   // },
   methods: {
@@ -80,6 +84,11 @@ export default {
         this.showView('Map'); 
         this.toggleMapAndListButton("showMap");
     },
+    // addProfilePhotoToDom() {
+    //     if(this.currentUser){
+    //       return this.$parent.currentUser.displayName
+    //     }
+    // },
 
     async logout() {
       try { 

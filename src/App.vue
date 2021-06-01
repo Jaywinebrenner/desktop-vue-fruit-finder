@@ -10,6 +10,7 @@
       :getCurrentUserID="getCurrentUserID"
       :currentUser="currentUser"
       :toggleMapAndListButton="toggleMapAndListButton"
+ 
 
     />
 
@@ -198,7 +199,6 @@
             </b-form-group>
           </b-row>
 
-      
           <p class="imageInputSubheader">You can always upload the image later if you'd like</p>
           <progress v-if="uploading === true" value="0" max="100" id="uploader"></progress>
           <b-row md="1">
@@ -244,14 +244,14 @@
 
     <modal class="modalWrapper" name="editProfileModal" :width="'90%'" :height="'75%'">
       <div class="xIconWrapper">
-         <font-awesome-icon @click="hideProfileModal()" class="xIcon" icon="times" size="lg"/>
+         <font-awesome-icon @click="hideEditProfileModal()" class="xIcon" icon="times" size="lg"/>
       </div>
  
       <h5 class="modalHeader">Edit Profile</h5>
       <p style="color: black;">*You don't have to edit everything, just the stuff you want.</p>
 
       <div class="formWrapper container mt-6">
-        <b-form class="formWrapper" @submit.prevent="handleProfileSubmit()">
+        <b-form class="formWrapper" @submit.prevent="handleEditProfileSubmit()">
   
           <progress v-if="uploading === true" value="0" max="100" id="uploader"></progress>
           <b-row md="1">
@@ -259,7 +259,7 @@
               <b-form-input
                 id="input"
                 size="sm"
-                v-model="formData.description"
+                v-model="userDisplayName"
                 placeholder="Edit Profile Name"
                 rows="5"
                 max-rows="4"
@@ -267,8 +267,6 @@
             </b-form-group>
           </b-row>
 
-
-      
           <p class="imageInputSubheader">You can always upload the image later if you'd like</p>
           <progress v-if="uploading === true" value="0" max="100" id="uploader"></progress>
           <b-row md="1">
@@ -276,14 +274,12 @@
               <b-form-file
                 accept=".jpg, .png, .gif, .jpeg"
                 size="sm"
-                v-model="treeImage"
+                v-model="userUploadedImageForProfileEdit"
                 placeholder="Upload an image of your tree"
                 drop-placeholder="Drop file here..."
               ></b-form-file>
-
             </b-form-group>
           </b-row>
-
 
           <b-row class="buttonRow" md="1">
 						
@@ -381,7 +377,9 @@ data() {
       treeImage: null,
       uploading: false,
       treeIdForEditing: null,
-      userDisplayName: null
+      userDisplayName: null,
+      userUploadedImageForProfileEdit: null
+
     };
   },
   mounted() {
@@ -389,6 +387,17 @@ data() {
   },
 
   methods: {
+    // addProfilePhotoToDom(urlOfUserUploadedImage) {
+    //   if(!this.currentUser){
+    //     return "../assets/emptyProfile.jpg";
+    //   } 
+    //   if(this.currentUser && !currentUser.displayName){
+    //     return "../assets/emptyProfile.jpg";
+    //   }
+    //   if(this.currentUser && currentUser.displayName){
+    //     return urlOfUserUploadedImage;
+    //   }
+    // },
     async getImageUrl(img) {
 
     let storageRef = firebase.storage().ref();
@@ -421,7 +430,9 @@ data() {
     },
     async getCurrentUser() {
       this.currentUser = await firebase.auth().currentUser;
-      this.userDisplayName = this.currentUser.displayName;
+      if(this.currentUser){
+        this.userDisplayName = this.currentUser.displayName;
+      }
     },
     async getCurrentUserID() {
       if (firebase.auth().currentUser) {
@@ -483,11 +494,11 @@ data() {
       this.formData.description = null;
       this.formData.street = null;
     },
-    showProfileModal() {
+    showEditProfileModal() {
       console.log("fart")
       this.$modal.show("editProfileModal");
     },
-    hideProfileModal() {
+    hideEditProfileModal() {
       this.$modal.hide("editProfileModal");
       // this.formData.treeType = null;
       // this.formData.description = null;
@@ -780,9 +791,78 @@ data() {
         );
 
     },
-
-
       // END EDIT TREE
+
+    // EDIT PROFILE
+    async handleEditProfileSubmit() {
+
+      this.uploading = true;
+      this.spinLoading = true;
+
+
+// NEED TO DO ERROR HANDLING
+      // if (
+      //   !this.formData.userDisplayName
+      // ) {
+      //   this.$toastr.e(
+      //         "You didn't fill out the form properly. Give it another shot!"
+      //       );
+      //   this.spinLoading = false;
+      //   return;
+      // }
+
+
+        // Upload Image to Firebase Storage
+      let uploader = document.getElementById('uploader');
+
+      let file = this.formData.userUploadedImage;
+      if(this.formData.userUploadedImage) {
+        let storageRef = firebase.storage().ref('profileImage/' + file.name);
+        await storageRef.put(file);
+        let task = storageRef.put(file);
+  
+        task.on('state_changed', 
+          function progress(snapshot) {
+              let percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+              uploader.value = percentage;
+          },
+          function error(err) {
+            console.log("ERROR??", err)
+          },
+          function complete() {
+  
+          }
+        );
+      }
+
+        // get url of uploaded image
+      if(file) {
+        await this.getImageUrl(file.name);
+       console.log("URL IN SUMBIT", this.formData.userUploadedImage )
+      }
+         
+               // EDIT FIREBASE DATA
+
+       if (this.formData.userDisplayName) {
+        firebase.auth().currentUser.updateProfile({
+          displayName: this.formData.userDisplayName
+        });
+       }
+
+
+        // Clean up Edit Profile
+      this.formData.userDisplayName;
+      this.formData.userUploadedImage = null;
+      this.hideEditProfileModal();
+      this.spinLoading = false;
+      this.uploading = false;
+      this.$toastr.s(
+          "You have successfully updated your tree!"
+        );
+
+    },
+
+    // END EDIT PROFILE SUBMIT
 
     selectFilter(filterType) {
       this.selectedFilter = filterType;
