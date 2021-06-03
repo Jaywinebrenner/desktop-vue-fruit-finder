@@ -64,7 +64,7 @@ export default {
       spinLoading: false,
       profileImage: null,
       uploading: null,
-      userUploadedImage: null
+      // userUploadedImage: null
     }
   },
   methods: {
@@ -105,7 +105,7 @@ export default {
 
       // GET URL OF UPLOADED IMAGE
       await this.getImageUrl(file.name);
-      console.log("URL IN SUMBIT", this.userUploadedImage )
+      console.log("URL IN SUMBIT", this.$parent.userUploadedImage )
 
         this.showView("Map");
         this.$toastr.s(
@@ -132,9 +132,9 @@ export default {
     await imgRef.getDownloadURL()
     .then((url) => {
       console.log("DOWNLOAD URL", url)
-      this.userUploadedImage = url;
+      this.$parent.userUploadedImage = url;
       // this.putImageInNavbar(this.userUploadedImage)
-      return this.userUploadedImage ;
+      return this.$parent.userUploadedImage ;
     })
     .catch((error) => {
 
@@ -153,12 +153,13 @@ export default {
         break;
       }
      });
-     console.log("user IMage???", this.userUploadedImage)
+     console.log("user IMage???", this.$parent.userUploadedImage)
         await firebase.auth().currentUser.updateProfile({
           displayName: this.name,
-          photoURL: this.userUploadedImage
+          photoURL: this.$parent.userUploadedImage
         });
-        this.$parent.userDisplayName = this.name
+        this.$parent.userDisplayName = this.name;
+        this.$parent.userUploadedImage;
     },
   },
   

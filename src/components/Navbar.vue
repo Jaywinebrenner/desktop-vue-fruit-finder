@@ -4,21 +4,17 @@
     <div class="topNavbarWrapper">
 
         <div id="navbarLeft">
-          <!-- <button @click="test()">TEST</button> -->
-            <!-- <router-link class="routerLinksLeft" to="/">Home</router-link> 
-            <router-link class="routerLinksLeft" to="/about">About</router-link> -->
             <h5 @click="clickHomeButton()" class="routerLinkLeftOne">Home</h5>
             <h5 @click="showView('About'); " class="routerLinkLeftTwo">About</h5>
         </div>
 
         <div  id="navbarRight">
               <!-- FIX -->
-            <!-- <img @click="$parent.showProfileModal" v-if="currentUser &&  !currentUser.photoURL" class="profileImage" src="../assets/emptyProfile.jpg" alt="userImage">
-            <img @click="$parent.showProfileModal" v-else-if="!currentUser" style="display: none;" class="profileImage" src="../assets/emptyProfile.jpg" alt="userImage"> 
+            <img @click="$parent.showEditProfileModal" v-if="currentUser &&  !currentUser.photoURL" class="profileImage" src="../assets/emptyProfile.jpg" alt="userImage">
+            <img @click="$parent.showEditProfileModal" v-else-if="!currentUser" style="display: none;" class="profileImage" src="../assets/emptyProfile.jpg" alt="userImage"> 
 
-            <img @click="$parent.showProfileModal" v-else :src="currentUser.photoURL" class="profileImage" alt="User Image">    -->
+            <img @click="$parent.showEditProfileModal" v-else :src="currentUser.photoURL" class="profileImage" alt="User Image">   
 
-        
 
 
             <h5 @click="showView('SignUp')" v-if="!isLoggedIn" class="routerLinkRight">Sign Up</h5>

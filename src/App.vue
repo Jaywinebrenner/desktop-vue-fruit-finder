@@ -10,8 +10,6 @@
       :getCurrentUserID="getCurrentUserID"
       :currentUser="currentUser"
       :toggleMapAndListButton="toggleMapAndListButton"
- 
-
     />
 
     <Subheader
@@ -274,8 +272,8 @@
               <b-form-file
                 accept=".jpg, .png, .gif, .jpeg"
                 size="sm"
-                v-model="userUploadedImageForProfileEdit"
-                placeholder="Upload an image of your tree"
+                v-model="userUploadedImage"
+                placeholder="Upload a Profile Image"
                 drop-placeholder="Drop file here..."
               ></b-form-file>
             </b-form-group>
@@ -285,7 +283,7 @@
 						
             <button type="submit" id="submitTreeButton">
               <b-spinner small v-if="spinLoading" label="Spinning"></b-spinner
-              ><span v-if="!spinLoading">Submit Edited Tree</span>
+              ><span v-if="!spinLoading">Submit Edited Profile</span>
             </button>
 
           </b-row>
@@ -368,7 +366,7 @@ data() {
           lng: ""
         },
         isCustomTree: false,
-        userUploadedImage: null,
+        userUploadedTreeImage: null
       },
       myCoordinates: {
         lat: 0,
@@ -378,7 +376,8 @@ data() {
       uploading: false,
       treeIdForEditing: null,
       userDisplayName: null,
-      userUploadedImageForProfileEdit: null
+      userUploadedEditedImage: null,
+      userUploadedImage: null,
 
     };
   },
@@ -391,7 +390,7 @@ data() {
     //   if(!this.currentUser){
     //     return "../assets/emptyProfile.jpg";
     //   } 
-    //   if(this.currentUser && !currentUser.displayName){
+    //   if(this.currentUser && !currentUser.[displayName]){
     //     return "../assets/emptyProfile.jpg";
     //   }
     //   if(this.currentUser && currentUser.displayName){
@@ -407,8 +406,8 @@ data() {
     await imgRef.getDownloadURL()
     .then((url) => {
       console.log("DOWNLOAD URL", url)
-      this.formData.userUploadedImage = url;
-      return this.formData.userUploadedImage ;
+      this.formData.userUploadedTreeImage = url;
+      return this.formData.userUploadedTreeImage ;
     })
     .catch((error) => {
 
@@ -485,7 +484,6 @@ data() {
     },
 
     showEditTreeModal() {
-      console.log("fart")
       this.$modal.show("editTreeModal");
     },
     hideEditTreeModal() {
@@ -495,7 +493,6 @@ data() {
       this.formData.street = null;
     },
     showEditProfileModal() {
-      console.log("fart")
       this.$modal.show("editProfileModal");
     },
     hideEditProfileModal() {
@@ -513,7 +510,6 @@ data() {
 
 		showView(view){
 			this.whichView = view;
-			console.log("Which View? ", this.whichView)
 		},
 
 
@@ -610,7 +606,7 @@ data() {
 
       // GET URL OF UPLOADED IMAGE
       await this.getImageUrl(file.name);
-      console.log("URL IN SUMBIT", this.formData.userUploadedImage )
+      console.log("URL IN SUMBIT", this.formData.userUploadedTreeImage )
       
       let submittedTreeData = {
         userID: firebase.auth().currentUser.uid,
@@ -621,7 +617,7 @@ data() {
         coordinates: coordObject,
         contributorName: this.currentUser.displayName,
         isCustomTree: this.formData.isCustomTree,
-        urlOfTreeImage: this.formData.userUploadedImage
+        urlOfTreeImage: this.formData.userUploadedTreeImage
       }
 
       await db
@@ -635,7 +631,7 @@ data() {
       this.formData.treeType = "";
       this.formData.description = "";
       this.formData.street = "";
-      this.formData.userUploadedImage = null;
+      this.formData.userUploadedTreeImage = null;
       this.treeImage = null;
       this.hideAddTreeModal();
       this.spinLoading = false;
@@ -674,7 +670,6 @@ data() {
         street: this.formData.street,
       };
       let formattedAddress = '';
-      console.log("Form Data Stree?", this.formData.steet)
       if (this.formData.street) {
         await axios.get('https://maps.googleapis.com/maps/api/geocode/json', {
           params:{
@@ -703,8 +698,6 @@ data() {
 
         // Upload Image to Firebase Storage
       let uploader = document.getElementById('uploader');
-      console.log("this TreeImage", this.treeImage)
-
       // var defaultTreeImage = document.createElement("img");
       // defaultTreeImage.src = "src/assets/customTree.png";
       // console.log("defaultTree", defaultTreeImage)
@@ -732,8 +725,9 @@ data() {
 
         // GET URL OF UPLOADED IMAGE
       if(file) {
-        await this.getImageUrl(file.name);
-       console.log("URL IN SUMBIT", this.formData.userUploadedImage )
+        console.log("file name EDIT TREE", file.name)
+      await this.getImageUrl(file.name);
+       console.log("URL IN EDIT TREE SUBMIT", this.formData.userUploadedTreeImage )
       }
       // EDIT FIREBASE DATA
       if (this.formData.description) {
@@ -767,12 +761,12 @@ data() {
           )
       } 
 
-      if (this.formData.userUploadedImage) {
+      if (this.formData.userUploadedTreeImage) {
         await db
           .collection("locations").doc(this.treeIdForEditing)
           .update(
               {
-                urlOfTreeImage: this.formData.userUploadedImage
+                urlOfTreeImage: this.formData.userUploadedTreeImage
               }
           )
       } 
@@ -781,7 +775,7 @@ data() {
       this.formData.treeType = "";
       this.formData.description = "";
       this.formData.street = "";
-      this.formData.userUploadedImage = null;
+      this.formData.userUploadedTreeImage = null;
       this.treeImage = null;
       this.hideEditTreeModal();
       this.spinLoading = false;
@@ -815,8 +809,9 @@ data() {
         // Upload Image to Firebase Storage
       let uploader = document.getElementById('uploader');
 
-      let file = this.formData.userUploadedImage;
-      if(this.formData.userUploadedImage) {
+      let file = this.userUploadedImage;
+      console.log("user Uploaded Image", this.userUploadedImage)
+      if(this.userUploadedImage) {
         let storageRef = firebase.storage().ref('profileImage/' + file.name);
         await storageRef.put(file);
         let task = storageRef.put(file);
@@ -838,28 +833,33 @@ data() {
         // get url of uploaded image
       if(file) {
         await this.getImageUrl(file.name);
-       console.log("URL IN SUMBIT", this.formData.userUploadedImage )
       }
          
-               // EDIT FIREBASE DATA
+      // EDIT FIREBASE DATA
+       if (this.formData.userUploadedTreeImage) {
+         console.log("URL OF PROFILE PIC?", this.formData.userUploadedTreeImage)
+         await firebase.auth().currentUser.updateProfile({
+          photoURL: this.formData.userUploadedTreeImage,
+        });
+       }
 
-       if (this.formData.userDisplayName) {
-        firebase.auth().currentUser.updateProfile({
-          displayName: this.formData.userDisplayName
+      if (this.userDisplayName) {
+         await firebase.auth().currentUser.updateProfile({
+          displayName: this.userDisplayName
         });
        }
 
 
         // Clean up Edit Profile
       this.formData.userDisplayName;
-      this.formData.userUploadedImage = null;
+      this.userUploadedImage = null;
+      this.formData.userUploadedTreeImage = null;
       this.hideEditProfileModal();
       this.spinLoading = false;
       this.uploading = false;
       this.$toastr.s(
-          "You have successfully updated your tree!"
+          "You have successfully updated your profile!"
         );
-
     },
 
     // END EDIT PROFILE SUBMIT
