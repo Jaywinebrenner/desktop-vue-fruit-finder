@@ -12,8 +12,9 @@
               <!-- FIX -->
             <img @click="$parent.showEditProfileModal" v-if="currentUser &&  !currentUser.photoURL" class="profileImage" src="../assets/emptyProfile.jpg" alt="userImage">
             <img @click="$parent.showEditProfileModal" v-else-if="!currentUser" style="display: none;" class="profileImage" src="../assets/emptyProfile.jpg" alt="userImage"> 
+            <!-- <img @click="$parent.showEditProfileModal" v-else :src="currentUser.photoURL" class="profileImage" alt="User Image">    -->
 
-            <img @click="$parent.showEditProfileModal" v-else :src="currentUser.photoURL" class="profileImage" alt="User Image">   
+            <img @click="$parent.showEditProfileModal" v-else :src="this.$parent.userUploadedImageState" class="profileImage" alt="User Image">   
 
 
 
@@ -76,16 +77,21 @@ export default {
     test() {
       console.log("ROOT", this.$root.spinLoading)
     },
+    hasProfilePic() {
+
+
+    },
+
     clickHomeButton(){
         this.showView('Map'); 
         this.toggleMapAndListButton("showMap");
     },
     // addProfilePhotoToDom() {
-    //     if(this.currentUser){
-    //       return this.$parent.currentUser.displayName
-    //     }
+    //   if(this.currentUser){
+    //     this.$parent.userUploadedImage = this.$parent.currentUser.photoURL;
+    //     return this.$parent.userUploadedImage
+    //   }
     // },
-
     async logout() {
       try { 
         const data = await firebase.auth().signOut();
@@ -104,12 +110,13 @@ export default {
           );
       }
     },
-    // created() {
-    //   if(this.currentUser) {
-    //     this.displayNameState = this.currentUser.displayName;
-    //     this.userPhotoURL = this.currentUser.photoURL;
-    //   }
-    // }
+    mounted() {
+      console.log("current user navbar", this.currentUser)
+      // if(this.currentUser) {
+      //   this.displayNameState = this.currentUser.displayName;
+      //   this.userPhotoURL = this.currentUser.photoURL;
+      // }
+    }
     
   }
   

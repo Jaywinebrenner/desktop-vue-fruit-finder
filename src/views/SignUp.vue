@@ -133,6 +133,7 @@ export default {
     .then((url) => {
       console.log("DOWNLOAD URL", url)
       this.$parent.userUploadedImage = url;
+      this.$parent.userUploadedImageState = url;
       // this.putImageInNavbar(this.userUploadedImage)
       return this.$parent.userUploadedImage ;
     })
@@ -221,6 +222,13 @@ div > input {
 .signUpButton:hover {
   opacity: .8;
   transition: .3s;
+}
+.b-custom-control-sm.custom-file, .b-custom-control-sm .custom-file-input, .b-custom-control-sm .custom-file-label, .input-group-sm.custom-file, .input-group-sm .custom-file-input, .input-group-sm .custom-file-label {
+      width: 17.2rem;
+}
+
+.custom-file-input ~ .custom-file-label[data-browse]::after {
+  cursor: pointer;
 }
 
 

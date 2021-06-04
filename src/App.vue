@@ -250,8 +250,7 @@
 
       <div class="formWrapper container mt-6">
         <b-form class="formWrapper" @submit.prevent="handleEditProfileSubmit()">
-  
-          <progress v-if="uploading === true" value="0" max="100" id="uploader"></progress>
+
           <b-row md="1">
             <b-form-group>
               <b-form-input
@@ -376,27 +375,36 @@ data() {
       uploading: false,
       treeIdForEditing: null,
       userDisplayName: null,
-      userUploadedEditedImage: null,
       userUploadedImage: null,
+      userUploadedImageState: null
+
 
     };
   },
   mounted() {
 		this.getCurrentUser()
+    console.log("current user navbar", this.currentUser)
   },
 
   methods: {
-    // addProfilePhotoToDom(urlOfUserUploadedImage) {
+    // addProfilePhotoToDom() {
     //   if(!this.currentUser){
     //     return "../assets/emptyProfile.jpg";
     //   } 
-    //   if(this.currentUser && !currentUser.[displayName]){
+    //   if(this.currentUser && !currentUser.displayName){
     //     return "../assets/emptyProfile.jpg";
     //   }
     //   if(this.currentUser && currentUser.displayName){
-    //     return urlOfUserUploadedImage;
+    //     return this.urlOfUserUploadedImage;
     //   }
     // },
+
+    addProfilePhotoToDom() {
+      if(this.currentUser){
+        this.userUploadedImage = this.currentUser.photoURL;
+        return this.userUploadedImage
+      }
+    },
     async getImageUrl(img) {
 
     let storageRef = firebase.storage().ref();
@@ -407,6 +415,7 @@ data() {
     .then((url) => {
       console.log("DOWNLOAD URL", url)
       this.formData.userUploadedTreeImage = url;
+      this.userUploadedImageState = url;
       return this.formData.userUploadedTreeImage ;
     })
     .catch((error) => {
@@ -429,8 +438,10 @@ data() {
     },
     async getCurrentUser() {
       this.currentUser = await firebase.auth().currentUser;
+  
       if(this.currentUser){
         this.userDisplayName = this.currentUser.displayName;
+        this.userUploadedImageState = this.currentUser.photoURL;
       }
     },
     async getCurrentUserID() {
@@ -819,6 +830,7 @@ data() {
         task.on('state_changed', 
           function progress(snapshot) {
               let percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+              console.log("uploader????", uploader)
               uploader.value = percentage;
           },
           function error(err) {
@@ -848,7 +860,6 @@ data() {
           displayName: this.userDisplayName
         });
        }
-
 
         // Clean up Edit Profile
       this.formData.userDisplayName;
@@ -913,9 +924,6 @@ data() {
           this.orderedTrees = orderedAndFilteredTrees;
       })
     },
-
-
-
 
   },
   computed: {
