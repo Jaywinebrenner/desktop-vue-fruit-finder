@@ -1168,7 +1168,7 @@ body {
 }
 
 .imageInput {
-    margin-right: 33px;
+    // margin-right: 33px;
 }
 
 .imageInputHeader {

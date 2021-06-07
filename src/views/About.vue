@@ -8,8 +8,14 @@
     <h3 class="aboutTitle">Frequently Asked Questions</h3>
     <h5><strong>I can only enter an address or cross street for my tree. Can I add a tree in an alley?</strong></h5>
     <p>Yes. You can add the closest address or cross street for your tree and then drag and drop the tree icon on the map to a more specific location.</p>
-    <h5><strong>I entered the wrong information for me tree. Can I change it?</strong></h5>
-    <p>Yes. On the Tree List view, you will be able to edit any tree you have contributed by hitting the edit button.</p>
+    <h5><strong>I entered the wrong information for my tree. Can I change it?</strong></h5>
+    <p>Yes. On the Tree List view, you will be able to edit any tree you have contributed by hitting the edit button, as seen in the picture below. A modal will pop up and you can edit your tree there.</p>
+    <img class="aboutSnippet" alt="Visual of Edit Button" src="../assets/aboutSnippet.png">
+    <h5><strong>Can you delete a tree you have contributed? </strong></h5>
+    <p>Yes. On the Tree List view, you will be able to delete any tree you have contributed by hitting the trash button.</p>
+    <h5><strong>I have another question.</strong></h5>
+    <p>Feel free to email about anything in particular. jaywinebrenner@gmail.com</p>
+
   
   </div>
 </template>
@@ -66,6 +72,11 @@ margin-bottom: 4vh;
 
 .aboutTitle{
   margin-top: 20px;
+  margin-bottom: 12px!important;
+}
+
+.aboutSnippet {
+  width: 50vw;
 }
 
 </style>
