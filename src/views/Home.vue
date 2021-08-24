@@ -353,7 +353,7 @@ body {
   border-radius: 5px;
   width: 180px;
   min-height: 90px;
-  max-height: 120px;
+  // max-height: 120px;
   padding: 0;
 }
 

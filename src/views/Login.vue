@@ -17,6 +17,8 @@
 
   </form>
   </div>
+   <img class='loginLogo' alt="Vue logo" src="../assets/newLogoWhite.png">
+ 
 
 
 </div>
@@ -108,6 +110,13 @@ div > input {
   height: 75px;
   font-size: 100%;
   color: white;
+}
+
+.loginLogo {
+    bottom: 0;
+    position: absolute;
+    width: 70%;
+    left: 0;
 }
 
 

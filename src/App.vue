@@ -96,7 +96,7 @@
           </b-form-group>
         </b-row>
 
-          <b-row md="1">
+          <b-row class="descriptionWrapper" md="1">
             <b-form-group>
               <b-form-textarea
                 id="textArea"
@@ -616,7 +616,9 @@ data() {
       }
 
       // GET URL OF UPLOADED IMAGE
-      await this.getImageUrl(file.name);
+      if(file){
+        await this.getImageUrl(file.name);
+      }
       console.log("URL IN SUMBIT", this.formData.userUploadedTreeImage )
       
       let submittedTreeData = {
@@ -736,9 +738,7 @@ data() {
 
         // GET URL OF UPLOADED IMAGE
       if(file) {
-        console.log("file name EDIT TREE", file.name)
-      await this.getImageUrl(file.name);
-       console.log("URL IN EDIT TREE SUBMIT", this.formData.userUploadedTreeImage )
+        await this.getImageUrl(file.name);
       }
       // EDIT FIREBASE DATA
       if (this.formData.description) {
@@ -1098,8 +1098,9 @@ body {
  }
 
 #textArea {
-  width: 290px;
-  max-height: 200px;
+  // width: 290px;
+  // max-height: 200px;
+  min-width: 290px;
 }
 
 .row {
@@ -1112,12 +1113,16 @@ body {
   max-height: 27px;
 }
 
+.custom-file-label {
+  min-width: 290px;
+}
+
 #treeTypeInput,
 #streetInput,
 #cityInput,
 #stateInput,
 #zipInput {
-  width: 290px;
+   min-width: 290px;
 }
 
 #streetInput{
@@ -1163,9 +1168,7 @@ body {
   color: $primary;
 }
 
-.custom-file-label {
-  width: 290px;
-}
+
 
 .imageInput {
     // margin-right: 33px;

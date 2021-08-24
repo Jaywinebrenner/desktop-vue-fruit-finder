@@ -38,6 +38,7 @@
 
   </form>
   </div>
+  <img class='loginLogo' alt="Vue logo" src="../assets/newLogoWhite.png">
 
 </div>
   
@@ -184,6 +185,7 @@ export default {
   padding: 20px;
   border: 1px black solid;
   border-radius: 2%;
+  z-index: 5;
 }
 
 .error {

@@ -53,7 +53,9 @@
 
           <div class='treeCardTop__buttonWrapper'>
             <!-- <img class="userSubImage" src="../assets/sadtree.jpg" alt=""> -->
-            <img class="userSubImage" :src="tree.urlOfTreeImage" alt="Picture of Tree">
+            <img class="userSubImage" v-if="tree.urlOfTreeImage" :src="tree.urlOfTreeImage" alt="Picture of Tree">
+            <img class="userSubImage" v-else src="../assets/customTreeBox.png" alt="Picture of Tree">
+
 
             <div class="deleteEditIconWrapper">
               <font-awesome-icon v-if="tree.userID === currentUserID" @click="areYouSure(tree.id)" id="deleteX" icon="trash-alt" size="sm"/>
