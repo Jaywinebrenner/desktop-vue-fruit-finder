@@ -36,16 +36,14 @@ export default {
   line-height: 1.8rem;
 }
 .aboutWrapper > h3 {
-font-size: 4vh;
-margin-bottom: .5rem;
+  font-size: 4vh;
+  margin-bottom: .5rem;
 }
 
 .aboutWrapper > h5 {
-font-size: 2vh;
-margin-bottom: 4vh;
+  font-size: 2vh;
+  margin-bottom: 4vh;
 }
-
-
 
 .aboutWrapper {
   margin: 10px 40vh;
@@ -60,6 +58,9 @@ margin-bottom: 4vh;
   .aboutWrapper {
     margin: 10px 5vh;
   }
+  .aboutWrapper > h3, h5, h6, p {
+    line-height: 1.5rem;
+}
 }
 
 .aboutWrapper h5 {
@@ -77,6 +78,21 @@ margin-bottom: 4vh;
 
 .aboutSnippet {
   width: 50vw;
+}
+
+@media screen and (max-width: 1400px) {
+  .aboutWrapper {
+    margin: 10px 10vh;
+    display: flex;
+    flex-direction: column;
+    background-color: $primary;
+    align-items: center;
+    justify-content: center;
+  }
+  .aboutSnippet {
+    width: 85vw;
+  }
+
 }
 
 </style>

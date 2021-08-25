@@ -30,7 +30,8 @@ If a user would like to input trees into our database, they will need to login. 
  2. Navigate to the directory (folder) that contains your browser's downloads via your terminal or Command Line interface.
  3. Double-click on **fruit-tree-finder** directory (folder).
  4. Open the directory contents by extracting/unzipping the documents from the folder.
- 5. Type // npm i // followed by // npm run start //. This will initialize the Fruit Tree Finder and spin up the server. You can use the app via your phone using Expo Client or an iOS / Android.
+ 5. CC into the directory via the command line and Type // npm i // followed by // npm run serve //. This will initialize the Fruit Tree Finder and spin up the server. 
+ 6. Dev Notes: npm run build // firebase deploy
 
 - - -
 

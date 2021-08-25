@@ -336,14 +336,9 @@ export default {
   background-color: $primary;
   display: flex;
   flex-flow: column;
-  // justify-content: center;
   align-items: center;
   flex-direction: column;
-  // overflow: scroll;
   height: 100vh;
-  // h6 {
-  //   color: #333333;
-  // }
 }
 
 .treeCardWrapper {
@@ -351,8 +346,7 @@ export default {
   border: 1px solid white;
   margin: 7px 0;
   border-radius: 5px;
-
-   transition: 0.4s;
+  transition: 0.4s;
 }
 
 .treeCardTop__wrapper {
@@ -360,12 +354,9 @@ export default {
   border: 1px solid white;
   align-items: center;
   cursor: pointer;
-
-   transition:max-height 0.3s ease-out; // note that we're transitioning max-height, not height!
+  transition:max-height 0.3s ease-out;
   height:auto;
   max-height:600px;
-
-
 }
 
 .treeCardBottom__Wrapper {
@@ -373,16 +364,11 @@ export default {
   padding: 10px;
   display: none;
   overflow: hidden;  
-
 }
 
 .accordianOpen {
   background-color: white;
   padding: 10px;
-
-
-
-
 }
 
 .treeCardTop__logoWrapper {
@@ -412,7 +398,9 @@ export default {
   justify-content: center;
   align-items: center;
   margin-left: auto;
-  margin-right: 1rem;
+  margin-right: .5rem;
+  margin-top: .1rem;
+  margin-bottom: .1rem;
   color: white;
   border-radius: 5px;
 
@@ -448,49 +436,23 @@ export default {
 }
 
 .deleteXWrapper{
-//   position: relative;
-//  height: 55px;
-//  width: 3px;
-//  margin-left: 5px;
-//   cursor: pointer;
-position: absolute;
+  position: absolute;
 }
-
-
-
-
-
-
-
 
 .deleteEditIconWrapper {
   position: relative;
-  // width: 9px;
-      padding-right: 15px;
+  padding: 3px 10px;
 }
 
 #deleteX {
   position: absolute;
-  // position: absolute;
   top: 5px;
-  // display: inline-block;
-  // color: #ffffff;
-  // cursor: pointer;
-  // width: 25px;
 }
 
 #editIcon {
   position: absolute;
-    // position: absolute;
-    bottom: 8px;
-    // right: .5px;
+  bottom: 8px;
 }
-
-
-
-
-
-
 
 .emptyDiv {
   width: 10px;
@@ -504,13 +466,13 @@ position: absolute;
 }
 
 .comment__button {
-    cursor: pointer;
-    padding: 3px;
-    border-radius: 5px;
-    background-color: $primary;
-    display: inline-block;
-    margin-left: 20px;
-    font-size: .6rem;
+  cursor: pointer;
+  padding: 3px;
+  border-radius: 5px;
+  background-color: $primary;
+  display: inline-block;
+  margin-left: 20px;
+  font-size: .6rem;
 }
 
 .commentList__wrapper {
@@ -524,14 +486,13 @@ position: absolute;
   font-weight: 300;
 }
 ul {
-  list-style-type: none; /* Remove bullets */
-  padding: 0; /* Remove padding */
-  margin: 0 0 0 20px; /* Remove margins */
+  list-style-type: none; 
+  padding: 0; 
+  margin: 0 0 0 20px;
 }
 
 li {
   font-size: .85rem;
-  // line-height: .5;
   color: #6a6a6a;
 }
 
@@ -553,7 +514,6 @@ li {
 }
 
 .userSubImage {
-  // height: 40px;
   margin-right: 20px;
   object-fit: cover;
   border-radius:50%;
@@ -564,6 +524,7 @@ li {
 @media screen and (max-width: 600px) {
   .userSubImage {
     margin-right: 0px;
+    left: 320px;
   }
   .treeCardTop__logo {
     width: 60px;

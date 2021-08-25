@@ -111,7 +111,7 @@
 
           <p class="imageInputSubheader">You can always upload the image later if you'd like</p>
           <progress v-if="uploading === true" value="0" max="100" id="uploader"></progress>
-          <b-row md="1">
+          <b-row class="imageInputWrapper" md="1">
             <b-form-group class="imageInput">
               <b-form-file
                 accept=".jpg, .png, .gif, .jpeg"
@@ -1188,6 +1188,10 @@ body {
   margin-bottom: 0;
 }
 
+.imageInputWrapper {
+  width: 95%;
+}
+
 #dropdown-1 {
       margin-bottom: 0px !important;
 }
@@ -1198,6 +1202,5 @@ body {
 .form-control-sm {
   width: 25vw!important;
 }
-
 
 </style>
