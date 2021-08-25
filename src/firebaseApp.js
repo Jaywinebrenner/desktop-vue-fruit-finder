@@ -14,6 +14,8 @@ export const firebaseConfig = {
 
 const FirebaseApp = firebase.initializeApp(firebaseConfig)
 
+
+
 // console.log("Firebase init with config", FirebaseApp.options);
 
 export default {

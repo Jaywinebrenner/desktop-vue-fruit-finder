@@ -1,15 +1,7 @@
-const treeDropdownOptions = [
+const modalDropdownOptions = [
     {
-        "value": "all",
-        "text": "All Trees"
-    },
-    {
-        "value": "custom",
-        "text": "Custom Trees"
-    },
-    {
-        "value": "my",
-        "text": "My Trees"
+        "value": "cutsom",
+        "text": "Custom Tree"
     },
     {
         "value": "apple",
@@ -75,5 +67,5 @@ const treeDropdownOptions = [
 
 ]
 
-export default treeDropdownOptions
+export default modalDropdownOptions
 

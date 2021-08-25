@@ -1,23 +1,24 @@
 <template>
 <div class="loginWrapper">
-
-    <div class="loginCard">
-  <div v-if="error" class="error">{{error.message}}</div>
-  <form @submit.prevent="pressedLogin">
-    <h3>Login</h3>
-    <div class="email">
-      <input type="email" v-model="email" placeholder="email">
-    </div>
-    <div class="password">
-      <input type="password" v-model="password" placeholder="password">
-    </div>
-    <button type="submit" class="signUpButton">
-      <b-spinner small v-if="spinLoading" label="Spinning"></b-spinner>
-      <span v-if="!spinLoading">Login</span>
-    </button>
+  <div class="loginCard">
+    <div v-if="error" class="error">{{error.message}}</div>
+    <form @submit.prevent="pressedLogin">
+      <h3>Login</h3>
+      <div class="email">
+        <input type="email" v-model="email" placeholder="email">
+      </div>
+      <div class="password">
+        <input type="password" v-model="password" placeholder="password">
+      </div>
+      <button type="submit" class="signUpButton">
+        <b-spinner small v-if="spinLoading" label="Spinning"></b-spinner>
+        <span v-if="!spinLoading">Login</span>
+      </button>
 
   </form>
   </div>
+   <img class='loginLogo' alt="Vue logo" src="../assets/newLogoWhite.png">
+ 
 
 
 </div>
@@ -33,7 +34,9 @@ export default {
   name:"Login",
   props: {
     showView: Function,
-    getCurrentUser: Function
+    getCurrentUser: Function,
+    toggleMapAndListButton: Function,
+    currentUser: Object
   },
   data() {
     return {
@@ -49,10 +52,15 @@ export default {
       
       try {
         const value = await firebase.auth().signInWithEmailAndPassword(this.email, this.password);
-        this.showView("Map")
+        this.toggleMapAndListButton("showMap")
         console.log("value after pressing login", value);
         this.spinLoading = false;
-        this.getCurrentUser()
+        await this.getCurrentUser();
+        console.log("value.photoURL", value.user.photoURL)
+        this.$parent.userUploadedImageState = value.user.photoURL;
+        console.log("uploadedImagestaet", this.$parent.userUploadedImageState)
+        // this.$parent.userDisplayName = this.currentUser.displayName;
+        this.showView("Map")
       } catch (err) {
         this.$toastr.e(
             err
@@ -102,6 +110,13 @@ div > input {
   height: 75px;
   font-size: 100%;
   color: white;
+}
+
+.loginLogo {
+    bottom: 0;
+    position: absolute;
+    width: 70%;
+    left: 0;
 }
 
 

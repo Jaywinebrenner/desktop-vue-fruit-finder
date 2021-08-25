@@ -7,19 +7,17 @@ Deal with Admin. Admin will be able to add a verified tree.
 
 Animate growing trees.
 
+Animate Accordians
+
 animate a list item evaporating upon deletion
 
 animate opening list item
-
-Add filtering on map / list: My Trees / 
 
 Error handle - no two trees at same location... PROBLEM- GEOCODER ASSIGNS DIFFERENT COORDS FOR SAME LOCATION.  HUH?
 
 Search by tree type in top Search Field. Make sure map as well as Drawer List is updated upon searching
 
 Add a way to deal with Verified Trees. Likely through an admin account on the app itself. 
-
-If the user has not made any trees- make a rendered <View> saying "There are no trees" or something along those lines on MyTrees
 
 Ensure the geolocator tracks location- i THINK it simply finds initial location.
 

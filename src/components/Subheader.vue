@@ -1,20 +1,20 @@
 <template>
   <div class="subheaderWrapper">    
-    <div v-if="whichView === 'Map'">
+    <div v-if="this.$parent.whichView === 'Map'">
         <h5 class="browseText">Browse the Map for Fruit Trees Near You</h5>
     </div>
-    <div v-if="whichView === 'List'">
+    <div v-if="this.$parent.whichView === 'List'">
         <h5 class="browseText">Peruse the list for Fruit Trees Near You</h5>
     </div>
-    <div id="mapListFilterWrapper" v-if="whichView === 'Map' || whichView === 'List'" >
+    <div id="mapListFilterWrapper" v-if="this.$parent.whichView === 'Map' || this.$parent.whichView === 'List'" >
       <div class="mapListButtonsWrapper">
-        <div id="mapListButton"  
+        <div class="mapListButton"  
         :style="{
             backgroundColor: (isActive ? '#ccc' : '#ffffff'), 
             color: 'black', 
             }" @click="toggleMapAndListButton('showMap')">Map View
         </div>
-        <div id="mapListButton" 
+        <div class="mapListButton" 
             :style="{
                 backgroundColor: (isActive ? '#ffffff' : '#ccc'), 
                 color: 'black', 
@@ -23,7 +23,7 @@
         </div> 
       </div>
       <div class="dropdownWrapper">
-        <b-dropdown id="dropdown-2" text="Filter Trees" class="m-md-2">
+        <b-dropdown :text="buttonTitle" id="dropdown-2" class="m-md-2">
           <!-- <b-dropdown-item active>All Trees</b-dropdown-item> -->
           <b-dropdown-item v-for="option in treeDropdownOptions" 
                 :key="option.text" 
@@ -47,9 +47,10 @@ export default {
     props: {
         isActive: Boolean,
         toggleMapAndListButton: Function,
-        whichView: String,
+        // whichView: String,
         filteredTrees: Array,
-        selectFilter: Function
+        selectFilter: Function,
+        buttonTitle: String
         // selectedFilter: String
     },
     data() {
@@ -88,7 +89,7 @@ methods: {
 //   border: 1px solid #ccc;
   background-color: #f1f1f1;
   background-color: $primary;
-  margin: 0 auto 8px auto;
+  // margin: 0 auto 8px auto;
   display: inline-block;
 }
 
@@ -97,7 +98,7 @@ methods: {
       margin-left: 220px
 }
 
-#mapListButton {
+.mapListButton {
   background-color: #ffffff;
   float: left;
   border: none;
@@ -109,6 +110,12 @@ methods: {
   margin: 0px;
   text-align: center;
   border-radius: 0;
+  margin-right: 10px;
+}
+
+#mapListButtons:hover{
+  // filter: drop-shadow(30px 10px 4px #4444dd);
+  color: pink;
 }
 
 .dropdownWrapper {
@@ -119,25 +126,57 @@ methods: {
     font-size: 2.4rem;
 }
 
-#mapListButton:hover {
-  // background-color: red;
+.dropdown-menu {
+  z-index: 0;
 }
 
+
 @media screen and (max-width: 600px) {
+  #mapListFilterWrapper {
+    margin: 0 auto 12px auto;
+  }
   .browseText {
     font-size: 1.8rem;
   }
   .mapListButtonsWrapper {
     display: block;
     margin: 0 auto;
-}
+  }
+  #dropdown-2 {
+
+    margin: 10px 7px 0px 0px;
+  }
+  #dropdown-2__BV_toggle_{
+
+    margin-bottom: 0px !important;
+  }
+  .dropdown-menu {
+    left: -40px !important;
+  }
+  .welcomeText {
+    padding: 0;
+    cursor: none;
+  }
+  .splashLogo {
+    width: 100px;
+  }
+  .deleteXWrapper {
+    height: 44px !important;
+  }
+  .browseText {
+    font-size: 1.6rem;
+  }
 }
 
 #dropdown-2__BV_toggle_{
-  @include maroonButton;
+  // @include maroonButton;
    padding: 4px 10px;
    width: 190px;
    margin: 0 0 27px 0;
+   background-color: whitesmoke;
+   color: $primary;
+   
  }
+
 
 </style>
