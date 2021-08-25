@@ -2,16 +2,17 @@
 
 <div>
 
+
   <ListItem
-    v-for="tree in orderedTrees" :key="tree.id"
+    v-for="tree in treesWithListLimit" :key="tree.id"
     :orderedTrees="orderedTrees"
     :tree="tree"
-
   />
+
               
   <div class="listViewWrapper">
 
-    <div v-if="selectedFilter === 'My Trees' && orderedTrees.length == 0">
+    <div v-if="selectedFilter === 'My Trees' && treesWithListLimit.length == 0">
       <div class="sadWrapper">
         <h6>You haven't contributed any trees to the Fruit Finder.</h6>
         <p>If you know of a fruiting tree or bush, just push Add Tree in the upper right hand corner. </p>
@@ -19,7 +20,7 @@
       </div>
     </div>
 
-    <div v-else-if="selectedFilter === 'Custom Trees' && orderedTrees.length == 0">
+    <div v-else-if="selectedFilter === 'Custom Trees' && treesWithListLimit.length == 0">
       <div class="sadWrapper">
         <h6>You haven't created any Custom Trees. A custom tree is a Tree you add to The Fruit Finder that has it's own Custom Title. "Fred's Fruitful Italian Plum Tree", for example.</h6>
         <p>To create a Custom Tree, simply click "Add a Tree" in the upper right hand corner. After hitting the Select Tree Type dropdown, choose Custom Tree. A text input will be revealed where you can name your Custom Tree.</p>
@@ -27,7 +28,7 @@
       </div>
     </div>
 
-    <div v-else-if="orderedTrees.length == 0">
+    <div v-else-if="treesWithListLimit.length == 0">
       <div class="sadWrapper">
         <h6>Hmmm, looks like this type of tree isn't near you.</h6>
         <p>Perhaps you should find one and add it to the Fruit Finder!</p>
@@ -35,7 +36,7 @@
       </div>
     </div>
 
-    <div class="treeCardWrapper" v-else v-for="tree in orderedTrees" :key="tree.id">
+    <div class="treeCardWrapper" v-else v-for="tree in treesWithListLimit" :key="tree.id">
         
         <div class="treeCardTop__wrapper" @click="tree.visible = !tree.visible">
           <div class="treeCardTop__logoWrapper">
@@ -128,6 +129,7 @@
 
     </modal>
 
+    <button class="showMoreButton" @click="showMore()">{{showMoreButtonText}}</button>
   </div>
 
 </div>
@@ -163,7 +165,9 @@ export default {
       comment: null,
       spinLoading: false,
       idOfCommentedTree: null,
-      allComments: []
+      allComments: [],
+      limit: 10,
+      showMoreButtonText: "Show More"
     };
   },
   mounted() {
@@ -177,9 +181,11 @@ export default {
     orderComments() {
       // return this.orderedComments.slice().sort((a, b) =>
       // a.dateTime > b.dateTime ? 1 : -1,)
-
       return this.orderedComments.slice().sort((a, b) =>
       a.dateTime > b.dateTime ? 1 : +1,)
+    },
+    treesWithListLimit(){
+      return this.limit ? this.orderedTrees.slice(0,this.limit) : this.orderedTrees
     }
 
   }, 
@@ -190,6 +196,12 @@ export default {
     //   this.orderedComments = this.allComments.sort((a, b) =>
     //   a.dateTime > b.dateTime ? 1 : -1,)
     // },
+    showMore() {
+      if(this.limit > this.treesWithListLimit.length) {
+        this.showMoreButtonText = "No More Trees"
+      }
+      this.limit = this.limit +2;
+    },
     openAccordian() {
       // tree.visible = !tree.visible
     },
@@ -533,6 +545,20 @@ li {
   .treeCardTop__logo {
     width: 60px;
   }
+}
+
+.showMoreButton {
+  padding: 10px;
+  color: $primary;
+  background-color: white;
+  width: 200px;
+  border-radius: 5%;
+  margin: 80px 0;
+}
+
+.showMoreButton:hover {
+  background-color: $hover;
+  transition: .3s;
 }
 
 // :style="{backgroundImage:'url(~@/assets/maroonGradient.png)'}"
