@@ -200,7 +200,7 @@ export default {
       if(this.limit > this.treesWithListLimit.length) {
         this.showMoreButtonText = "No More Trees"
       }
-      this.limit = this.limit +2;
+      this.limit = this.limit + 3;
     },
     openAccordian() {
       // tree.visible = !tree.visible
@@ -350,11 +350,11 @@ export default {
   flex-flow: column;
   align-items: center;
   flex-direction: column;
-  height: 100vh;
+  // height: 100vh;
 }
 
 .listViewWrapper:last-child {
-  margin-bottom: 500px;
+  // margin-bottom: 500px;
 }
 
 .treeCardWrapper {
