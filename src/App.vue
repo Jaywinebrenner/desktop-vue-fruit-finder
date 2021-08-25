@@ -377,8 +377,6 @@ data() {
       userDisplayName: null,
       userUploadedImage: null,
       userUploadedImageState: null
-
-
     };
   },
   mounted() {
@@ -488,6 +486,7 @@ data() {
       this.$modal.show("addTreeModal");
     },
     hideAddTreeModal() {
+      this.selectModalTreeType("Select Tree Type")
       this.$modal.hide("addTreeModal");
       this.formData.treeType = null;
       this.formData.description = null;
@@ -641,6 +640,7 @@ data() {
         });
 
       // Clean up 
+      this.selectModalTreeType("Select Tree Type")
       this.formData.treeType = "";
       this.formData.description = "";
       this.formData.street = "";
@@ -783,6 +783,7 @@ data() {
       } 
 
         // Clean up Edit Tree
+      // this.dropdown.modalDropdownOptions = "0",
       this.formData.treeType = "";
       this.formData.description = "";
       this.formData.street = "";

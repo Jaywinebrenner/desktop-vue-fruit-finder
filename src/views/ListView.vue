@@ -341,6 +341,10 @@ export default {
   height: 100vh;
 }
 
+.listViewWrapper:last-child {
+  margin-bottom: 500px;
+}
+
 .treeCardWrapper {
   width: 90%;
   border: 1px solid white;
