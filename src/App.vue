@@ -58,6 +58,7 @@
 		<SignUp
 			v-if="whichView === 'SignUp'"
       :showView="showView"
+      :getCurrentUser="getCurrentUser"
 		/>
 
 
@@ -531,17 +532,30 @@ data() {
       this.uploading = true;
       this.spinLoading = true;
 
-      if (
-        !this.formData.treeType ||
-        !this.formData.description ||
-        !this.formData.street 
-      ) {
-        this.$toastr.e(
-              "You didn't fill out the form properly. Give it another shot!"
-            );
+      if (!this.formData.treeType) {
+          this.$toastr.e(
+            "Please enter a type of tree."
+          );
         this.spinLoading = false;
         return;
       }
+
+      if (!this.formData.description) {
+          this.$toastr.e(
+            "Please enter a short description of your tree."
+          );
+        this.spinLoading = false;
+        return;
+      }
+
+      if (!this.formData.street ) {
+          this.$toastr.e(
+            "Please enter the address or cross street of your tree.."
+          );
+        this.spinLoading = false;
+        return;
+      }
+
       let coordObject = {
         lat: '',
         lng: ''

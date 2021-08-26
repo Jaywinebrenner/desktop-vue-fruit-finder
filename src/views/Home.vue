@@ -162,7 +162,8 @@ export default {
       //   lng: 0
       // },
       // postDragCoords: {},
-      treeIcon: null
+      treeIcon: null,
+  
 
     };
   },
@@ -235,9 +236,13 @@ export default {
         this.currentMidx = index;
       }
     },
+    openMarkerModal() {
+      console.log("OPEN MARKER MODAL CLICKED")
+    },
 
-    getInfoWindowContent: function(marker) {
+    getInfoWindowContent (marker) {
       console.log("marker",marker)
+
       return `<div class="windowCard">
         <div class="windowTop">
           <h6 class="windowTopText">${marker.treeType}</h6>

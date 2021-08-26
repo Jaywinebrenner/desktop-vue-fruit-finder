@@ -54,6 +54,7 @@ export default {
   name:"SignUp",
   props: {
     showView: Function,
+    getCurrentUser: Function,
     
   },
   data() {
@@ -73,17 +74,20 @@ export default {
       this.spinLoading = true;
       if (!this.name) {
         this.$toastr.s(
-              "Please enter your name. But, ya know, it doesn't have to be your real name."
-            );
-            this.spinLoading = false;
-        return;
+            "Please enter your name. But, ya know, it doesn't have to be your real name."
+          );
+          this.spinLoading = false;
+          return;
       }
       try {
         const user = await firebase.auth().createUserWithEmailAndPassword(this.email, this.password);
-        // firebase.auth().currentUser.updateProfile({
-        //   displayName: this.name
-        // });
+        
+        await firebase.auth().currentUser.updateProfile({
+          displayName: this.name
+        });
 
+        await this.getCurrentUser();
+        
 
         // PUT PROFILE URL INTO CURRENT USER OBJECT 
         let uploader = document.getElementById('uploader');
@@ -105,15 +109,18 @@ export default {
       } 
 
       // GET URL OF UPLOADED IMAGE
-      await this.getImageUrl(file.name);
+      if(this.profileImage) {
+        await this.getImageUrl(file.name);
+      }
+
       console.log("URL IN SUMBIT", this.$parent.userUploadedImage )
 
-        this.showView("Map");
-        this.$toastr.s(
-              "You have successfully created an account. Happy hunting!"
-            );
-        console.log("user", user);
-        this.spinLoading = false;
+      this.showView("Map");
+      this.$toastr.s(
+            "You have successfully created an account. Happy hunting!"
+          );
+      console.log("user", user);
+      this.spinLoading = false;
 
       } catch (err) {
         console.log(err);
@@ -125,44 +132,42 @@ export default {
     },
 
     async getImageUrl(img) {
+      let storageRef = await firebase.storage().ref();
+      let imgRef = await storageRef.child('profileImage/' + img);
 
-    let storageRef = await firebase.storage().ref();
-    let imgRef = await storageRef.child('profileImage/' + img);
-
-  // Get the download URL
-    await imgRef.getDownloadURL()
-    .then((url) => {
-      console.log("DOWNLOAD URL", url)
-      this.$parent.userUploadedImage = url;
-      this.$parent.userUploadedImageState = url;
-      // this.putImageInNavbar(this.userUploadedImage)
-      return this.$parent.userUploadedImage ;
-    })
-    .catch((error) => {
-
-    switch (error.code) {
-        case 'storage/object-not-found':
-          // File doesn't exist
+    // Get the download URL
+      await imgRef.getDownloadURL()
+      .then((url) => {
+        console.log("DOWNLOAD URL", url)
+        this.$parent.userUploadedImage = url;
+        this.$parent.userUploadedImageState = url;
+        // this.putImageInNavbar(this.userUploadedImage)
+        return this.$parent.userUploadedImage ;
+      })
+      .catch((error) => {
+      switch (error.code) {
+          case 'storage/object-not-found':
+            // File doesn't exist
+            break;
+          case 'storage/unauthorized':
+            // User doesn't have permission to access the object
+            break;
+          case 'storage/canceled':
+            // User canceled the upload
+            break;
+          case 'storage/unknown':
+            // Unknown error occurred, inspect the server response
           break;
-        case 'storage/unauthorized':
-          // User doesn't have permission to access the object
-          break;
-        case 'storage/canceled':
-          // User canceled the upload
-          break;
-        case 'storage/unknown':
-          // Unknown error occurred, inspect the server response
-        break;
-      }
-     });
-     console.log("user IMage???", this.$parent.userUploadedImage)
-        await firebase.auth().currentUser.updateProfile({
-          displayName: this.name,
-          photoURL: this.$parent.userUploadedImage
-        });
-        this.$parent.userDisplayName = this.name;
-        this.$parent.userUploadedImage;
-    },
+        }
+      });
+      console.log("user IMage???", this.$parent.userUploadedImage)
+          await firebase.auth().currentUser.updateProfile({
+            displayName: this.name,
+            photoURL: this.$parent.userUploadedImage
+          });
+          this.$parent.userDisplayName = this.name;
+          this.$parent.userUploadedImage;
+    }
   },
   
 

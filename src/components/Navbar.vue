@@ -29,6 +29,7 @@
       <div class="logoWrapper">
           <img class='splashLogo' alt="Vue logo" src="../assets/newLogo.png">
           <h5 v-if="isLoggedIn" class="welcomeText">Welcome {{ $parent.userDisplayName }}</h5>
+
           <div v-if="isLoggedIn" class="addTreeButtonWrapper">
             <button @click="showAddTreeModal" class="addTreeButton">Add Tree</button>
           </div>
@@ -77,11 +78,6 @@ export default {
     test() {
       console.log("ROOT", this.$root.spinLoading)
     },
-    hasProfilePic() {
-
-
-    },
-
     clickHomeButton(){
         this.showView('Map'); 
         this.toggleMapAndListButton("showMap");
