@@ -162,7 +162,7 @@
       <div class="formWrapper container mt-6">
         <b-form class="formWrapper" @submit.prevent="handleEditSubmit()">
         <div>
-          <b-dropdown id="dropdown-1" v-model="formData.treeType" :text="modalButtonTitle" class="m-md-2">
+          <b-dropdown id="dropdown-1" v-model="formData.treeType" :text="formData.treeType" class="m-md-2">
             <b-dropdown-item disabled value="0">{{ !formData.treeType ? "Select a tree type" : formData.treeType }}</b-dropdown-item>
             <b-dropdown-item v-for="option in dropdown.modalDropdownOptions" 
                   :key="option.text" 
@@ -194,7 +194,7 @@
                 placeholder="Edit Description"
                 rows="5"
                 max-rows="4"
-              ></b-form-textarea>
+              >{{formData.description}}</b-form-textarea>
             </b-form-group>
           </b-row>
 
@@ -375,6 +375,9 @@ data() {
       treeImage: null,
       uploading: false,
       treeIdForEditing: null,
+      treeTypeForEditing: null,
+      treeDescriptionForEditing : null,
+      treeAddressForEditing: null,
       userDisplayName: null,
       userUploadedImage: null,
       userUploadedImageState: null
@@ -514,8 +517,11 @@ data() {
     },
 
 
-    getTreeIdForEditing(treeID) {
+    getTreeIdForEditing(treeID, treeType, treeDescription, treeFormattedAddress) {
       this.treeIdForEditing = treeID;
+      this.formData.treeType = treeType;
+      this.formData.description = treeDescription;
+      this.treeAddressForEditing = treeFormattedAddress;
       this.$modal.show("editTreeModal");
     },
 

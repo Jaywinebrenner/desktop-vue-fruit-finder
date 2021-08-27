@@ -42,7 +42,7 @@
           <div class="treeCardTop__logoWrapper">
             <img
               class="treeCardTop__logo"
-              alt="Vue logo"
+              alt="Fruit Finder logo"
               src="../assets/newLogoWhite.png"
             />
           </div>
@@ -60,7 +60,7 @@
 
             <div class="deleteEditIconWrapper">
               <font-awesome-icon v-if="tree.userID === currentUserID" @click="areYouSure(tree.id)" id="deleteX" icon="trash-alt" size="sm"/>
-              <font-awesome-icon v-if="tree.userID === currentUserID" @click="getTreeIdForEditing(tree.id)" id="editIcon" icon="edit" size="sm"/>
+              <font-awesome-icon v-if="tree.userID === currentUserID" @click="getTreeIdForEditing(tree.id, tree.treeType, tree.description, tree.formatted_address)" id="editIcon" icon="edit" size="sm"/>
             </div>
 
 
@@ -171,6 +171,7 @@ export default {
     };
   },
   mounted() {
+
   },
 
       //   this.orderedTrees = this.allTrees.sort((a, b) =>
